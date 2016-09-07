@@ -5,16 +5,23 @@
     <title>Hello World!</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://code.getmdl.io/1.2.0/material.indigo-pink.min.css">
+    <link rel="stylesheet" href="./node_modules/vue-msgbox/lib/vue-msgbox.css">
+    <link rel="stylesheet" href="./app/css/app.css">
 </head>
 <body>
 <div id="app">
-    <div class="mdl-grid">
-        <div v-for="repository in repositories" class="mdl-cell mdl-cell--4-col">
-            <repo-card :repository="repository">
-
-            </repo-card>
+    <main class="mdl-layout__content">
+        <div class="page-content">
+            <command v-if="commandOpened"></command>
+            <loader v-if="isLoading"></loader>
+            <div v-if="!isLoading" class="mdl-grid">
+                <div v-for="repository in repositories | filterBy searchTerm in 'name'" track-by="id" class="mdl-cell mdl-cell--3-col">
+                    <repo-card :repository.sync="repository"></repo-card>
+                </div>
+            </div>
         </div>
-    </div>
+    </main>
+
 </div>
 <script src="./node_modules/material-design-lite/material.min.js"></script>
 <script src="dist/build.js"></script>
