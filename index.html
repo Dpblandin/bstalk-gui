@@ -3,11 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>Hello World!</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.2.0/material.indigo-pink.min.css">
 </head>
 <body>
-<h1>Hello World!</h1>
-We are using node <script>document.write(process.versions.node)</script>,
-Chrome <script>document.write(process.versions.chrome)</script>,
-and Electron <script>document.write(process.versions.electron)</script>.
+<div id="app">
+    <div class="mdl-grid">
+        <div v-for="repository in repositories" class="mdl-cell mdl-cell--4-col">
+            <repo-card :repository="repository">
+
+            </repo-card>
+        </div>
+    </div>
+</div>
+<script src="./node_modules/material-design-lite/material.min.js"></script>
+<script src="dist/build.js"></script>
 </body>
 </html>
