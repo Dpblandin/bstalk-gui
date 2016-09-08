@@ -5,3 +5,4 @@ Thumbs.db
 
 node_modules
 npm_debug.log
+app/lib/api.js
