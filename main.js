@@ -1,4 +1,5 @@
 const {app, BrowserWindow, Menu, globalShortcut} = require('electron')
+const config = require('./app/lib/config')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -11,7 +12,7 @@ const template = [
             {
                 label: 'Settings',
                 accelerator: 'CmdOrCtrl+S'
-            },
+            },k
             {
                 label: 'Exit',
                 role: 'quit'
@@ -21,8 +22,13 @@ const template = [
 ]
 
 function init() {
+    setUpConfigFile();
     createWindow();
     setupGlobalShortcuts();
+}
+
+function setUpConfigFile() {
+    config.createConfigFile();
 }
 
 function setupGlobalShortcuts() {

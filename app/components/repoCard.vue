@@ -1,21 +1,23 @@
 <template>
-    <div class="demo-card-square mdl-card mdl-shadow--2dp">
-        <div class="mdl-card__title mdl-card--expand">
-            <h2 class="mdl-card__title-text">{{ repository.name }}</h2>
-        </div>
-        <div class="mdl-card__supporting-text">
-            <span>Url: {{ repository.repository_url_https }}</span>
-            <span>Last updated: {{ repository.updated_at }}</span>
-        </div>
-        <div v-show="isLoading" class="mdl-card__actions mdl-card--border">
-           <loader type="circular"></loader>
-        </div>
-        <div v-if="!isLoading" class="mdl-card__actions mdl-card--border">
-            <a @click="pushToEnv(env)" v-for="env in repository.environments" track-by="id"
-               class="mdl-button mdl-button--colored
-               mdl-js-button mdl-js-ripple-effect {{ env.color_label }}">
-                {{ env.name }}
-            </a>
+    <div class="ui items">
+        <div class="item">
+            <div class="content">
+                <div class="header">
+                    <h2 class="mdl-card__title-text">{{ repository.name }}</h2>
+                </div>
+                <div class="description">
+                    <p>Url: {{ repository.repository_url_https }}</p>
+                    <p>Last updated: {{ repository.updated_at }}</p>
+                </div>
+                <div class="extra">
+                    <confirm-modal v-if="showModal" :on-confirm="pushToEnv(env)"></confirm-modal>
+                    <button @click="confirm" v-for="env in repository.environments" track-by="id"
+                       class="ui labeled icon {{ env.color_label }} button">
+                        <i class="upload icon"></i>
+                        {{ env.name }}
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -23,28 +25,31 @@
 <script>
 import beanstalk from '../lib/api'
 import Loader from './loader.vue'
+import ConfirmModal from './confirmModal.vue'
 import MessageBox from 'vue-msgbox'
 
     export default {
-        components: {Loader},
+        components: {Loader, ConfirmModal},
 
         props: ['repository'],
 
         data() {
           return {
-              isLoading: true
+              showModal: false
           }
         },
 
         created() {
-            beanstalk.getEnvironments(this.repository.name, (envs) => {
-                this.repository.environments = envs;
-                this.isLoading = false;
-            })
+
         },
         methods: {
+            confirm() {
+                this.showModal = true
+            },
             pushToEnv(env) {
-                const message = `Deploy on branch: ${env.name} ?`
+               this.showModal = false
+                alert('confirmed')
+              /*  const message = `Deploy on branch: ${env.name} ?`
                 const title   = `Confirm deployment on ${this.repository.name}`
                 const options = {
                     confirmButtonText: 'Deploy',
@@ -52,7 +57,7 @@ import MessageBox from 'vue-msgbox'
                 }
                 MessageBox.confirm(message, title, options).then(() => {
                     //beanstalk.deploy(this.repository.repository.name, env.id, )
-                })
+                })*/
             }
         }
     }

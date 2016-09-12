@@ -21,8 +21,19 @@ new Vue({
         beanstalk.getRepositories((repos) => {
             this.repositories = repos.map((repo) => {
                 return repo.repository
-            });
-            this.isLoading = false
+            })
+            let promises = [];
+            for(let repo of this.repositories) {
+                promises.push(new Promise((resolve, reject) => {
+                    beanstalk.getEnvironments(repo.name, (envs) => {
+                        repo.environments = envs
+                        resolve(repo)
+                    })
+                }))
+            }
+            Promise.all(promises).then(() => {
+                this.isLoading = false
+            })
         })
     },
 

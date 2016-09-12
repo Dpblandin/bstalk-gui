@@ -1,13 +1,16 @@
 <style>
-    .mdl-progress {
-        display: flex;
-        align-items: center;
-    }
+
 </style>
 
 <template>
-    <div v-show="type === 'progress'" id="p2" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
-    <div v-show="type === 'circular'" class="mdl-spinner mdl-js-spinner is-active"></div>
+    <div class="ui segment">
+        <div class="ui active inverted dimmer">
+            <div class="ui massive text loader">Loading repositories and environments</div>
+        </div>
+        <p></p>
+        <p></p>
+        <p></p>
+    </div>
 </template>
 
 <script>

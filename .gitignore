@@ -6,3 +6,6 @@ Thumbs.db
 node_modules
 npm_debug.log
 app/config.js
+semantic/dist/components
+semantic/src
+semantic/tasks

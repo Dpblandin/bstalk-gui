@@ -28,5 +28,8 @@ module.exports = {
         new webpack.ExternalsPlugin('commonjs', [
             'electron'
         ])
-    ]
+    ],
+    node: {
+        fs: "empty"
+    }
 }
