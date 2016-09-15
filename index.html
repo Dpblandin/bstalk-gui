@@ -11,12 +11,7 @@
 <div id="app" class="app">
     <main class="main">
         <command v-if="commandOpened"></command>
-        <div class="ui middle aligned center aligned grid">
-            <div class="column">
-                <loader v-if="isLoading"></loader>
-            </div>
-        </div>
-
+        <loader v-if="isLoading"></loader>
         <div v-if="!isLoading" class="ui top segment">
             <div class="ui divided items">
                 <repo-card v-for="repository in repositories | filterBy searchTerm in 'name'"

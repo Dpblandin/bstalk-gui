@@ -1,4 +1,5 @@
-const {app, BrowserWindow, Menu, globalShortcut} = require('electron')
+const {app, BrowserWindow, Menu, globalShortcut, ipcMain} = require('electron')
+const fs = require('fs');
 const config = require('./app/lib/config')
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -12,7 +13,7 @@ const template = [
             {
                 label: 'Settings',
                 accelerator: 'CmdOrCtrl+S'
-            },k
+            },
             {
                 label: 'Exit',
                 role: 'quit'
@@ -22,13 +23,24 @@ const template = [
 ]
 
 function init() {
-    setUpConfigFile();
-    createWindow();
-    setupGlobalShortcuts();
+    createWindow()
+    setUpConfigFile()
+    setupGlobalShortcuts()
 }
 
 function setUpConfigFile() {
-    config.createConfigFile();
+    ipcMain.on('vue-ready', (event) => {
+        let configFile
+        if(!config.configExists()) {
+           config.createConfigFile()
+        }
+
+        configFile = config.configFile()
+        fs.readFile(configFile, (err, data) => {
+            console.log(err, data)
+        })
+        event.sender.send('config-file-ready', configFile)
+    })
 }
 
 function setupGlobalShortcuts() {

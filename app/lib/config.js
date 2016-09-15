@@ -45,8 +45,7 @@ const config = {
     };
 
     fs.writeFileSync(file, JSON.stringify(template, null, 4));
-    console.log("Blank configuration file saved to: " + file);
-    console.log("Please replace required configuration items in this file.");
+
   },
   get() {
     var dir = this.configDir();

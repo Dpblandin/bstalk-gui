@@ -3,7 +3,7 @@
 </style>
 
 <template>
-    <div class="ui segment">
+    <div>
         <div class="ui active inverted dimmer">
             <div class="ui massive text loader">Loading repositories and environments</div>
         </div>

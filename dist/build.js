@@ -90,8 +90,14 @@
 	        };
 	    },
 	    created: function created() {
+	        _electron.ipcRenderer.send('vue-ready');
+	    },
+	    ready: function ready() {
 	        var _this = this;
 
+	        _electron.ipcRenderer.on('config-file-ready', function (event, arg) {
+	            console.log(arg);
+	        });
 	        _api2.default.getRepositories(function (repos) {
 	            _this.repositories = repos.map(function (repo) {
 	                return repo.repository;
@@ -135,21 +141,17 @@
 	                _this.isLoading = false;
 	            });
 	        });
-	    },
-	    ready: function ready() {
-	        var _this2 = this;
-
 	        _electron.ipcRenderer.on('shortcut-command', function (event, arg) {
-	            _this2.toggleCommand();
-	            if (_this2.commandOpened) {
-	                _this2.$nextTick(function () {
-	                    _this2.$broadcast('focus-command');
+	            _this.toggleCommand();
+	            if (_this.commandOpened) {
+	                _this.$nextTick(function () {
+	                    _this.$broadcast('focus-command');
 	                });
 	            }
 	        });
 
 	        _electron.ipcRenderer.on('exit-command', function (event, arg) {
-	            _this2.toggleCommand();
+	            _this.toggleCommand();
 	        });
 	    },
 
@@ -163,18 +165,6 @@
 	    events: {
 	        'repos-search': function reposSearch(search) {
 	            this.searchTerm = search;
-	            /* if(search.length === 0) {
-	                 this.searchedRepositories = this.repositories
-	             }
-	             else {
-	                 const regex = new RegExp(search, 'ig');
-	                 const foundRepos = this.repositories.filter((repo) => {
-	                     return repo.name.match(regex)
-	                 })
-	                   if(foundRepos.length > 0) {
-	                     this.searchedRepositories = foundRepos
-	                 }
-	             }*/
 	        }
 	    }
 	});
@@ -15726,7 +15716,7 @@
 	// </style>
 	//
 	// <template>
-	//     <div class="ui segment">
+	//     <div>
 	//         <div class="ui active inverted dimmer">
 	//             <div class="ui massive text loader">Loading repositories and environments</div>
 	//         </div>
@@ -15752,7 +15742,7 @@
 /* 87 */
 /***/ function(module, exports) {
 
-	module.exports = "\n\n\n\n\n<div class=\"ui segment\">\n    <div class=\"ui active inverted dimmer\">\n        <div class=\"ui massive text loader\">Loading repositories and environments</div>\n    </div>\n    <p></p>\n    <p></p>\n    <p></p>\n</div>\n";
+	module.exports = "\n\n\n\n\n<div>\n    <div class=\"ui active inverted dimmer\">\n        <div class=\"ui massive text loader\">Loading repositories and environments</div>\n    </div>\n    <p></p>\n    <p></p>\n    <p></p>\n</div>\n";
 
 /***/ },
 /* 88 */

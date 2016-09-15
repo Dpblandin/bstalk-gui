@@ -18,6 +18,13 @@ new Vue({
     },
 
     created() {
+        ipcRenderer.send('vue-ready');
+    },
+
+    ready() {
+        ipcRenderer.on('config-file-ready', (event, arg) => {
+            console.log(arg)
+        })
         beanstalk.getRepositories((repos) => {
             this.repositories = repos.map((repo) => {
                 return repo.repository
@@ -35,9 +42,6 @@ new Vue({
                 this.isLoading = false
             })
         })
-    },
-
-    ready() {
         ipcRenderer.on('shortcut-command', (event, arg) => {
             this.toggleCommand()
             if(this.commandOpened) {
@@ -61,19 +65,6 @@ new Vue({
     events: {
         'repos-search'(search) {
             this.searchTerm = search
-           /* if(search.length === 0) {
-                this.searchedRepositories = this.repositories
-            }
-            else {
-                const regex = new RegExp(search, 'ig');
-                const foundRepos = this.repositories.filter((repo) => {
-                    return repo.name.match(regex)
-                })
-
-                if(foundRepos.length > 0) {
-                    this.searchedRepositories = foundRepos
-                }
-            }*/
         }
     }
 })
