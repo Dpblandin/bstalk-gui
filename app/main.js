@@ -45,8 +45,18 @@ new Vue({
             if(!this.incompleteConfigFile) {
                 this.isLoading = true
                 beanstalk.setConfig(this.config)
-                this.loadRepos()
-                this.initCommandListeners()
+                ipcRenderer.send('load-repos-cache');
+                ipcRenderer.on('repos-cache-loaded', (event, err, repos) => {
+                    const repositories = JSON.parse(repos)
+                    if(!repositories) {
+                        this.loadRepos()
+                    } else {
+                        this.repositories = repositories
+                        this.isLoading = false
+                    }
+
+                    this.initCommandListeners()
+                })
             }
         },
 
@@ -66,8 +76,13 @@ new Vue({
                 }
                 Promise.all(promises).then(() => {
                     this.isLoading = false
+                    this.sendReposLoadedEvent()
                 })
             })
+        },
+
+        sendReposLoadedEvent() {
+            ipcRenderer.send('repos-loaded', this.repositories)
         },
         
         initCommandListeners() {

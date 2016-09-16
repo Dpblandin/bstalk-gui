@@ -25,7 +25,9 @@ const template = [
 function init() {
     createWindow()
     setUpConfigFile()
-    listenForConfigChanges(),
+    listenForConfigChanges()
+    readRepositoriesCache()
+    cacheRepositories()
     setupGlobalShortcuts()
 }
 
@@ -49,13 +51,28 @@ function listenForConfigChanges() {
     })
 }
 
+function cacheRepositories() {
+    ipcMain.on('repos-loaded', (event, repos) => {
+        config.createReposFile(repos)
+    })
+}
+
+function readRepositoriesCache() {
+    ipcMain.on('load-repos-cache', (event) => {
+        config.loadReposFile((err, data) => {
+            event.sender.send('repos-cache-loaded', err, data)  
+        })
+        
+    })
+}
+
 function setupGlobalShortcuts() {
     globalShortcut.register('ctrl+P', () => {
-        win.webContents.send('shortcut-command', 0);
+        win.webContents.send('shortcut-command', 0)
     });
 
     globalShortcut.register('Esc', () => {
-        win.webContents.send('exit-command', 0);
+        win.webContents.send('exit-command', 0)
     });
 }
 

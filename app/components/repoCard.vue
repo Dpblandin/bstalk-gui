@@ -7,15 +7,17 @@
                 </div>
                 <div class="description">
                     <p>Url: {{ repository.repository_url_https }}</p>
-                    <p>Last updated: {{ repository.updated_at }}</p>
+                    <p>Last updated: {{ formatedUpdatedDate }}</p>
                 </div>
                 <div class="extra">
-                    <confirm-modal v-if="showModal" :on-confirm="pushToEnv(env)"></confirm-modal>
-                    <button @click="confirm" v-for="env in repository.environments" track-by="id"
-                       class="ui labeled icon {{ env.color_label }} button">
-                        <i class="upload icon"></i>
-                        {{ env.name }}
-                    </button>
+                    <span v-for="env in repository.environments" track-by="id">
+                        <confirm-modal v-if="showModal" :on-confirm="pushToEnv(env)"></confirm-modal>
+                        <button @click="confirm"
+                                class="ui labeled icon {{ env.color_label }} button">
+                            <i class="upload icon"></i>
+                            {{ env.name }}
+                        </button>
+                    </span>
                 </div>
             </div>
         </div>
@@ -40,25 +42,20 @@ import moment from 'moment'
           }
         },
 
-        created() {
-           
+        computed: {
+            formatedUpdatedDate() {
+                return moment(this.repository.updated_at).format('MMM Do YYYY')
+            }
         },
+
         methods: {
             confirm() {
                 this.showModal = true
             },
             pushToEnv(env) {
                this.showModal = false
-                alert('confirmed')
-              /*  const message = `Deploy on branch: ${env.name} ?`
-                const title   = `Confirm deployment on ${this.repository.name}`
-                const options = {
-                    confirmButtonText: 'Deploy',
-                    cancelButtonText: 'Cancel'
-                }
-                MessageBox.confirm(message, title, options).then(() => {
-                    //beanstalk.deploy(this.repository.repository.name, env.id, )
-                })*/
+                console.log(env)
+                //beanstalk.deployToEnv(this.repository.name, env.id)
             }
         }
     }

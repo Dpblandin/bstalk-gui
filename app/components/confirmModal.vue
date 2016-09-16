@@ -1,11 +1,11 @@
 <template>
     <div v-modal="isVisible" class="ui modal">
         <div class="header">
-            Confirm deployment for:
+            Confirm deployment for: {{ repository.name }}
         </div>
         <div class="content">
             <div class="description">
-                Deploy on: xxx ?
+                Deploy on:  {{ environment.name }} ?
             </div>
         </div>
         <div class="action">
@@ -31,7 +31,7 @@
             },
             confirmAction() {
                 this.isVisible = false
-                this.onConfirm()
+                //this.onConfirm()
             }
         },
 

@@ -12,6 +12,10 @@ const config = {
   configFile() {
     return path.resolve(this.configDir(), "config.json");
   },
+
+  reposFile() {
+    return path.resolve(this.configDir(), "repositories.json");
+  },
   configExists() {
     return fs.existsSync(this.configFile());
   },
@@ -46,6 +50,29 @@ const config = {
 
     fs.writeFileSync(file, JSON.stringify(template, null, 4));
 
+  },
+
+  createReposFile(repos) {
+    var dir = this.configDir();
+    var file = this.reposFile();
+
+    if(!fs.existsSync(dir)){
+      fs.mkdirSync(dir, 0o700);
+    }
+
+    fs.writeFileSync(file, JSON.stringify(repos, null, 4));
+  },
+  
+  loadReposFile(cb) {
+    var file = this.reposFile();
+    if(fs.existsSync(file)) {
+      fs.readFile(file, 'utf-8', (err, data) => {
+       cb(err, data)
+      })
+    }
+    else {
+      cb(null, false)
+    }
   },
   
   updateConfigFile(config, cb) {

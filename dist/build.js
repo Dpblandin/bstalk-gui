@@ -121,18 +121,30 @@
 
 	    methods: {
 	        init: function init() {
+	            var _this2 = this;
+
 	            if (!this.incompleteConfigFile) {
 	                this.isLoading = true;
 	                _api2.default.setConfig(this.config);
-	                this.loadRepos();
-	                this.initCommandListeners();
+	                _electron.ipcRenderer.send('load-repos-cache');
+	                _electron.ipcRenderer.on('repos-cache-loaded', function (event, err, repos) {
+	                    var repositories = JSON.parse(repos);
+	                    if (!repositories) {
+	                        _this2.loadRepos();
+	                    } else {
+	                        _this2.repositories = repositories;
+	                        _this2.isLoading = false;
+	                    }
+
+	                    _this2.initCommandListeners();
+	                });
 	            }
 	        },
 	        loadRepos: function loadRepos() {
-	            var _this2 = this;
+	            var _this3 = this;
 
 	            _api2.default.getRepositories(function (repos) {
-	                _this2.repositories = repos.map(function (repo) {
+	                _this3.repositories = repos.map(function (repo) {
 	                    return repo.repository;
 	                });
 	                var promises = [];
@@ -152,7 +164,7 @@
 	                        }));
 	                    };
 
-	                    for (var _iterator = (0, _getIterator3.default)(_this2.repositories), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	                    for (var _iterator = (0, _getIterator3.default)(_this3.repositories), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
 	                        _loop();
 	                    }
 	                } catch (err) {
@@ -171,24 +183,28 @@
 	                }
 
 	                _promise2.default.all(promises).then(function () {
-	                    _this2.isLoading = false;
+	                    _this3.isLoading = false;
+	                    _this3.sendReposLoadedEvent();
 	                });
 	            });
 	        },
+	        sendReposLoadedEvent: function sendReposLoadedEvent() {
+	            _electron.ipcRenderer.send('repos-loaded', this.repositories);
+	        },
 	        initCommandListeners: function initCommandListeners() {
-	            var _this3 = this;
+	            var _this4 = this;
 
 	            _electron.ipcRenderer.on('shortcut-command', function (event, arg) {
-	                _this3.toggleCommand();
-	                if (_this3.commandOpened) {
-	                    _this3.$nextTick(function () {
-	                        _this3.$broadcast('focus-command');
+	                _this4.toggleCommand();
+	                if (_this4.commandOpened) {
+	                    _this4.$nextTick(function () {
+	                        _this4.$broadcast('focus-command');
 	                    });
 	                }
 	            });
 
 	            _electron.ipcRenderer.on('exit-command', function (event, arg) {
-	                _this3.toggleCommand();
+	                _this4.toggleCommand();
 	            });
 	        },
 	        toggleCommand: function toggleCommand() {
@@ -12025,7 +12041,13 @@
 	            showModal: false
 	        };
 	    },
-	    created: function created() {},
+
+
+	    computed: {
+	        formatedUpdatedDate: function formatedUpdatedDate() {
+	            return (0, _moment2.default)(this.repository.updated_at).format('MMM Do YYYY');
+	        }
+	    },
 
 	    methods: {
 	        confirm: function confirm() {
@@ -12033,16 +12055,8 @@
 	        },
 	        pushToEnv: function pushToEnv(env) {
 	            this.showModal = false;
-	            alert('confirmed');
-	            /*  const message = `Deploy on branch: ${env.name} ?`
-	              const title   = `Confirm deployment on ${this.repository.name}`
-	              const options = {
-	                  confirmButtonText: 'Deploy',
-	                  cancelButtonText: 'Cancel'
-	              }
-	              MessageBox.confirm(message, title, options).then(() => {
-	                  //beanstalk.deploy(this.repository.repository.name, env.id, )
-	              })*/
+	            console.log(env);
+	            //beanstalk.deployToEnv(this.repository.name, env.id)
 	        }
 	    }
 	};
@@ -12056,15 +12070,17 @@
 	//                 </div>
 	//                 <div class="description">
 	//                     <p>Url: {{ repository.repository_url_https }}</p>
-	//                     <p>Last updated: {{ repository.updated_at }}</p>
+	//                     <p>Last updated: {{ formatedUpdatedDate }}</p>
 	//                 </div>
 	//                 <div class="extra">
-	//                     <confirm-modal v-if="showModal" :on-confirm="pushToEnv(env)"></confirm-modal>
-	//                     <button @click="confirm" v-for="env in repository.environments" track-by="id"
-	//                        class="ui labeled icon {{ env.color_label }} button">
-	//                         <i class="upload icon"></i>
-	//                         {{ env.name }}
-	//                     </button>
+	//                     <span v-for="env in repository.environments" track-by="id">
+	//                         <confirm-modal v-if="showModal" :on-confirm="pushToEnv(env)"></confirm-modal>
+	//                         <button @click="confirm"
+	//                                 class="ui labeled icon {{ env.color_label }} button">
+	//                             <i class="upload icon"></i>
+	//                             {{ env.name }}
+	//                         </button>
+	//                     </span>
 	//                 </div>
 	//             </div>
 	//         </div>
@@ -12145,6 +12161,52 @@
 	      cb(res.body);
 	    });
 	  },
+	  checkReleaseState: function checkReleaseState(repoName, releaseId, delay, cb) {
+	    var _this = this;
+
+	    setTimeout(function () {
+
+	      beanstalk.release(repoName, releaseId, function (release) {
+	        switch (release.state) {
+
+	          case 'waiting':
+	            logger.spin('waiting');
+	            _this.checkReleaseState(repoName, releaseId, 2000, cb);
+	            break;
+
+	          case 'pending':
+	            logger.spin('pending');
+	            _this.checkReleaseState(repoName, releaseId, 2000, cb);
+	            break;
+
+	          case 'skipped':
+	            cb.call();
+	            break;
+
+	          case 'failed':
+	            cb.call();
+	            break;
+
+	          case 'success':
+	            cb.call();
+	            break;
+
+	          default:
+	            logger.stopSpinner();
+	            logger.warn('Unknown state  : ' + release.state);
+	            cb.call();
+	            break;
+	        }
+	      });
+	    }, delay || 0);
+	  },
+	  deployToEnv: function deployToEnv(repoName, envId, cb) {
+	    var _this2 = this;
+
+	    this.deploy(repoName, envId, null, comment, function (release) {
+	      _this2.checkReleaseState(repoName, release.id, 0, cb);
+	    });
+	  },
 	  deploy: function deploy(repoName, serverEnvironmentId, revision, comment, cb) {
 	    var release = {
 	      revision: revision
@@ -12155,11 +12217,7 @@
 	    }
 
 	    this.api(repoName + '/releases.json?environment_id=' + serverEnvironmentId, 'POST').send({ release: release }).end(function (err, res) {
-	      if (err) {
-	        reportError(err);
-	      }
-
-	      cb(res.body.release);
+	      cb(err, res.body.release);
 	    });
 	  }
 	};
@@ -15835,11 +15893,11 @@
 	// <template>
 	//     <div v-modal="isVisible" class="ui modal">
 	//         <div class="header">
-	//             Confirm deployment for:
+	//             Confirm deployment for: {{ repository.name }}
 	//         </div>
 	//         <div class="content">
 	//             <div class="description">
-	//                 Deploy on: xxx ?
+	//                 Deploy on:  {{ environment.name }} ?
 	//             </div>
 	//         </div>
 	//         <div class="action">
@@ -15866,7 +15924,7 @@
 	        },
 	        confirmAction: function confirmAction() {
 	            this.isVisible = false;
-	            this.onConfirm();
+	            //this.onConfirm()
 	        }
 	    },
 
@@ -15891,7 +15949,7 @@
 /* 90 */
 /***/ function(module, exports) {
 
-	module.exports = "\n<div v-modal=\"isVisible\" class=\"ui modal\">\n    <div class=\"header\">\n        Confirm deployment for:\n    </div>\n    <div class=\"content\">\n        <div class=\"description\">\n            Deploy on: xxx ?\n        </div>\n    </div>\n    <div class=\"action\">\n        <div @click=\"cancelAction\" class=\"ui red button\">Cancel</div>\n        <div @click=\"confirmAction\" class=\"ui primary button\">Deploy</div>\n    </div>\n</div>\n";
+	module.exports = "\n<div v-modal=\"isVisible\" class=\"ui modal\">\n    <div class=\"header\">\n        Confirm deployment for: {{ repository.name }}\n    </div>\n    <div class=\"content\">\n        <div class=\"description\">\n            Deploy on:  {{ environment.name }} ?\n        </div>\n    </div>\n    <div class=\"action\">\n        <div @click=\"cancelAction\" class=\"ui red button\">Cancel</div>\n        <div @click=\"confirmAction\" class=\"ui primary button\">Deploy</div>\n    </div>\n</div>\n";
 
 /***/ },
 /* 91 */
@@ -20159,7 +20217,7 @@
 /* 94 */
 /***/ function(module, exports) {
 
-	module.exports = "\n<div class=\"ui items\">\n    <div class=\"item\">\n        <div class=\"content\">\n            <div class=\"header\">\n                <h2 class=\"mdl-card__title-text\">{{ repository.name }}</h2>\n            </div>\n            <div class=\"description\">\n                <p>Url: {{ repository.repository_url_https }}</p>\n                <p>Last updated: {{ repository.updated_at }}</p>\n            </div>\n            <div class=\"extra\">\n                <confirm-modal v-if=\"showModal\" :on-confirm=\"pushToEnv(env)\"></confirm-modal>\n                <button @click=\"confirm\" v-for=\"env in repository.environments\" track-by=\"id\"\n                   class=\"ui labeled icon {{ env.color_label }} button\">\n                    <i class=\"upload icon\"></i>\n                    {{ env.name }}\n                </button>\n            </div>\n        </div>\n    </div>\n</div>\n";
+	module.exports = "\n<div class=\"ui items\">\n    <div class=\"item\">\n        <div class=\"content\">\n            <div class=\"header\">\n                <h2 class=\"mdl-card__title-text\">{{ repository.name }}</h2>\n            </div>\n            <div class=\"description\">\n                <p>Url: {{ repository.repository_url_https }}</p>\n                <p>Last updated: {{ formatedUpdatedDate }}</p>\n            </div>\n            <div class=\"extra\">\n                <span v-for=\"env in repository.environments\" track-by=\"id\">\n                    <confirm-modal v-if=\"showModal\" :on-confirm=\"pushToEnv(env)\"></confirm-modal>\n                    <button @click=\"confirm\"\n                            class=\"ui labeled icon {{ env.color_label }} button\">\n                        <i class=\"upload icon\"></i>\n                        {{ env.name }}\n                    </button>\n                </span>\n            </div>\n        </div>\n    </div>\n</div>\n";
 
 /***/ },
 /* 95 */

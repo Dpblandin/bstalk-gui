@@ -89,7 +89,53 @@ const beanstalk = {
         });
     },
 
-    deploy(repoName, serverEnvironmentId, revision, comment, cb) {
+  checkReleaseState(repoName, releaseId, delay, cb) {
+
+  setTimeout(() => {
+
+    beanstalk.release(repoName, releaseId, (release) => {
+      switch (release.state) {
+
+        case 'waiting':
+          logger.spin('waiting');
+          this.checkReleaseState(repoName, releaseId, 2000, cb);
+          break;
+
+        case 'pending':
+          logger.spin('pending');
+          this.checkReleaseState(repoName, releaseId, 2000, cb);
+          break;
+
+        case 'skipped':
+          cb.call();
+          break;
+
+        case 'failed':
+          cb.call();
+          break;
+
+        case 'success':
+          cb.call();
+          break;
+
+        default:
+          logger.stopSpinner();
+          logger.warn('Unknown state  : ' + release.state);
+          cb.call();
+          break;
+      }
+    });
+
+  }, delay || 0);
+},
+
+  deployToEnv(repoName, envId, cb) {
+      this.deploy(repoName, envId, null, comment, (release) =>{
+        this.checkReleaseState(repoName, release.id, 0, cb);
+      });
+},
+
+deploy(repoName, serverEnvironmentId, revision, comment, cb) {
         var release = {
             revision: revision
         };
@@ -101,11 +147,7 @@ const beanstalk = {
         this.api(repoName + '/releases.json?environment_id='+serverEnvironmentId, 'POST')
             .send({ release: release })
             .end(function(err, res){
-                if(err){
-                    reportError(err);
-                }
-
-                cb(res.body.release);
+                cb(err, res.body.release);
             });
     }
 }
