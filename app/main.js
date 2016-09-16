@@ -2,61 +2,88 @@ import Vue from 'vue';
 import RepoCard from './components/repoCard.vue'
 import Loader from './components/loader.vue'
 import Command from './components/command.vue'
+import Config from './components/config.vue'
 import beanstalk from './lib/api'
 import {ipcRenderer} from 'electron'
 
 new Vue({
-    components: {RepoCard, Loader, Command},
+    components: {RepoCard, Loader, Command, Config},
     el: '#app',
     data() {
         return {
             repositories: [],
-            isLoading: true,
+            isLoading: false,
             commandOpened: false,
-            searchTerm: null
+            searchTerm: null,
+            config:  {
+                account: '',
+                username: '',
+                token: ''
+            }
         }
     },
-
+        
+    computed: {
+      incompleteConfigFile() {
+          return this.config.account === '' || this.config.username === '' || this.config.token === ''
+      }  
+    },
     created() {
-        ipcRenderer.send('vue-ready');
+        ipcRenderer.send('vue-ready')
     },
 
     ready() {
         ipcRenderer.on('config-file-ready', (event, arg) => {
-            console.log(arg)
-        })
-        beanstalk.getRepositories((repos) => {
-            this.repositories = repos.map((repo) => {
-                return repo.repository
-            })
-            let promises = [];
-            for(let repo of this.repositories) {
-                promises.push(new Promise((resolve, reject) => {
-                    beanstalk.getEnvironments(repo.name, (envs) => {
-                        repo.environments = envs
-                        resolve(repo)
-                    })
-                }))
-            }
-            Promise.all(promises).then(() => {
-                this.isLoading = false
-            })
-        })
-        ipcRenderer.on('shortcut-command', (event, arg) => {
-            this.toggleCommand()
-            if(this.commandOpened) {
-                this.$nextTick(() => {
-                    this.$broadcast('focus-command');
-                })
-            }
-        })
-
-        ipcRenderer.on('exit-command', (event, arg) => {
-            this.toggleCommand()
+            const conf = JSON.parse(arg)
+            this.config = conf
+            this.init()
         })
     },
 
     methods: {
+        init() {
+            if(!this.incompleteConfigFile) {
+                this.isLoading = true
+                beanstalk.setConfig(this.config)
+                this.loadRepos()
+                this.initCommandListeners()
+            }
+        },
+
+        loadRepos() {
+            beanstalk.getRepositories((repos) => {
+                this.repositories = repos.map((repo) => {
+                    return repo.repository
+                })
+                let promises = [];
+                for(let repo of this.repositories) {
+                    promises.push(new Promise((resolve, reject) => {
+                        beanstalk.getEnvironments(repo.name, (envs) => {
+                            repo.environments = envs
+                            resolve(repo)
+                        })
+                    }))
+                }
+                Promise.all(promises).then(() => {
+                    this.isLoading = false
+                })
+            })
+        },
+        
+        initCommandListeners() {
+            ipcRenderer.on('shortcut-command', (event, arg) => {
+                this.toggleCommand()
+                if(this.commandOpened) {
+                    this.$nextTick(() => {
+                        this.$broadcast('focus-command');
+                    })
+                }
+            })
+
+            ipcRenderer.on('exit-command', (event, arg) => {
+                this.toggleCommand()
+            })
+        },
         toggleCommand() {
             this.commandOpened = !this.commandOpened
         }
@@ -65,6 +92,9 @@ new Vue({
     events: {
         'repos-search'(search) {
             this.searchTerm = search
+        },
+        'config-file-changed'() {
+            this.init();
         }
     }
 })

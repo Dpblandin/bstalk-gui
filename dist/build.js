@@ -70,24 +70,40 @@
 
 	var _command2 = _interopRequireDefault(_command);
 
+	var _config = __webpack_require__(96);
+
+	var _config2 = _interopRequireDefault(_config);
+
 	var _api = __webpack_require__(73);
 
 	var _api2 = _interopRequireDefault(_api);
 
-	var _electron = __webpack_require__(96);
+	var _electron = __webpack_require__(98);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	new _vue2.default({
-	    components: { RepoCard: _repoCard2.default, Loader: _loader2.default, Command: _command2.default },
+	    components: { RepoCard: _repoCard2.default, Loader: _loader2.default, Command: _command2.default, Config: _config2.default },
 	    el: '#app',
 	    data: function data() {
 	        return {
 	            repositories: [],
-	            isLoading: true,
+	            isLoading: false,
 	            commandOpened: false,
-	            searchTerm: null
+	            searchTerm: null,
+	            config: {
+	                account: '',
+	                username: '',
+	                token: ''
+	            }
 	        };
+	    },
+
+
+	    computed: {
+	        incompleteConfigFile: function incompleteConfigFile() {
+	            return this.config.account === '' || this.config.username === '' || this.config.token === '';
+	        }
 	    },
 	    created: function created() {
 	        _electron.ipcRenderer.send('vue-ready');
@@ -96,67 +112,86 @@
 	        var _this = this;
 
 	        _electron.ipcRenderer.on('config-file-ready', function (event, arg) {
-	            console.log(arg);
-	        });
-	        _api2.default.getRepositories(function (repos) {
-	            _this.repositories = repos.map(function (repo) {
-	                return repo.repository;
-	            });
-	            var promises = [];
-	            var _iteratorNormalCompletion = true;
-	            var _didIteratorError = false;
-	            var _iteratorError = undefined;
-
-	            try {
-	                var _loop = function _loop() {
-	                    var repo = _step.value;
-
-	                    promises.push(new _promise2.default(function (resolve, reject) {
-	                        _api2.default.getEnvironments(repo.name, function (envs) {
-	                            repo.environments = envs;
-	                            resolve(repo);
-	                        });
-	                    }));
-	                };
-
-	                for (var _iterator = (0, _getIterator3.default)(_this.repositories), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	                    _loop();
-	                }
-	            } catch (err) {
-	                _didIteratorError = true;
-	                _iteratorError = err;
-	            } finally {
-	                try {
-	                    if (!_iteratorNormalCompletion && _iterator.return) {
-	                        _iterator.return();
-	                    }
-	                } finally {
-	                    if (_didIteratorError) {
-	                        throw _iteratorError;
-	                    }
-	                }
-	            }
-
-	            _promise2.default.all(promises).then(function () {
-	                _this.isLoading = false;
-	            });
-	        });
-	        _electron.ipcRenderer.on('shortcut-command', function (event, arg) {
-	            _this.toggleCommand();
-	            if (_this.commandOpened) {
-	                _this.$nextTick(function () {
-	                    _this.$broadcast('focus-command');
-	                });
-	            }
-	        });
-
-	        _electron.ipcRenderer.on('exit-command', function (event, arg) {
-	            _this.toggleCommand();
+	            var conf = JSON.parse(arg);
+	            console.log(conf);
+	            _this.config = conf;
+	            _this.init();
 	        });
 	    },
 
 
 	    methods: {
+	        init: function init() {
+	            if (!this.incompleteConfigFile) {
+	                this.isLoading = true;
+	                _api2.default.setConfig(this.config);
+	                this.loadRepos();
+	                this.initCommandListeners();
+	            }
+	        },
+	        loadRepos: function loadRepos() {
+	            var _this2 = this;
+
+	            _api2.default.getRepositories(function (repos) {
+	                _this2.repositories = repos.map(function (repo) {
+	                    return repo.repository;
+	                });
+	                var promises = [];
+	                var _iteratorNormalCompletion = true;
+	                var _didIteratorError = false;
+	                var _iteratorError = undefined;
+
+	                try {
+	                    var _loop = function _loop() {
+	                        var repo = _step.value;
+
+	                        promises.push(new _promise2.default(function (resolve, reject) {
+	                            _api2.default.getEnvironments(repo.name, function (envs) {
+	                                repo.environments = envs;
+	                                resolve(repo);
+	                            });
+	                        }));
+	                    };
+
+	                    for (var _iterator = (0, _getIterator3.default)(_this2.repositories), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	                        _loop();
+	                    }
+	                } catch (err) {
+	                    _didIteratorError = true;
+	                    _iteratorError = err;
+	                } finally {
+	                    try {
+	                        if (!_iteratorNormalCompletion && _iterator.return) {
+	                            _iterator.return();
+	                        }
+	                    } finally {
+	                        if (_didIteratorError) {
+	                            throw _iteratorError;
+	                        }
+	                    }
+	                }
+
+	                _promise2.default.all(promises).then(function () {
+	                    _this2.isLoading = false;
+	                });
+	            });
+	        },
+	        initCommandListeners: function initCommandListeners() {
+	            var _this3 = this;
+
+	            _electron.ipcRenderer.on('shortcut-command', function (event, arg) {
+	                _this3.toggleCommand();
+	                if (_this3.commandOpened) {
+	                    _this3.$nextTick(function () {
+	                        _this3.$broadcast('focus-command');
+	                    });
+	                }
+	            });
+
+	            _electron.ipcRenderer.on('exit-command', function (event, arg) {
+	                _this3.toggleCommand();
+	            });
+	        },
 	        toggleCommand: function toggleCommand() {
 	            this.commandOpened = !this.commandOpened;
 	        }
@@ -165,6 +200,9 @@
 	    events: {
 	        'repos-search': function reposSearch(search) {
 	            this.searchTerm = search;
+	        },
+	        'config-file-changed': function configFileChanged() {
+	            this.init();
 	        }
 	    }
 	});
@@ -12051,12 +12089,22 @@
 
 
 	var beanstalk = {
+
+	  config: {
+	    account: '',
+	    username: '',
+	    token: ''
+	  },
+
+	  setConfig: function setConfig(config) {
+	    this.config = config;
+	  },
 	  api: function api(endpoint, method) {
 	    var vmethod = typeof method === 'undefined' ? 'GET' : 'POST';
-	    var url = 'https://' + _config2.default.BEANSTALK_ACCOUNT + '.beanstalkapp.com/api/' + endpoint + '.json';
+	    var url = 'https://' + this.config.account + '.beanstalkapp.com/api/' + endpoint + '.json';
 	    var req = vmethod === 'GET' ? request.get(url) : request.post(url);
 
-	    return req.auth(_config2.default.BEANSTALK_USER, _config2.default.BEANSTALK_TOKEN).set('Content-Type', 'application/json');
+	    return req.auth(this.config.username, this.config.token).set('Content-Type', 'application/json');
 	  },
 	  reportError: function reportError(err) {
 	    if (err.response.error.text) {
@@ -12232,12 +12280,12 @@
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+	  value: true
 	});
 	exports.default = {
-	    BEANSTALK_TOKEN: 'be4f5db2d279cd49355489730864b5fdb856211d93af9ce030',
-	    BEANSTALK_USER: 'dpblandin',
-	    BEANSTALK_ACCOUNT: 'tequilarapido'
+	  BEANSTALK_ACCOUNT: 'tequilarapido',
+	  BEANSTALK_USER: 'dpblandin',
+	  BEANSTALK_TOKEN: 'be4f5db2d279cd49355489730864b5fdb856211d93af9ce030'
 	};
 
 /***/ },
@@ -15928,9 +15976,91 @@
 
 /***/ },
 /* 96 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_script__, __vue_template__
+	__vue_script__ = __webpack_require__(97)
+	if (__vue_script__ &&
+	    __vue_script__.__esModule &&
+	    Object.keys(__vue_script__).length > 1) {
+	  console.warn("[vue-loader] app\\components\\config.vue: named exports in *.vue files are ignored.")}
+	__vue_template__ = __webpack_require__(99)
+	module.exports = __vue_script__ || {}
+	if (module.exports.__esModule) module.exports = module.exports.default
+	if (__vue_template__) {
+	(typeof module.exports === "function" ? (module.exports.options || (module.exports.options = {})) : module.exports).template = __vue_template__
+	}
+	if (false) {(function () {  module.hot.accept()
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), false)
+	  if (!hotAPI.compatible) return
+	  var id = "./config.vue"
+	  if (!module.hot.data) {
+	    hotAPI.createRecord(id, module.exports)
+	  } else {
+	    hotAPI.update(id, module.exports, __vue_template__)
+	  }
+	})()}
+
+/***/ },
+/* 97 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _electron = __webpack_require__(98);
+
+	exports.default = {
+	    props: ['account', 'username', 'token'],
+
+	    methods: {
+	        saveConfig: function saveConfig() {
+	            var config = {
+	                account: this.account,
+	                username: this.username,
+	                token: this.token
+	            };
+	            _electron.ipcRenderer.send('config-file-changed', config);
+	            this.$dispatch('config-file-changed');
+	        }
+	    }
+	};
+	// </script>
+	// <template>
+	//     <form class="ui form">
+	//         <div class="field">
+	//             <label>Account</label>
+	//             <input v-model="account" type="text" name="account" placeholder="Beanstalk account">
+	//         </div>
+	//         <div class="field">
+	//             <label>Username</label>
+	//             <input v-model="username" type="text" name="username" placeholder="Beanstalk username">
+	//         </div>
+	//         <div class="field">
+	//             <label>Token</label>
+	//             <input v-model="token" type="text" name="token" placeholder="Beanstalk token">
+	//         </div>
+	//         <button @click="saveConfig" class="ui button" type="submit">Save and close</button>
+	//     </form>
+	// </template>
+	//
+	// <script>
+
+/***/ },
+/* 98 */
 /***/ function(module, exports) {
 
 	module.exports = require("electron");
+
+/***/ },
+/* 99 */
+/***/ function(module, exports) {
+
+	module.exports = "\n<form class=\"ui form\">\n    <div class=\"field\">\n        <label>Account</label>\n        <input v-model=\"account\" type=\"text\" name=\"account\" placeholder=\"Beanstalk account\">\n    </div>\n    <div class=\"field\">\n        <label>Username</label>\n        <input v-model=\"username\" type=\"text\" name=\"username\" placeholder=\"Beanstalk username\">\n    </div>\n    <div class=\"field\">\n        <label>Token</label>\n        <input v-model=\"token\" type=\"text\" name=\"token\" placeholder=\"Beanstalk token\">\n    </div>\n    <button @click=\"saveConfig\" class=\"ui button\" type=\"submit\">Save and close</button>\n</form>\n";
 
 /***/ }
 /******/ ]);

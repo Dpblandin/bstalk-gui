@@ -25,21 +25,27 @@ const template = [
 function init() {
     createWindow()
     setUpConfigFile()
+    listenForConfigChanges(),
     setupGlobalShortcuts()
 }
 
 function setUpConfigFile() {
     ipcMain.on('vue-ready', (event) => {
-        let configFile
         if(!config.configExists()) {
            config.createConfigFile()
         }
-
-        configFile = config.configFile()
-        fs.readFile(configFile, (err, data) => {
-            console.log(err, data)
+        fs.readFile(config.configFile(), 'utf-8', (err, data) => {
+            event.sender.send('config-file-ready', data)
         })
-        event.sender.send('config-file-ready', configFile)
+
+    })
+}
+
+function listenForConfigChanges() {
+    ipcMain.on('config-file-changed', (event, arg) =>  {
+        config.updateConfigFile(arg, () => {
+            event.sender.send('config-file-saved')
+        })
     })
 }
 

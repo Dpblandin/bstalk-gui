@@ -47,6 +47,16 @@ const config = {
     fs.writeFileSync(file, JSON.stringify(template, null, 4));
 
   },
+  
+  updateConfigFile(config, cb) {
+    var dir = this.configDir();
+    var file = this.configFile(dir);
+
+    fs.writeFile(file, JSON.stringify(config, null, 4), () => {
+      cb()
+    })
+  },
+  
   get() {
     var dir = this.configDir();
     var file = this.configFile(dir);

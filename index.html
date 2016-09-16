@@ -12,7 +12,12 @@
     <main class="main">
         <command v-if="commandOpened"></command>
         <loader v-if="isLoading"></loader>
-        <div v-if="!isLoading" class="ui top segment">
+        <config v-if="incompleteConfigFile"
+                :account="config.account"
+                :username="config.username"
+                :token="config.token">
+        </config>
+        <div v-if="!isLoading && !incompleteConfigFile" class="ui top segment">
             <div class="ui divided items">
                 <repo-card v-for="repository in repositories | filterBy searchTerm in 'name'"
                            track-by="id"

@@ -24,13 +24,24 @@ const _ = require('underscore');
 import config from '../config'
 
 const beanstalk = {
+
+    config: {
+      account: '',
+      username: '',
+      token: ''
+    },
+
+    setConfig(config) {
+      this.config = config
+    },
+
     api(endpoint, method) {
         const vmethod = typeof method === 'undefined' ? 'GET' : 'POST';
-        const url = 'https://' + config.BEANSTALK_ACCOUNT + '.beanstalkapp.com/api/' + endpoint + '.json';
+        const url = 'https://' + this.config.account + '.beanstalkapp.com/api/' + endpoint + '.json';
         const req = vmethod === 'GET' ? request.get(url) : request.post(url);
 
         return req
-            .auth(config.BEANSTALK_USER, config.BEANSTALK_TOKEN)
+            .auth(this.config.username, this.config.token)
             .set('Content-Type', 'application/json');
     },
 
