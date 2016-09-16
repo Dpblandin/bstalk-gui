@@ -27,6 +27,7 @@ import beanstalk from '../lib/api'
 import Loader from './loader.vue'
 import ConfirmModal from './confirmModal.vue'
 import MessageBox from 'vue-msgbox'
+import moment from 'moment'
 
     export default {
         components: {Loader, ConfirmModal},
@@ -40,7 +41,7 @@ import MessageBox from 'vue-msgbox'
         },
 
         created() {
-
+           
         },
         methods: {
             confirm() {
