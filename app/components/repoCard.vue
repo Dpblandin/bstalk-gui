@@ -1,19 +1,17 @@
 <template>
-    <div class="ui items">
-        <div class="item">
-            <div class="content">
-                <div class="header">
-                    <h2>{{ repository.name }}</h2>
-                </div>
-                <div class="description">
-                    <p>Url: {{ repository.repository_url_https }}</p>
-                    <p>Last updated: {{ formatedUpdatedDate }}</p>
-                </div>
-                <div class="extra">
+    <div class="item">
+        <div class="content">
+            <div class="header">
+                <h2>{{ repository.name }}</h2>
+            </div>
+            <div class="description">
+                <p>Url: {{ repository.repository_url_https }}</p>
+                <p>Last updated: {{ formatedUpdatedDate }}</p>
+            </div>
+            <div class="extra">
                     <span v-for="env in repository.environments" track-by="id">
-                       <environment :repository="repository" :environment="env"></environment>
+                       <environment :repository.sync="repository" :environment="env"></environment>
                     </span>
-                </div>
             </div>
         </div>
     </div>

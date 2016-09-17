@@ -18,6 +18,7 @@
 <script type="es6">
     import beanstalk from '../lib/api'
     import ConfirmModal from './confirmModal.vue'
+    import moment from 'moment'
 
     export default {
         components: { ConfirmModal },
@@ -66,7 +67,13 @@
             },
             pushToEnv() {
                 beanstalk.deploy(this.repository.id, this.environment.id, null, false, (err, release) => {
+                    if(err) {
+                        //@todo alert err here
+                        return false;
+                    }
                     this.release = release
+                    this.repository.updated_at = moment().format()
+                    this.$dispatch('repo-deployed')
                 })
             }
         }

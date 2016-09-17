@@ -56,7 +56,7 @@ function listenForConfigChanges() {
 }
 
 function cacheRepositories() {
-    ipcMain.on('repos-loaded', (event, repos) => {
+    ipcMain.on('save-repos-cache', (event, repos) => {
         config.createReposFile(repos)
     })
 }

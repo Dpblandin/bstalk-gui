@@ -74,6 +74,10 @@
 
 	var _config2 = _interopRequireDefault(_config);
 
+	var _stickyRefresh = __webpack_require__(105);
+
+	var _stickyRefresh2 = _interopRequireDefault(_stickyRefresh);
+
 	var _api = __webpack_require__(75);
 
 	var _api2 = _interopRequireDefault(_api);
@@ -83,7 +87,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	new _vue2.default({
-	    components: { RepoCard: _repoCard2.default, Loader: _loader2.default, Command: _command2.default, Config: _config2.default },
+	    components: { RepoCard: _repoCard2.default, Loader: _loader2.default, Command: _command2.default, StickyRefresh: _stickyRefresh2.default, Config: _config2.default },
 	    el: '#app',
 	    data: function data() {
 	        return {
@@ -191,7 +195,7 @@
 	            });
 	        },
 	        sendReposLoadedEvent: function sendReposLoadedEvent() {
-	            _electron.ipcRenderer.send('repos-loaded', this.repositories);
+	            _electron.ipcRenderer.send('save-repos-cache', this.repositories);
 	        },
 	        initCommandListeners: function initCommandListeners() {
 	            var _this4 = this;
@@ -225,6 +229,9 @@
 	        },
 	        'config-file-changed': function configFileChanged() {
 	            this.init();
+	        },
+	        'repo-deployed': function repoDeployed() {
+	            this.sendReposLoadedEvent();
 	        }
 	    }
 	});
@@ -12020,28 +12027,26 @@
 
 	var _environment2 = _interopRequireDefault(_environment);
 
-	var _moment = __webpack_require__(90);
+	var _moment = __webpack_require__(89);
 
 	var _moment2 = _interopRequireDefault(_moment);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	// <template>
-	//     <div class="ui items">
-	//         <div class="item">
-	//             <div class="content">
-	//                 <div class="header">
-	//                     <h2>{{ repository.name }}</h2>
-	//                 </div>
-	//                 <div class="description">
-	//                     <p>Url: {{ repository.repository_url_https }}</p>
-	//                     <p>Last updated: {{ formatedUpdatedDate }}</p>
-	//                 </div>
-	//                 <div class="extra">
+	//     <div class="item">
+	//         <div class="content">
+	//             <div class="header">
+	//                 <h2>{{ repository.name }}</h2>
+	//             </div>
+	//             <div class="description">
+	//                 <p>Url: {{ repository.repository_url_https }}</p>
+	//                 <p>Last updated: {{ formatedUpdatedDate }}</p>
+	//             </div>
+	//             <div class="extra">
 	//                     <span v-for="env in repository.environments" track-by="id">
-	//                        <environment :repository="repository" :environment="env"></environment>
+	//                        <environment :repository.sync="repository" :environment="env"></environment>
 	//                     </span>
-	//                 </div>
 	//             </div>
 	//         </div>
 	//     </div>
@@ -12071,7 +12076,7 @@
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] app\\components\\environment.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(89)
+	__vue_template__ = __webpack_require__(91)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -12107,26 +12112,12 @@
 
 	var _confirmModal2 = _interopRequireDefault(_confirmModal);
 
+	var _moment = __webpack_require__(89);
+
+	var _moment2 = _interopRequireDefault(_moment);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	// <template>
-	//     <confirm-modal :is-visible.sync="showModal"
-	//                    :environment="environment"
-	//                    :repository="repository"
-	//                    :on-confirm="pushToEnv"
-	//                    :release-state="releaseState"
-	//                    :release.sync="release"
-	//     >
-	//
-	//     </confirm-modal>
-	//     <button @click="displayModal"
-	//             class="ui labeled icon {{ environment.color_label }} button">
-	//         <i class="upload icon"></i>
-	//         {{ environment.name }}
-	//     </button>
-	// </template>
-	//
-	// <script type="es6">
 	exports.default = {
 	    components: { ConfirmModal: _confirmModal2.default },
 	    props: ['repository', 'environment'],
@@ -12179,12 +12170,36 @@
 	            var _this2 = this;
 
 	            _api2.default.deploy(this.repository.id, this.environment.id, null, false, function (err, release) {
+	                if (err) {
+	                    //@todo alert err here
+	                    return false;
+	                }
 	                _this2.release = release;
+	                _this2.repository.updated_at = (0, _moment2.default)().format();
+	                _this2.$dispatch('repo-deployed');
 	            });
 	        }
 	    }
 	};
 	// </script>
+	// <template>
+	//     <confirm-modal :is-visible.sync="showModal"
+	//                    :environment="environment"
+	//                    :repository="repository"
+	//                    :on-confirm="pushToEnv"
+	//                    :release-state="releaseState"
+	//                    :release.sync="release"
+	//     >
+	//
+	//     </confirm-modal>
+	//     <button @click="displayModal"
+	//             class="ui labeled icon {{ environment.color_label }} button">
+	//         <i class="upload icon"></i>
+	//         {{ environment.name }}
+	//     </button>
+	// </template>
+	//
+	// <script type="es6">
 
 /***/ },
 /* 75 */
@@ -16000,12 +16015,6 @@
 
 /***/ },
 /* 89 */
-/***/ function(module, exports) {
-
-	module.exports = "\n<confirm-modal :is-visible.sync=\"showModal\"\n               :environment=\"environment\"\n               :repository=\"repository\"\n               :on-confirm=\"pushToEnv\"\n               :release-state=\"releaseState\"\n               :release.sync=\"release\"\n>\n\n</confirm-modal>\n<button @click=\"displayModal\"\n        class=\"ui labeled icon {{ environment.color_label }} button\">\n    <i class=\"upload icon\"></i>\n    {{ environment.name }}\n</button>\n";
-
-/***/ },
-/* 90 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {//! moment.js
@@ -20242,10 +20251,10 @@
 	    return _moment;
 
 	}));
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(91)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(90)(module)))
 
 /***/ },
-/* 91 */
+/* 90 */
 /***/ function(module, exports) {
 
 	module.exports = function(module) {
@@ -20261,10 +20270,16 @@
 
 
 /***/ },
+/* 91 */
+/***/ function(module, exports) {
+
+	module.exports = "\n<confirm-modal :is-visible.sync=\"showModal\"\n               :environment=\"environment\"\n               :repository=\"repository\"\n               :on-confirm=\"pushToEnv\"\n               :release-state=\"releaseState\"\n               :release.sync=\"release\"\n>\n\n</confirm-modal>\n<button @click=\"displayModal\"\n        class=\"ui labeled icon {{ environment.color_label }} button\">\n    <i class=\"upload icon\"></i>\n    {{ environment.name }}\n</button>\n";
+
+/***/ },
 /* 92 */
 /***/ function(module, exports) {
 
-	module.exports = "\n<div class=\"ui items\">\n    <div class=\"item\">\n        <div class=\"content\">\n            <div class=\"header\">\n                <h2>{{ repository.name }}</h2>\n            </div>\n            <div class=\"description\">\n                <p>Url: {{ repository.repository_url_https }}</p>\n                <p>Last updated: {{ formatedUpdatedDate }}</p>\n            </div>\n            <div class=\"extra\">\n                <span v-for=\"env in repository.environments\" track-by=\"id\">\n                   <environment :repository=\"repository\" :environment=\"env\"></environment>\n                </span>\n            </div>\n        </div>\n    </div>\n</div>\n";
+	module.exports = "\n<div class=\"item\">\n    <div class=\"content\">\n        <div class=\"header\">\n            <h2>{{ repository.name }}</h2>\n        </div>\n        <div class=\"description\">\n            <p>Url: {{ repository.repository_url_https }}</p>\n            <p>Last updated: {{ formatedUpdatedDate }}</p>\n        </div>\n        <div class=\"extra\">\n                <span v-for=\"env in repository.environments\" track-by=\"id\">\n                   <environment :repository.sync=\"repository\" :environment=\"env\"></environment>\n                </span>\n        </div>\n    </div>\n</div>\n";
 
 /***/ },
 /* 93 */
@@ -20536,6 +20551,63 @@
 /***/ function(module, exports) {
 
 	module.exports = "\n<form class=\"ui form\">\n    <div class=\"field\">\n        <label>Account</label>\n        <input v-model=\"account\" type=\"text\" name=\"account\" placeholder=\"Beanstalk account\">\n    </div>\n    <div class=\"field\">\n        <label>Username</label>\n        <input v-model=\"username\" type=\"text\" name=\"username\" placeholder=\"Beanstalk username\">\n    </div>\n    <div class=\"field\">\n        <label>Token</label>\n        <input v-model=\"token\" type=\"text\" name=\"token\" placeholder=\"Beanstalk token\">\n    </div>\n    <button @click=\"saveConfig\" class=\"ui primary button\" type=\"submit\">Save and close</button>\n</form>\n";
+
+/***/ },
+/* 105 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_script__, __vue_template__
+	__vue_script__ = __webpack_require__(106)
+	if (__vue_script__ &&
+	    __vue_script__.__esModule &&
+	    Object.keys(__vue_script__).length > 1) {
+	  console.warn("[vue-loader] app\\components\\stickyRefresh.vue: named exports in *.vue files are ignored.")}
+	__vue_template__ = __webpack_require__(107)
+	module.exports = __vue_script__ || {}
+	if (module.exports.__esModule) module.exports = module.exports.default
+	if (__vue_template__) {
+	(typeof module.exports === "function" ? (module.exports.options || (module.exports.options = {})) : module.exports).template = __vue_template__
+	}
+	if (false) {(function () {  module.hot.accept()
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), false)
+	  if (!hotAPI.compatible) return
+	  var id = "./stickyRefresh.vue"
+	  if (!module.hot.data) {
+	    hotAPI.createRecord(id, module.exports)
+	  } else {
+	    hotAPI.update(id, module.exports, __vue_template__)
+	  }
+	})()}
+
+/***/ },
+/* 106 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	// <template>
+	//     <div class="right ui rail">
+	//         <div class="ui sticky">
+	//             <button class="ui primary labeled icon button">
+	//                 <i class="refresh icon"></i>
+	//                 Refresh
+	//             </button>
+	//         </div>
+	//     </div>
+	// </template>
+	// <script>
+	exports.default = {};
+	// </script>
+
+/***/ },
+/* 107 */
+/***/ function(module, exports) {
+
+	module.exports = "\n<div class=\"right ui rail\">\n    <div class=\"ui sticky\">\n        <button class=\"ui primary labeled icon button\">\n            <i class=\"refresh icon\"></i>\n            Refresh\n        </button>\n    </div>\n</div>\n";
 
 /***/ }
 /******/ ]);

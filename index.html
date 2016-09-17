@@ -10,6 +10,7 @@
 <body>
 <div id="app" class="app">
     <main class="main">
+        <sticky-refresh></sticky-refresh>
         <command v-if="commandOpened"></command>
         <loader v-if="isLoading"></loader>
         <config v-if="incompleteConfigFile"

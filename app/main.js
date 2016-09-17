@@ -3,11 +3,12 @@ import RepoCard from './components/repoCard.vue'
 import Loader from './components/loader.vue'
 import Command from './components/command.vue'
 import Config from './components/config.vue'
+import StickyRefresh from './components/stickyRefresh.vue'
 import beanstalk from './lib/api'
 import {ipcRenderer} from 'electron'
 
 new Vue({
-    components: {RepoCard, Loader, Command, Config},
+    components: {RepoCard, Loader, Command, StickyRefresh, Config},
     el: '#app',
     data() {
         return {
@@ -85,7 +86,7 @@ new Vue({
         },
 
         sendReposLoadedEvent() {
-            ipcRenderer.send('repos-loaded', this.repositories)
+            ipcRenderer.send('save-repos-cache', this.repositories)
         },
 
         initCommandListeners() {
@@ -116,6 +117,9 @@ new Vue({
         },
         'config-file-changed'() {
             this.init();
+        },
+        'repo-deployed'() {
+            this.sendReposLoadedEvent()
         }
     }
 })
