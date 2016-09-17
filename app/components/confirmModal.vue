@@ -1,3 +1,8 @@
+<style>
+    .modal .content .description p {
+        color: rgba(0,0,0,.87)
+    }
+</style>
 <template>
     <div v-modal="isVisible" class="ui modal">
         <div class="header">
@@ -5,7 +10,7 @@
         </div>
         <div class="content">
             <div v-show="!confirmed" class="description">
-                Deploy on:  {{ environment.name }} ?
+                <p>Deploy on: <a class="ui {{ environment.color_label }} label">{{ environment.name }} ?</a></p>
             </div>
             <div v-show="confirmed" class="description">
                 <div v-if="!releaseDone" class="ui active inline loader"></div>

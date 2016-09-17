@@ -62,15 +62,15 @@
 
 	var _repoCard2 = _interopRequireDefault(_repoCard);
 
-	var _loader = __webpack_require__(89);
+	var _loader = __webpack_require__(93);
 
 	var _loader2 = _interopRequireDefault(_loader);
 
-	var _command = __webpack_require__(96);
+	var _command = __webpack_require__(98);
 
 	var _command2 = _interopRequireDefault(_command);
 
-	var _config = __webpack_require__(99);
+	var _config = __webpack_require__(101);
 
 	var _config2 = _interopRequireDefault(_config);
 
@@ -78,7 +78,7 @@
 
 	var _api2 = _interopRequireDefault(_api);
 
-	var _electron = __webpack_require__(101);
+	var _electron = __webpack_require__(103);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -11988,7 +11988,7 @@
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] app\\components\\repoCard.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(88)
+	__vue_template__ = __webpack_require__(92)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -12020,7 +12020,7 @@
 
 	var _environment2 = _interopRequireDefault(_environment);
 
-	var _moment = __webpack_require__(86);
+	var _moment = __webpack_require__(90);
 
 	var _moment2 = _interopRequireDefault(_moment);
 
@@ -12031,7 +12031,7 @@
 	//         <div class="item">
 	//             <div class="content">
 	//                 <div class="header">
-	//                     <h2 class="mdl-card__title-text">{{ repository.name }}</h2>
+	//                     <h2>{{ repository.name }}</h2>
 	//                 </div>
 	//                 <div class="description">
 	//                     <p>Url: {{ repository.repository_url_https }}</p>
@@ -12071,7 +12071,7 @@
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] app\\components\\environment.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(85)
+	__vue_template__ = __webpack_require__(89)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -15542,12 +15542,13 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
-	__vue_script__ = __webpack_require__(83)
+	__webpack_require__(83)
+	__vue_script__ = __webpack_require__(87)
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] app\\components\\confirmModal.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(84)
+	__vue_template__ = __webpack_require__(88)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -15567,6 +15568,324 @@
 
 /***/ },
 /* 83 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+
+	// load the styles
+	var content = __webpack_require__(84);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(86)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/vue-loader/lib/style-rewriter.js!./../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./confirmModal.vue", function() {
+				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/vue-loader/lib/style-rewriter.js!./../../node_modules/vue-loader/lib/selector.js?type=style&index=0!./confirmModal.vue");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 84 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(85)();
+	// imports
+
+
+	// module
+	exports.push([module.id, "\n.modal .content .description p {\n    color: rgba(0,0,0,.87)\n}\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 85 */
+/***/ function(module, exports) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	// css base code, injected by the css-loader
+	module.exports = function() {
+		var list = [];
+
+		// return the list of modules as css string
+		list.toString = function toString() {
+			var result = [];
+			for(var i = 0; i < this.length; i++) {
+				var item = this[i];
+				if(item[2]) {
+					result.push("@media " + item[2] + "{" + item[1] + "}");
+				} else {
+					result.push(item[1]);
+				}
+			}
+			return result.join("");
+		};
+
+		// import a list of modules into the list
+		list.i = function(modules, mediaQuery) {
+			if(typeof modules === "string")
+				modules = [[null, modules, ""]];
+			var alreadyImportedModules = {};
+			for(var i = 0; i < this.length; i++) {
+				var id = this[i][0];
+				if(typeof id === "number")
+					alreadyImportedModules[id] = true;
+			}
+			for(i = 0; i < modules.length; i++) {
+				var item = modules[i];
+				// skip already imported module
+				// this implementation is not 100% perfect for weird media query combinations
+				//  when a module is imported multiple times with different media queries.
+				//  I hope this will never occur (Hey this way we have smaller bundles)
+				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+					if(mediaQuery && !item[2]) {
+						item[2] = mediaQuery;
+					} else if(mediaQuery) {
+						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+					}
+					list.push(item);
+				}
+			}
+		};
+		return list;
+	};
+
+
+/***/ },
+/* 86 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	var stylesInDom = {},
+		memoize = function(fn) {
+			var memo;
+			return function () {
+				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+				return memo;
+			};
+		},
+		isOldIE = memoize(function() {
+			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
+		}),
+		getHeadElement = memoize(function () {
+			return document.head || document.getElementsByTagName("head")[0];
+		}),
+		singletonElement = null,
+		singletonCounter = 0,
+		styleElementsInsertedAtTop = [];
+
+	module.exports = function(list, options) {
+		if(false) {
+			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+		}
+
+		options = options || {};
+		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+		// tags it will allow on a page
+		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
+
+		// By default, add <style> tags to the bottom of <head>.
+		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
+
+		var styles = listToStyles(list);
+		addStylesToDom(styles, options);
+
+		return function update(newList) {
+			var mayRemove = [];
+			for(var i = 0; i < styles.length; i++) {
+				var item = styles[i];
+				var domStyle = stylesInDom[item.id];
+				domStyle.refs--;
+				mayRemove.push(domStyle);
+			}
+			if(newList) {
+				var newStyles = listToStyles(newList);
+				addStylesToDom(newStyles, options);
+			}
+			for(var i = 0; i < mayRemove.length; i++) {
+				var domStyle = mayRemove[i];
+				if(domStyle.refs === 0) {
+					for(var j = 0; j < domStyle.parts.length; j++)
+						domStyle.parts[j]();
+					delete stylesInDom[domStyle.id];
+				}
+			}
+		};
+	}
+
+	function addStylesToDom(styles, options) {
+		for(var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+			if(domStyle) {
+				domStyle.refs++;
+				for(var j = 0; j < domStyle.parts.length; j++) {
+					domStyle.parts[j](item.parts[j]);
+				}
+				for(; j < item.parts.length; j++) {
+					domStyle.parts.push(addStyle(item.parts[j], options));
+				}
+			} else {
+				var parts = [];
+				for(var j = 0; j < item.parts.length; j++) {
+					parts.push(addStyle(item.parts[j], options));
+				}
+				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+			}
+		}
+	}
+
+	function listToStyles(list) {
+		var styles = [];
+		var newStyles = {};
+		for(var i = 0; i < list.length; i++) {
+			var item = list[i];
+			var id = item[0];
+			var css = item[1];
+			var media = item[2];
+			var sourceMap = item[3];
+			var part = {css: css, media: media, sourceMap: sourceMap};
+			if(!newStyles[id])
+				styles.push(newStyles[id] = {id: id, parts: [part]});
+			else
+				newStyles[id].parts.push(part);
+		}
+		return styles;
+	}
+
+	function insertStyleElement(options, styleElement) {
+		var head = getHeadElement();
+		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
+		if (options.insertAt === "top") {
+			if(!lastStyleElementInsertedAtTop) {
+				head.insertBefore(styleElement, head.firstChild);
+			} else if(lastStyleElementInsertedAtTop.nextSibling) {
+				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
+			} else {
+				head.appendChild(styleElement);
+			}
+			styleElementsInsertedAtTop.push(styleElement);
+		} else if (options.insertAt === "bottom") {
+			head.appendChild(styleElement);
+		} else {
+			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
+		}
+	}
+
+	function removeStyleElement(styleElement) {
+		styleElement.parentNode.removeChild(styleElement);
+		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
+		if(idx >= 0) {
+			styleElementsInsertedAtTop.splice(idx, 1);
+		}
+	}
+
+	function createStyleElement(options) {
+		var styleElement = document.createElement("style");
+		styleElement.type = "text/css";
+		insertStyleElement(options, styleElement);
+		return styleElement;
+	}
+
+	function addStyle(obj, options) {
+		var styleElement, update, remove;
+
+		if (options.singleton) {
+			var styleIndex = singletonCounter++;
+			styleElement = singletonElement || (singletonElement = createStyleElement(options));
+			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
+			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
+		} else {
+			styleElement = createStyleElement(options);
+			update = applyToTag.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+			};
+		}
+
+		update(obj);
+
+		return function updateStyle(newObj) {
+			if(newObj) {
+				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
+					return;
+				update(obj = newObj);
+			} else {
+				remove();
+			}
+		};
+	}
+
+	var replaceText = (function () {
+		var textStore = [];
+
+		return function (index, replacement) {
+			textStore[index] = replacement;
+			return textStore.filter(Boolean).join('\n');
+		};
+	})();
+
+	function applyToSingletonTag(styleElement, index, remove, obj) {
+		var css = remove ? "" : obj.css;
+
+		if (styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = replaceText(index, css);
+		} else {
+			var cssNode = document.createTextNode(css);
+			var childNodes = styleElement.childNodes;
+			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
+			if (childNodes.length) {
+				styleElement.insertBefore(cssNode, childNodes[index]);
+			} else {
+				styleElement.appendChild(cssNode);
+			}
+		}
+	}
+
+	function applyToTag(styleElement, obj) {
+		var css = obj.css;
+		var media = obj.media;
+		var sourceMap = obj.sourceMap;
+
+		if (media) {
+			styleElement.setAttribute("media", media);
+		}
+
+		if (sourceMap) {
+			// https://developer.chrome.com/devtools/docs/javascript-debugging
+			// this makes source maps inside style tags work properly in Chrome
+			css += '\n/*# sourceURL=' + sourceMap.sources[0] + ' */';
+			// http://stackoverflow.com/a/26603875
+			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+		}
+
+		if (styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = css;
+		} else {
+			while(styleElement.firstChild) {
+				styleElement.removeChild(styleElement.firstChild);
+			}
+			styleElement.appendChild(document.createTextNode(css));
+		}
+	}
+
+
+/***/ },
+/* 87 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -15574,6 +15893,11 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
+	// <style>
+	//     .modal .content .description p {
+	//         color: rgba(0,0,0,.87)
+	//     }
+	// </style>
 	// <template>
 	//     <div v-modal="isVisible" class="ui modal">
 	//         <div class="header">
@@ -15581,7 +15905,7 @@
 	//         </div>
 	//         <div class="content">
 	//             <div v-show="!confirmed" class="description">
-	//                 Deploy on:  {{ environment.name }} ?
+	//                 <p>Deploy on: <a class="ui {{ environment.color_label }} label">{{ environment.name }} ?</a></p>
 	//             </div>
 	//             <div v-show="confirmed" class="description">
 	//                 <div v-if="!releaseDone" class="ui active inline loader"></div>
@@ -15669,19 +15993,19 @@
 	// </script>
 
 /***/ },
-/* 84 */
+/* 88 */
 /***/ function(module, exports) {
 
-	module.exports = "\n<div v-modal=\"isVisible\" class=\"ui modal\">\n    <div class=\"header\">\n        Confirm deployment for: {{ repository.name }}\n    </div>\n    <div class=\"content\">\n        <div v-show=\"!confirmed\" class=\"description\">\n            Deploy on:  {{ environment.name }} ?\n        </div>\n        <div v-show=\"confirmed\" class=\"description\">\n            <div v-if=\"!releaseDone\" class=\"ui active inline loader\"></div>\n            <span v-if=\"!releaseDone\"> {{ releaseState }}</span>\n            <div v-if=\"releaseDone\">\n                <a class=\"ui {{ releaseDoneUi.class }} label\">{{ releaseDoneUi.message }}</a>\n                {{ release.revision }}\n            </div>\n\n        </div>\n    </div>\n    <div class=\"actions\">\n        <div v-if=\"!confirmed\" @click=\"cancelAction\" class=\"ui red button\">Cancel</div>\n        <div v-if=\"!confirmed\" @click=\"confirmAction\" class=\"ui primary button\">Deploy</div>\n        <div v-if=\"releaseDone\" @click=\"cancelAction\" class=\"ui primary button\">Ok</div>\n    </div>\n</div>\n";
+	module.exports = "\n\n\n\n\n\n<div v-modal=\"isVisible\" class=\"ui modal\">\n    <div class=\"header\">\n        Confirm deployment for: {{ repository.name }}\n    </div>\n    <div class=\"content\">\n        <div v-show=\"!confirmed\" class=\"description\">\n            <p>Deploy on: <a class=\"ui {{ environment.color_label }} label\">{{ environment.name }} ?</a></p>\n        </div>\n        <div v-show=\"confirmed\" class=\"description\">\n            <div v-if=\"!releaseDone\" class=\"ui active inline loader\"></div>\n            <span v-if=\"!releaseDone\"> {{ releaseState }}</span>\n            <div v-if=\"releaseDone\">\n                <a class=\"ui {{ releaseDoneUi.class }} label\">{{ releaseDoneUi.message }}</a>\n                {{ release.revision }}\n            </div>\n\n        </div>\n    </div>\n    <div class=\"actions\">\n        <div v-if=\"!confirmed\" @click=\"cancelAction\" class=\"ui red button\">Cancel</div>\n        <div v-if=\"!confirmed\" @click=\"confirmAction\" class=\"ui primary button\">Deploy</div>\n        <div v-if=\"releaseDone\" @click=\"cancelAction\" class=\"ui primary button\">Ok</div>\n    </div>\n</div>\n";
 
 /***/ },
-/* 85 */
+/* 89 */
 /***/ function(module, exports) {
 
 	module.exports = "\n<confirm-modal :is-visible.sync=\"showModal\"\n               :environment=\"environment\"\n               :repository=\"repository\"\n               :on-confirm=\"pushToEnv\"\n               :release-state=\"releaseState\"\n               :release.sync=\"release\"\n>\n\n</confirm-modal>\n<button @click=\"displayModal\"\n        class=\"ui labeled icon {{ environment.color_label }} button\">\n    <i class=\"upload icon\"></i>\n    {{ environment.name }}\n</button>\n";
 
 /***/ },
-/* 86 */
+/* 90 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {//! moment.js
@@ -19918,10 +20242,10 @@
 	    return _moment;
 
 	}));
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(87)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(91)(module)))
 
 /***/ },
-/* 87 */
+/* 91 */
 /***/ function(module, exports) {
 
 	module.exports = function(module) {
@@ -19937,23 +20261,23 @@
 
 
 /***/ },
-/* 88 */
+/* 92 */
 /***/ function(module, exports) {
 
-	module.exports = "\n<div class=\"ui items\">\n    <div class=\"item\">\n        <div class=\"content\">\n            <div class=\"header\">\n                <h2 class=\"mdl-card__title-text\">{{ repository.name }}</h2>\n            </div>\n            <div class=\"description\">\n                <p>Url: {{ repository.repository_url_https }}</p>\n                <p>Last updated: {{ formatedUpdatedDate }}</p>\n            </div>\n            <div class=\"extra\">\n                <span v-for=\"env in repository.environments\" track-by=\"id\">\n                   <environment :repository=\"repository\" :environment=\"env\"></environment>\n                </span>\n            </div>\n        </div>\n    </div>\n</div>\n";
+	module.exports = "\n<div class=\"ui items\">\n    <div class=\"item\">\n        <div class=\"content\">\n            <div class=\"header\">\n                <h2>{{ repository.name }}</h2>\n            </div>\n            <div class=\"description\">\n                <p>Url: {{ repository.repository_url_https }}</p>\n                <p>Last updated: {{ formatedUpdatedDate }}</p>\n            </div>\n            <div class=\"extra\">\n                <span v-for=\"env in repository.environments\" track-by=\"id\">\n                   <environment :repository=\"repository\" :environment=\"env\"></environment>\n                </span>\n            </div>\n        </div>\n    </div>\n</div>\n";
 
 /***/ },
-/* 89 */
+/* 93 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
-	__webpack_require__(90)
-	__vue_script__ = __webpack_require__(94)
+	__webpack_require__(94)
+	__vue_script__ = __webpack_require__(96)
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] app\\components\\loader.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(95)
+	__vue_template__ = __webpack_require__(97)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -19972,16 +20296,16 @@
 	})()}
 
 /***/ },
-/* 90 */
+/* 94 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(91);
+	var content = __webpack_require__(95);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(93)(content, {});
+	var update = __webpack_require__(86)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -19998,10 +20322,10 @@
 	}
 
 /***/ },
-/* 91 */
+/* 95 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(92)();
+	exports = module.exports = __webpack_require__(85)();
 	// imports
 
 
@@ -20012,285 +20336,7 @@
 
 
 /***/ },
-/* 92 */
-/***/ function(module, exports) {
-
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	// css base code, injected by the css-loader
-	module.exports = function() {
-		var list = [];
-
-		// return the list of modules as css string
-		list.toString = function toString() {
-			var result = [];
-			for(var i = 0; i < this.length; i++) {
-				var item = this[i];
-				if(item[2]) {
-					result.push("@media " + item[2] + "{" + item[1] + "}");
-				} else {
-					result.push(item[1]);
-				}
-			}
-			return result.join("");
-		};
-
-		// import a list of modules into the list
-		list.i = function(modules, mediaQuery) {
-			if(typeof modules === "string")
-				modules = [[null, modules, ""]];
-			var alreadyImportedModules = {};
-			for(var i = 0; i < this.length; i++) {
-				var id = this[i][0];
-				if(typeof id === "number")
-					alreadyImportedModules[id] = true;
-			}
-			for(i = 0; i < modules.length; i++) {
-				var item = modules[i];
-				// skip already imported module
-				// this implementation is not 100% perfect for weird media query combinations
-				//  when a module is imported multiple times with different media queries.
-				//  I hope this will never occur (Hey this way we have smaller bundles)
-				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-					if(mediaQuery && !item[2]) {
-						item[2] = mediaQuery;
-					} else if(mediaQuery) {
-						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-					}
-					list.push(item);
-				}
-			}
-		};
-		return list;
-	};
-
-
-/***/ },
-/* 93 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	var stylesInDom = {},
-		memoize = function(fn) {
-			var memo;
-			return function () {
-				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
-				return memo;
-			};
-		},
-		isOldIE = memoize(function() {
-			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
-		}),
-		getHeadElement = memoize(function () {
-			return document.head || document.getElementsByTagName("head")[0];
-		}),
-		singletonElement = null,
-		singletonCounter = 0,
-		styleElementsInsertedAtTop = [];
-
-	module.exports = function(list, options) {
-		if(false) {
-			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
-		}
-
-		options = options || {};
-		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-		// tags it will allow on a page
-		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
-
-		// By default, add <style> tags to the bottom of <head>.
-		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
-
-		var styles = listToStyles(list);
-		addStylesToDom(styles, options);
-
-		return function update(newList) {
-			var mayRemove = [];
-			for(var i = 0; i < styles.length; i++) {
-				var item = styles[i];
-				var domStyle = stylesInDom[item.id];
-				domStyle.refs--;
-				mayRemove.push(domStyle);
-			}
-			if(newList) {
-				var newStyles = listToStyles(newList);
-				addStylesToDom(newStyles, options);
-			}
-			for(var i = 0; i < mayRemove.length; i++) {
-				var domStyle = mayRemove[i];
-				if(domStyle.refs === 0) {
-					for(var j = 0; j < domStyle.parts.length; j++)
-						domStyle.parts[j]();
-					delete stylesInDom[domStyle.id];
-				}
-			}
-		};
-	}
-
-	function addStylesToDom(styles, options) {
-		for(var i = 0; i < styles.length; i++) {
-			var item = styles[i];
-			var domStyle = stylesInDom[item.id];
-			if(domStyle) {
-				domStyle.refs++;
-				for(var j = 0; j < domStyle.parts.length; j++) {
-					domStyle.parts[j](item.parts[j]);
-				}
-				for(; j < item.parts.length; j++) {
-					domStyle.parts.push(addStyle(item.parts[j], options));
-				}
-			} else {
-				var parts = [];
-				for(var j = 0; j < item.parts.length; j++) {
-					parts.push(addStyle(item.parts[j], options));
-				}
-				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
-			}
-		}
-	}
-
-	function listToStyles(list) {
-		var styles = [];
-		var newStyles = {};
-		for(var i = 0; i < list.length; i++) {
-			var item = list[i];
-			var id = item[0];
-			var css = item[1];
-			var media = item[2];
-			var sourceMap = item[3];
-			var part = {css: css, media: media, sourceMap: sourceMap};
-			if(!newStyles[id])
-				styles.push(newStyles[id] = {id: id, parts: [part]});
-			else
-				newStyles[id].parts.push(part);
-		}
-		return styles;
-	}
-
-	function insertStyleElement(options, styleElement) {
-		var head = getHeadElement();
-		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
-		if (options.insertAt === "top") {
-			if(!lastStyleElementInsertedAtTop) {
-				head.insertBefore(styleElement, head.firstChild);
-			} else if(lastStyleElementInsertedAtTop.nextSibling) {
-				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
-			} else {
-				head.appendChild(styleElement);
-			}
-			styleElementsInsertedAtTop.push(styleElement);
-		} else if (options.insertAt === "bottom") {
-			head.appendChild(styleElement);
-		} else {
-			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
-		}
-	}
-
-	function removeStyleElement(styleElement) {
-		styleElement.parentNode.removeChild(styleElement);
-		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
-		if(idx >= 0) {
-			styleElementsInsertedAtTop.splice(idx, 1);
-		}
-	}
-
-	function createStyleElement(options) {
-		var styleElement = document.createElement("style");
-		styleElement.type = "text/css";
-		insertStyleElement(options, styleElement);
-		return styleElement;
-	}
-
-	function addStyle(obj, options) {
-		var styleElement, update, remove;
-
-		if (options.singleton) {
-			var styleIndex = singletonCounter++;
-			styleElement = singletonElement || (singletonElement = createStyleElement(options));
-			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
-			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
-		} else {
-			styleElement = createStyleElement(options);
-			update = applyToTag.bind(null, styleElement);
-			remove = function() {
-				removeStyleElement(styleElement);
-			};
-		}
-
-		update(obj);
-
-		return function updateStyle(newObj) {
-			if(newObj) {
-				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
-					return;
-				update(obj = newObj);
-			} else {
-				remove();
-			}
-		};
-	}
-
-	var replaceText = (function () {
-		var textStore = [];
-
-		return function (index, replacement) {
-			textStore[index] = replacement;
-			return textStore.filter(Boolean).join('\n');
-		};
-	})();
-
-	function applyToSingletonTag(styleElement, index, remove, obj) {
-		var css = remove ? "" : obj.css;
-
-		if (styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = replaceText(index, css);
-		} else {
-			var cssNode = document.createTextNode(css);
-			var childNodes = styleElement.childNodes;
-			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
-			if (childNodes.length) {
-				styleElement.insertBefore(cssNode, childNodes[index]);
-			} else {
-				styleElement.appendChild(cssNode);
-			}
-		}
-	}
-
-	function applyToTag(styleElement, obj) {
-		var css = obj.css;
-		var media = obj.media;
-		var sourceMap = obj.sourceMap;
-
-		if (media) {
-			styleElement.setAttribute("media", media);
-		}
-
-		if (sourceMap) {
-			// https://developer.chrome.com/devtools/docs/javascript-debugging
-			// this makes source maps inside style tags work properly in Chrome
-			css += '\n/*# sourceURL=' + sourceMap.sources[0] + ' */';
-			// http://stackoverflow.com/a/26603875
-			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
-		}
-
-		if (styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = css;
-		} else {
-			while(styleElement.firstChild) {
-				styleElement.removeChild(styleElement.firstChild);
-			}
-			styleElement.appendChild(document.createTextNode(css));
-		}
-	}
-
-
-/***/ },
-/* 94 */
+/* 96 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -20326,22 +20372,22 @@
 	// </script>
 
 /***/ },
-/* 95 */
+/* 97 */
 /***/ function(module, exports) {
 
 	module.exports = "\n\n\n\n\n<div>\n    <div class=\"ui active inverted dimmer\">\n        <div class=\"ui massive text loader\">Loading repositories and environments</div>\n    </div>\n    <p></p>\n    <p></p>\n    <p></p>\n</div>\n";
 
 /***/ },
-/* 96 */
+/* 98 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
-	__vue_script__ = __webpack_require__(97)
+	__vue_script__ = __webpack_require__(99)
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] app\\components\\command.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(98)
+	__vue_template__ = __webpack_require__(100)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -20360,7 +20406,7 @@
 	})()}
 
 /***/ },
-/* 97 */
+/* 99 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -20398,22 +20444,22 @@
 	// </script>
 
 /***/ },
-/* 98 */
+/* 100 */
 /***/ function(module, exports) {
 
 	module.exports = "\n<div class=\"flex-container\">\n    <input v-el:search-input @keyup=\"sendSearchEvent\" v-model=\"search\" class=\"shortcut-command\" type=\"text\">\n</div>\n";
 
 /***/ },
-/* 99 */
+/* 101 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
-	__vue_script__ = __webpack_require__(100)
+	__vue_script__ = __webpack_require__(102)
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] app\\components\\config.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(102)
+	__vue_template__ = __webpack_require__(104)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -20432,7 +20478,7 @@
 	})()}
 
 /***/ },
-/* 100 */
+/* 102 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20441,7 +20487,7 @@
 	    value: true
 	});
 
-	var _electron = __webpack_require__(101);
+	var _electron = __webpack_require__(103);
 
 	exports.default = {
 	    props: ['account', 'username', 'token'],
@@ -20480,13 +20526,13 @@
 	// <script>
 
 /***/ },
-/* 101 */
+/* 103 */
 /***/ function(module, exports) {
 
 	module.exports = require("electron");
 
 /***/ },
-/* 102 */
+/* 104 */
 /***/ function(module, exports) {
 
 	module.exports = "\n<form class=\"ui form\">\n    <div class=\"field\">\n        <label>Account</label>\n        <input v-model=\"account\" type=\"text\" name=\"account\" placeholder=\"Beanstalk account\">\n    </div>\n    <div class=\"field\">\n        <label>Username</label>\n        <input v-model=\"username\" type=\"text\" name=\"username\" placeholder=\"Beanstalk username\">\n    </div>\n    <div class=\"field\">\n        <label>Token</label>\n        <input v-model=\"token\" type=\"text\" name=\"token\" placeholder=\"Beanstalk token\">\n    </div>\n    <button @click=\"saveConfig\" class=\"ui primary button\" type=\"submit\">Save and close</button>\n</form>\n";

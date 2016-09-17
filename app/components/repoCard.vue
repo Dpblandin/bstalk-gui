@@ -3,7 +3,7 @@
         <div class="item">
             <div class="content">
                 <div class="header">
-                    <h2 class="mdl-card__title-text">{{ repository.name }}</h2>
+                    <h2>{{ repository.name }}</h2>
                 </div>
                 <div class="description">
                     <p>Url: {{ repository.repository_url_https }}</p>
