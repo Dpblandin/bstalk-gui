@@ -88,7 +88,7 @@ const beanstalk = {
         });
     },
    release(repoId, releaseId, cb) {
-     api(repoId + '/releases/' + releaseId).end(function (err, res) {
+     this.api(repoId + '/releases/' + releaseId).end(function (err, res) {
        if (err) {
          reportError(err);
        }
@@ -131,12 +131,6 @@ const beanstalk = {
       });
 
     }, delay || 0);
-  },
-
-  deployToEnv(repoId, envId, cb) {
-    this.deploy(repoId, envId, null, comment, (release) => {
-      this.checkReleaseState(repoId, release.id, 0, cb);
-    });
   },
 
 deploy(repoId, serverEnvironmentId, revision, comment, cb) {

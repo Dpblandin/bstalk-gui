@@ -12113,7 +12113,10 @@
 	//     <confirm-modal :is-visible.sync="showModal"
 	//                    :environment="environment"
 	//                    :repository="repository"
-	//                    :on-confirm="pushToEnv">
+	//                    :on-confirm="pushToEnv"
+	//                    :release-state="releaseState"
+	//                    :release.sync="release"
+	//     >
 	//
 	//     </confirm-modal>
 	//     <button @click="displayModal"
@@ -12123,26 +12126,61 @@
 	//     </button>
 	// </template>
 	//
-	// <script>
+	// <script type="es6">
 	exports.default = {
 	    components: { ConfirmModal: _confirmModal2.default },
 	    props: ['repository', 'environment'],
 
 	    data: function data() {
 	        return {
-	            showModal: false
+	            showModal: false,
+	            release: {}
 	        };
 	    },
 
+
+	    computed: {
+	        releaseState: function releaseState() {
+	            var _this = this;
+
+	            switch (this.release.state) {
+	                case 'waiting':
+	                    _api2.default.release(this.repository.id, this.release.id, function (release) {
+	                        _this.release = release;
+	                    });
+	                    return 'waiting';
+	                    break;
+	                case 'pending':
+	                    _api2.default.release(this.repository.id, this.release.id, function (release) {
+	                        _this.release = release;
+	                    });
+	                    return 'pending';
+	                    break;
+	                case 'success':
+	                    return 'success';
+	                    break;
+	                case 'skipped':
+	                    return 'skipped';
+	                    break;
+	                case 'failed':
+	                    return 'failed';
+	                    break;
+	            }
+
+	            return '';
+	        }
+	    },
 
 	    methods: {
 	        displayModal: function displayModal() {
 	            this.showModal = true;
 	        },
 	        pushToEnv: function pushToEnv() {
-	            /*  beanstalk.deployToEnv(this.repository.id, this.environment.id, (message) => {
-	                  console.log(message)
-	              })*/
+	            var _this2 = this;
+
+	            _api2.default.deploy(this.repository.id, this.environment.id, null, false, function (err, release) {
+	                _this2.release = release;
+	            });
 	        }
 	    }
 	};
@@ -12214,7 +12252,7 @@
 	    });
 	  },
 	  release: function release(repoId, releaseId, cb) {
-	    api(repoId + '/releases/' + releaseId).end(function (err, res) {
+	    this.api(repoId + '/releases/' + releaseId).end(function (err, res) {
 	      if (err) {
 	        reportError(err);
 	      }
@@ -12256,13 +12294,6 @@
 	        }
 	      });
 	    }, delay || 0);
-	  },
-	  deployToEnv: function deployToEnv(repoId, envId, cb) {
-	    var _this2 = this;
-
-	    this.deploy(repoId, envId, null, comment, function (release) {
-	      _this2.checkReleaseState(repoId, release.id, 0, cb);
-	    });
 	  },
 	  deploy: function deploy(repoId, serverEnvironmentId, revision, comment, cb) {
 	    var release = {
@@ -15549,28 +15580,72 @@
 	//             Confirm deployment for: {{ repository.name }}
 	//         </div>
 	//         <div class="content">
-	//             <div class="description">
+	//             <div v-show="!confirmed" class="description">
 	//                 Deploy on:  {{ environment.name }} ?
 	//             </div>
+	//             <div v-show="confirmed" class="description">
+	//                 <div v-if="!releaseDone" class="ui active inline loader"></div>
+	//                 <span v-if="!releaseDone"> {{ releaseState }}</span>
+	//                 <div v-if="releaseDone">
+	//                     <a class="ui {{ releaseDoneUi.class }} label">{{ releaseDoneUi.message }}</a>
+	//                     {{ release.revision }}
+	//                 </div>
+	//
+	//             </div>
 	//         </div>
-	//         <div class="action">
-	//             <div @click="cancelAction" class="ui red button">Cancel</div>
-	//             <div @click="confirmAction" class="ui primary button">Deploy</div>
+	//         <div class="actions">
+	//             <div v-if="!confirmed" @click="cancelAction" class="ui red button">Cancel</div>
+	//             <div v-if="!confirmed" @click="confirmAction" class="ui primary button">Deploy</div>
+	//             <div v-if="releaseDone" @click="cancelAction" class="ui primary button">Ok</div>
 	//         </div>
 	//     </div>
 	// </template>
 	//
 	// <script>
 	exports.default = {
-	    props: ['isVisible', 'repository', 'environment', 'onConfirm'],
+	    props: ['isVisible', 'repository', 'environment', 'onConfirm', 'releaseState', 'release'],
+
+	    data: function data() {
+	        return {
+	            confirmed: false
+	        };
+	    },
+
+
+	    computed: {
+	        releaseDone: function releaseDone() {
+	            return this.releaseState === 'skipped' || this.releaseState === 'failed' || this.releaseState === 'success';
+	        },
+	        releaseDoneUi: function releaseDoneUi() {
+	            if (this.releaseState === 'skipped') {
+	                return {
+	                    class: '',
+	                    message: 'Bypassed'
+	                };
+	            }
+	            if (this.releaseState === 'failed') {
+	                return {
+	                    class: 'red',
+	                    message: 'Failed deployment'
+	                };
+	            }
+	            if (this.releaseState === 'success') {
+	                return {
+	                    class: 'green',
+	                    message: 'Successfully deployed!'
+	                };
+	            }
+	        }
+	    },
 
 	    methods: {
 	        cancelAction: function cancelAction() {
 	            this.isVisible = false;
+	            this.confirmed = false;
+	            this.release = {};
 	        },
 	        confirmAction: function confirmAction() {
-	            this.isVisible = false;
-	            console.log('called here');
+	            this.confirmed = true;
 	            this.onConfirm();
 	        }
 	    },
@@ -15597,13 +15672,13 @@
 /* 84 */
 /***/ function(module, exports) {
 
-	module.exports = "\n<div v-modal=\"isVisible\" class=\"ui modal\">\n    <div class=\"header\">\n        Confirm deployment for: {{ repository.name }}\n    </div>\n    <div class=\"content\">\n        <div class=\"description\">\n            Deploy on:  {{ environment.name }} ?\n        </div>\n    </div>\n    <div class=\"action\">\n        <div @click=\"cancelAction\" class=\"ui red button\">Cancel</div>\n        <div @click=\"confirmAction\" class=\"ui primary button\">Deploy</div>\n    </div>\n</div>\n";
+	module.exports = "\n<div v-modal=\"isVisible\" class=\"ui modal\">\n    <div class=\"header\">\n        Confirm deployment for: {{ repository.name }}\n    </div>\n    <div class=\"content\">\n        <div v-show=\"!confirmed\" class=\"description\">\n            Deploy on:  {{ environment.name }} ?\n        </div>\n        <div v-show=\"confirmed\" class=\"description\">\n            <div v-if=\"!releaseDone\" class=\"ui active inline loader\"></div>\n            <span v-if=\"!releaseDone\"> {{ releaseState }}</span>\n            <div v-if=\"releaseDone\">\n                <a class=\"ui {{ releaseDoneUi.class }} label\">{{ releaseDoneUi.message }}</a>\n                {{ release.revision }}\n            </div>\n\n        </div>\n    </div>\n    <div class=\"actions\">\n        <div v-if=\"!confirmed\" @click=\"cancelAction\" class=\"ui red button\">Cancel</div>\n        <div v-if=\"!confirmed\" @click=\"confirmAction\" class=\"ui primary button\">Deploy</div>\n        <div v-if=\"releaseDone\" @click=\"cancelAction\" class=\"ui primary button\">Ok</div>\n    </div>\n</div>\n";
 
 /***/ },
 /* 85 */
 /***/ function(module, exports) {
 
-	module.exports = "\n<confirm-modal :is-visible.sync=\"showModal\"\n               :environment=\"environment\"\n               :repository=\"repository\"\n               :on-confirm=\"pushToEnv\">\n\n</confirm-modal>\n<button @click=\"displayModal\"\n        class=\"ui labeled icon {{ environment.color_label }} button\">\n    <i class=\"upload icon\"></i>\n    {{ environment.name }}\n</button>\n";
+	module.exports = "\n<confirm-modal :is-visible.sync=\"showModal\"\n               :environment=\"environment\"\n               :repository=\"repository\"\n               :on-confirm=\"pushToEnv\"\n               :release-state=\"releaseState\"\n               :release.sync=\"release\"\n>\n\n</confirm-modal>\n<button @click=\"displayModal\"\n        class=\"ui labeled icon {{ environment.color_label }} button\">\n    <i class=\"upload icon\"></i>\n    {{ environment.name }}\n</button>\n";
 
 /***/ },
 /* 86 */

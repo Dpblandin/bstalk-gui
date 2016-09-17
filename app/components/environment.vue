@@ -2,7 +2,10 @@
     <confirm-modal :is-visible.sync="showModal"
                    :environment="environment"
                    :repository="repository"
-                   :on-confirm="pushToEnv">
+                   :on-confirm="pushToEnv"
+                   :release-state="releaseState"
+                   :release.sync="release"
+    >
 
     </confirm-modal>
     <button @click="displayModal"
@@ -12,17 +15,48 @@
     </button>
 </template>
 
-<script>
+<script type="es6">
     import beanstalk from '../lib/api'
     import ConfirmModal from './confirmModal.vue'
 
     export default {
-        components: {ConfirmModal},
-        props: ['repository' ,'environment'],
+        components: { ConfirmModal },
+        props: ['repository', 'environment'],
 
         data() {
             return {
-                showModal: false
+                showModal: false,
+                release: {}
+            }
+        },
+
+        computed: {
+            releaseState() {
+                switch (this.release.state) {
+                    case 'waiting':
+                        beanstalk.release(this.repository.id, this.release.id, (release) => {
+                            this.release = release
+                        })
+                        return 'waiting'
+                        break
+                    case 'pending':
+                        beanstalk.release(this.repository.id, this.release.id, (release) => {
+                            this.release = release
+                        })
+                        return 'pending'
+                        break
+                    case 'success':
+                        return 'success'
+                        break
+                    case 'skipped':
+                        return 'skipped'
+                        break
+                    case 'failed':
+                        return 'failed'
+                        break
+                }
+
+                return ''
             }
         },
 
@@ -31,9 +65,9 @@
                 this.showModal = true
             },
             pushToEnv() {
-              /*  beanstalk.deployToEnv(this.repository.id, this.environment.id, (message) => {
-                    console.log(message)
-                })*/
+                beanstalk.deploy(this.repository.id, this.environment.id, null, false, (err, release) => {
+                    this.release = release
+                })
             }
         }
     }
