@@ -44,7 +44,7 @@ import moment from 'moment'
 
         computed: {
             formatedUpdatedDate() {
-                return moment(this.repository.updated_at).format('MMM Do YYYY')
+                return moment(this.repository.updated_at).format('MMM Do YYYY [at] hh:mm')
             }
         },
 
