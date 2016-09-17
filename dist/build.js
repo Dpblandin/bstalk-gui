@@ -92,7 +92,7 @@
 	    data: function data() {
 	        return {
 	            repositories: [],
-	            isLoading: true,
+	            isLoading: false,
 	            commandOpened: false,
 	            searchTerm: null,
 	            config: {
@@ -130,7 +130,7 @@
 	            if (this.incompleteConfigFile) {
 	                return _electron.ipcRenderer.send('remove-repos-cache');
 	            }
-
+	            this.isLoading = true;
 	            _api2.default.setConfig(this.config);
 	            _electron.ipcRenderer.send('load-repos-cache');
 	            _electron.ipcRenderer.on('repos-cache-loaded', function (event, err, repos) {
