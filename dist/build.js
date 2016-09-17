@@ -206,11 +206,16 @@
 	            });
 
 	            _electron.ipcRenderer.on('exit-command', function (event, arg) {
-	                _this4.toggleCommand();
+	                _this4.toggleCommand(true);
 	            });
 	        },
 	        toggleCommand: function toggleCommand() {
-	            this.commandOpened = !this.commandOpened;
+	            var force = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+
+	            if (force) {
+	                return this.commandOpened = false;
+	            }
+	            return this.commandOpened = !this.commandOpened;
 	        }
 	    },
 

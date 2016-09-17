@@ -98,11 +98,14 @@ new Vue({
             })
 
             ipcRenderer.on('exit-command', (event, arg) => {
-                this.toggleCommand()
+                this.toggleCommand(true)
             })
         },
-        toggleCommand() {
-            this.commandOpened = !this.commandOpened
+        toggleCommand(force = false) {
+            if(force) {
+                return this.commandOpened = false;
+            }
+            return this.commandOpened = !this.commandOpened
         }
     },
 
