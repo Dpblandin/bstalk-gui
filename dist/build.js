@@ -138,6 +138,8 @@
 
 	                    _this2.initCommandListeners();
 	                });
+	            } else {
+	                _electron.ipcRenderer.send('remove-repos-cache');
 	            }
 	        },
 	        loadRepos: function loadRepos() {
@@ -20361,7 +20363,7 @@
 	//             <label>Token</label>
 	//             <input v-model="token" type="text" name="token" placeholder="Beanstalk token">
 	//         </div>
-	//         <button @click="saveConfig" class="ui button" type="submit">Save and close</button>
+	//         <button @click="saveConfig" class="ui primary button" type="submit">Save and close</button>
 	//     </form>
 	// </template>
 	//
@@ -20377,7 +20379,7 @@
 /* 101 */
 /***/ function(module, exports) {
 
-	module.exports = "\n<form class=\"ui form\">\n    <div class=\"field\">\n        <label>Account</label>\n        <input v-model=\"account\" type=\"text\" name=\"account\" placeholder=\"Beanstalk account\">\n    </div>\n    <div class=\"field\">\n        <label>Username</label>\n        <input v-model=\"username\" type=\"text\" name=\"username\" placeholder=\"Beanstalk username\">\n    </div>\n    <div class=\"field\">\n        <label>Token</label>\n        <input v-model=\"token\" type=\"text\" name=\"token\" placeholder=\"Beanstalk token\">\n    </div>\n    <button @click=\"saveConfig\" class=\"ui button\" type=\"submit\">Save and close</button>\n</form>\n";
+	module.exports = "\n<form class=\"ui form\">\n    <div class=\"field\">\n        <label>Account</label>\n        <input v-model=\"account\" type=\"text\" name=\"account\" placeholder=\"Beanstalk account\">\n    </div>\n    <div class=\"field\">\n        <label>Username</label>\n        <input v-model=\"username\" type=\"text\" name=\"username\" placeholder=\"Beanstalk username\">\n    </div>\n    <div class=\"field\">\n        <label>Token</label>\n        <input v-model=\"token\" type=\"text\" name=\"token\" placeholder=\"Beanstalk token\">\n    </div>\n    <button @click=\"saveConfig\" class=\"ui primary button\" type=\"submit\">Save and close</button>\n</form>\n";
 
 /***/ }
 /******/ ]);

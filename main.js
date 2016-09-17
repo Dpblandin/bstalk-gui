@@ -28,6 +28,7 @@ function init() {
     listenForConfigChanges()
     readRepositoriesCache()
     cacheRepositories()
+    removeRepositoriesCache()
     setupGlobalShortcuts()
 }
 
@@ -63,6 +64,14 @@ function readRepositoriesCache() {
             event.sender.send('repos-cache-loaded', err, data)  
         })
         
+    })
+}
+
+function removeRepositoriesCache() {
+    ipcMain.on('remove-repos-cache', (event) => {
+        config.removeReposFile((err) => {
+            event.sender.send('repos-cache-removed', err)
+        })
     })
 }
 

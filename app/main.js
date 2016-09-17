@@ -22,11 +22,11 @@ new Vue({
             }
         }
     },
-        
+
     computed: {
       incompleteConfigFile() {
           return this.config.account === '' || this.config.username === '' || this.config.token === ''
-      }  
+      }
     },
     created() {
         ipcRenderer.send('vue-ready')
@@ -57,6 +57,8 @@ new Vue({
 
                     this.initCommandListeners()
                 })
+            } else {
+                ipcRenderer.send('remove-repos-cache')
             }
         },
 
@@ -84,7 +86,7 @@ new Vue({
         sendReposLoadedEvent() {
             ipcRenderer.send('repos-loaded', this.repositories)
         },
-        
+
         initCommandListeners() {
             ipcRenderer.on('shortcut-command', (event, arg) => {
                 this.toggleCommand()

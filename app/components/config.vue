@@ -12,7 +12,7 @@
             <label>Token</label>
             <input v-model="token" type="text" name="token" placeholder="Beanstalk token">
         </div>
-        <button @click="saveConfig" class="ui button" type="submit">Save and close</button>
+        <button @click="saveConfig" class="ui primary button" type="submit">Save and close</button>
     </form>
 </template>
 

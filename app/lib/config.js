@@ -67,11 +67,23 @@ const config = {
     var file = this.reposFile();
     if(fs.existsSync(file)) {
       fs.readFile(file, 'utf-8', (err, data) => {
-       cb(err, data)
+        cb(err, data)
       })
     }
     else {
       cb(null, false)
+    }
+  },
+
+  removeReposFile(cb) {
+    var file = this.reposFile();
+    if(fs.existsSync(file)) {
+      fs.unlink(file, (err) => {
+        cb(err)
+      })
+    }
+    else {
+      cb(false)
     }
   },
   
