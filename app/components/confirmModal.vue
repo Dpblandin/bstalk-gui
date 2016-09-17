@@ -17,13 +17,7 @@
 
 <script>
     export default {
-        props:['repository', 'environment', 'onConfirm'],
-
-        data() {
-            return {
-                isVisible: true
-            }
-        },
+        props:['isVisible' ,'repository', 'environment', 'onConfirm'],
 
         methods: {
             cancelAction() {
@@ -31,19 +25,21 @@
             },
             confirmAction() {
                 this.isVisible = false
-                //this.onConfirm()
+                console.log('called here')
+                this.onConfirm()
             }
         },
 
         directives: {
             modal: {
                 bind() {
-                    $(this.el).modal('show').refresh()
+                    $(this.el).modal('refresh').modal('hide')
                 },
                 update(newVal, oldVal) {
-                    console.log(newVal)
                     if(!newVal) {
-                        $(this.el).modal('hide')
+                        $(this.el).modal('refresh').modal('hide')
+                    } else {
+                        $(this.el).modal('refresh').modal('show')
                     }
                 }
             }

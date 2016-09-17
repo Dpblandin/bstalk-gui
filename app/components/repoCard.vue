@@ -11,12 +11,7 @@
                 </div>
                 <div class="extra">
                     <span v-for="env in repository.environments" track-by="id">
-                        <confirm-modal v-if="showModal" :on-confirm="pushToEnv(env)"></confirm-modal>
-                        <button @click="confirm"
-                                class="ui labeled icon {{ env.color_label }} button">
-                            <i class="upload icon"></i>
-                            {{ env.name }}
-                        </button>
+                       <environment :repository="repository" :environment="env"></environment>
                     </span>
                 </div>
             </div>
@@ -25,37 +20,17 @@
 </template>
 
 <script>
-import beanstalk from '../lib/api'
-import Loader from './loader.vue'
-import ConfirmModal from './confirmModal.vue'
-import MessageBox from 'vue-msgbox'
+import Environment from './environment.vue'
 import moment from 'moment'
 
     export default {
-        components: {Loader, ConfirmModal},
+        components: {Environment},
 
         props: ['repository'],
-
-        data() {
-          return {
-              showModal: false
-          }
-        },
 
         computed: {
             formatedUpdatedDate() {
                 return moment(this.repository.updated_at).format('MMM Do YYYY [at] hh:mm')
-            }
-        },
-
-        methods: {
-            confirm() {
-                this.showModal = true
-            },
-            pushToEnv(env) {
-               this.showModal = false
-                console.log(env)
-                //beanstalk.deployToEnv(this.repository.name, env.id)
             }
         }
     }

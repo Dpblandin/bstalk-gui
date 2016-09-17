@@ -21,7 +21,6 @@ var colors = [
 
 const request = require('superagent');
 const _ = require('underscore');
-import config from '../config'
 
 const beanstalk = {
 
@@ -88,54 +87,59 @@ const beanstalk = {
             cb(res.body);
         });
     },
+   release(repoId, releaseId, cb) {
+     api(repoId + '/releases/' + releaseId).end(function (err, res) {
+       if (err) {
+         reportError(err);
+       }
 
-  checkReleaseState(repoName, releaseId, delay, cb) {
+       cb(res.body.release);
+     });
+   },
 
-  setTimeout(() => {
+  checkReleaseState(repoId, releaseId, delay, cb) {
 
-    beanstalk.release(repoName, releaseId, (release) => {
-      switch (release.state) {
+    setTimeout(() => {
 
-        case 'waiting':
-          logger.spin('waiting');
-          this.checkReleaseState(repoName, releaseId, 2000, cb);
-          break;
+      this.release(repoId, releaseId, (release) => {
+        switch (release.state) {
 
-        case 'pending':
-          logger.spin('pending');
-          this.checkReleaseState(repoName, releaseId, 2000, cb);
-          break;
+          case 'waiting':
+            this.checkReleaseState(repoId, releaseId, 2000, cb);
+            break;
 
-        case 'skipped':
-          cb.call();
-          break;
+          case 'pending':
+            this.checkReleaseState(repoId, releaseId, 2000, cb);
+            break;
 
-        case 'failed':
-          cb.call();
-          break;
+          case 'skipped':
+            cb.call('skipped');
+            break;
 
-        case 'success':
-          cb.call();
-          break;
+          case 'failed':
+            cb.call('failed');
+            break;
 
-        default:
-          logger.stopSpinner();
-          logger.warn('Unknown state  : ' + release.state);
-          cb.call();
-          break;
-      }
-    });
+          case 'success':
+            cb.call('success');
+            break;
 
-  }, delay || 0);
-},
-
-  deployToEnv(repoName, envId, cb) {
-      this.deploy(repoName, envId, null, comment, (release) =>{
-        this.checkReleaseState(repoName, release.id, 0, cb);
+          default:
+            cb.call(release.state);
+            break;
+        }
       });
-},
 
-deploy(repoName, serverEnvironmentId, revision, comment, cb) {
+    }, delay || 0);
+  },
+
+  deployToEnv(repoId, envId, cb) {
+    this.deploy(repoId, envId, null, comment, (release) => {
+      this.checkReleaseState(repoId, release.id, 0, cb);
+    });
+  },
+
+deploy(repoId, serverEnvironmentId, revision, comment, cb) {
         var release = {
             revision: revision
         };
@@ -144,7 +148,7 @@ deploy(repoName, serverEnvironmentId, revision, comment, cb) {
             release.comment = comment;
         }
 
-        this.api(repoName + '/releases.json?environment_id='+serverEnvironmentId, 'POST')
+        this.api(repoId + '/releases.json?environment_id='+serverEnvironmentId, 'POST')
             .send({ release: release })
             .end(function(err, res){
                 cb(err, res.body.release);
