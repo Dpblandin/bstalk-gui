@@ -10,10 +10,10 @@
 <body>
 <div id="app" class="app">
     <main class="main">
-        <sticky-refresh></sticky-refresh>
+        <sticky-refresh v-if="!isLoading"></sticky-refresh>
         <command v-if="commandOpened"></command>
         <loader v-if="isLoading"></loader>
-        <config v-if="incompleteConfigFile"
+        <config v-if="incompleteConfigFile && !isLoading"
                 :account="config.account"
                 :username="config.username"
                 :token="config.token">

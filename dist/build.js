@@ -92,7 +92,7 @@
 	    data: function data() {
 	        return {
 	            repositories: [],
-	            isLoading: false,
+	            isLoading: true,
 	            commandOpened: false,
 	            searchTerm: null,
 	            config: {
@@ -131,7 +131,6 @@
 	                return _electron.ipcRenderer.send('remove-repos-cache');
 	            }
 
-	            this.isLoading = true;
 	            _api2.default.setConfig(this.config);
 	            _electron.ipcRenderer.send('load-repos-cache');
 	            _electron.ipcRenderer.on('repos-cache-loaded', function (event, err, repos) {
@@ -15927,7 +15926,7 @@
 	//                 <span v-if="!releaseDone"> {{ releaseState }}</span>
 	//                 <div v-if="releaseDone">
 	//                     <a class="ui {{ releaseDoneUi.class }} label">{{ releaseDoneUi.message }}</a>
-	//                     {{ release.revision }}
+	//                     {{ deployLabel }}
 	//                 </div>
 	//
 	//             </div>
@@ -15974,6 +15973,9 @@
 	                    message: 'Successfully deployed!'
 	                };
 	            }
+	        },
+	        deployLabel: function deployLabel() {
+	            return this.release.environment_revision.substring(0, 8) + ': ' + this.release.comment;
 	        }
 	    },
 
@@ -16011,7 +16013,7 @@
 /* 88 */
 /***/ function(module, exports) {
 
-	module.exports = "\n\n\n\n\n\n<div v-modal=\"isVisible\" class=\"ui modal\">\n    <div class=\"header\">\n        Confirm deployment for: {{ repository.name }}\n    </div>\n    <div class=\"content\">\n        <div v-show=\"!confirmed\" class=\"description\">\n            <p>Deploy on: <a class=\"ui {{ environment.color_label }} label\">{{ environment.name }} ?</a></p>\n        </div>\n        <div v-show=\"confirmed\" class=\"description\">\n            <div v-if=\"!releaseDone\" class=\"ui active inline loader\"></div>\n            <span v-if=\"!releaseDone\"> {{ releaseState }}</span>\n            <div v-if=\"releaseDone\">\n                <a class=\"ui {{ releaseDoneUi.class }} label\">{{ releaseDoneUi.message }}</a>\n                {{ release.revision }}\n            </div>\n\n        </div>\n    </div>\n    <div class=\"actions\">\n        <div v-if=\"!confirmed\" @click=\"cancelAction\" class=\"ui red button\">Cancel</div>\n        <div v-if=\"!confirmed\" @click=\"confirmAction\" class=\"ui primary button\">Deploy</div>\n        <div v-if=\"releaseDone\" @click=\"cancelAction\" class=\"ui primary button\">Ok</div>\n    </div>\n</div>\n";
+	module.exports = "\n\n\n\n\n\n<div v-modal=\"isVisible\" class=\"ui modal\">\n    <div class=\"header\">\n        Confirm deployment for: {{ repository.name }}\n    </div>\n    <div class=\"content\">\n        <div v-show=\"!confirmed\" class=\"description\">\n            <p>Deploy on: <a class=\"ui {{ environment.color_label }} label\">{{ environment.name }} ?</a></p>\n        </div>\n        <div v-show=\"confirmed\" class=\"description\">\n            <div v-if=\"!releaseDone\" class=\"ui active inline loader\"></div>\n            <span v-if=\"!releaseDone\"> {{ releaseState }}</span>\n            <div v-if=\"releaseDone\">\n                <a class=\"ui {{ releaseDoneUi.class }} label\">{{ releaseDoneUi.message }}</a>\n                {{ deployLabel }}\n            </div>\n\n        </div>\n    </div>\n    <div class=\"actions\">\n        <div v-if=\"!confirmed\" @click=\"cancelAction\" class=\"ui red button\">Cancel</div>\n        <div v-if=\"!confirmed\" @click=\"confirmAction\" class=\"ui primary button\">Deploy</div>\n        <div v-if=\"releaseDone\" @click=\"cancelAction\" class=\"ui primary button\">Ok</div>\n    </div>\n</div>\n";
 
 /***/ },
 /* 89 */

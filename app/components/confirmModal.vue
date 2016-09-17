@@ -17,7 +17,7 @@
                 <span v-if="!releaseDone"> {{ releaseState }}</span>
                 <div v-if="releaseDone">
                     <a class="ui {{ releaseDoneUi.class }} label">{{ releaseDoneUi.message }}</a>
-                    {{ release.revision }}
+                    {{ deployLabel }}
                 </div>
 
             </div>
@@ -66,6 +66,10 @@
                         message: 'Successfully deployed!'
                     }
                 }
+            },
+
+            deployLabel() {
+                return `${this.release.environment_revision.substring(0, 8)}: ${this.release.comment}`
             }
         },
 

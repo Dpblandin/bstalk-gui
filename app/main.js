@@ -13,7 +13,7 @@ new Vue({
     data() {
         return {
             repositories: [],
-            isLoading: false,
+            isLoading: true,
             commandOpened: false,
             searchTerm: null,
             config:  {
@@ -47,7 +47,6 @@ new Vue({
                 return ipcRenderer.send('remove-repos-cache')
             }
 
-            this.isLoading = true
             beanstalk.setConfig(this.config)
             ipcRenderer.send('load-repos-cache');
             ipcRenderer.on('repos-cache-loaded', (event, err, repos) => {
