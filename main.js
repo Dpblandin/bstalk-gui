@@ -46,7 +46,9 @@ function setUpConfigFile() {
 
 function listenForConfigChanges() {
     ipcMain.on('config-file-changed', (event, arg) =>  {
-        config.removeReposFile();
+        config.removeReposFile((err) => {
+            event.sender.send('repos-cache-removed', err)
+        });
         config.updateConfigFile(arg, () => {
             event.sender.send('config-file-saved')
         })

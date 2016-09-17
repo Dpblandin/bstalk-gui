@@ -83,7 +83,7 @@ const config = {
       })
     }
     else {
-      cb(false)
+      cb(true)
     }
   },
   
