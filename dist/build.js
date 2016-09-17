@@ -123,24 +123,24 @@
 	        init: function init() {
 	            var _this2 = this;
 
-	            if (!this.incompleteConfigFile) {
-	                this.isLoading = true;
-	                _api2.default.setConfig(this.config);
-	                _electron.ipcRenderer.send('load-repos-cache');
-	                _electron.ipcRenderer.on('repos-cache-loaded', function (event, err, repos) {
-	                    var repositories = JSON.parse(repos);
-	                    if (!repositories) {
-	                        _this2.loadRepos();
-	                    } else {
-	                        _this2.repositories = repositories;
-	                        _this2.isLoading = false;
-	                    }
-
-	                    _this2.initCommandListeners();
-	                });
-	            } else {
-	                _electron.ipcRenderer.send('remove-repos-cache');
+	            if (this.incompleteConfigFile) {
+	                return _electron.ipcRenderer.send('remove-repos-cache');
 	            }
+
+	            this.isLoading = true;
+	            _api2.default.setConfig(this.config);
+	            _electron.ipcRenderer.send('load-repos-cache');
+	            _electron.ipcRenderer.on('repos-cache-loaded', function (event, err, repos) {
+	                var repositories = JSON.parse(repos);
+	                if (!repositories) {
+	                    _this2.loadRepos();
+	                } else {
+	                    _this2.repositories = repositories;
+	                    _this2.isLoading = false;
+	                }
+
+	                _this2.initCommandListeners();
+	            });
 	        },
 	        loadRepos: function loadRepos() {
 	            var _this3 = this;

@@ -42,24 +42,25 @@ new Vue({
 
     methods: {
         init() {
-            if(!this.incompleteConfigFile) {
-                this.isLoading = true
-                beanstalk.setConfig(this.config)
-                ipcRenderer.send('load-repos-cache');
-                ipcRenderer.on('repos-cache-loaded', (event, err, repos) => {
-                    const repositories = JSON.parse(repos)
-                    if(!repositories) {
-                        this.loadRepos()
-                    } else {
-                        this.repositories = repositories
-                        this.isLoading = false
-                    }
-
-                    this.initCommandListeners()
-                })
-            } else {
-                ipcRenderer.send('remove-repos-cache')
+            if(this.incompleteConfigFile) {
+                return ipcRenderer.send('remove-repos-cache')
             }
+
+            this.isLoading = true
+            beanstalk.setConfig(this.config)
+            ipcRenderer.send('load-repos-cache');
+            ipcRenderer.on('repos-cache-loaded', (event, err, repos) => {
+                const repositories = JSON.parse(repos)
+                if (!repositories) {
+                    this.loadRepos()
+                } else {
+                    this.repositories = repositories
+                    this.isLoading = false
+                }
+
+                this.initCommandListeners()
+            })
+
         },
 
         loadRepos() {
