@@ -12,7 +12,7 @@
             <label>Token</label>
             <input v-model="newToken" type="text" name="newToken" placeholder="Beanstalk token">
         </div>
-        <button @click="saveConfig" class="ui primary button" type="submit">Save and close</button>
+        <button disabled="{{ !isValid }}" @click="saveConfig" class="ui primary button" type="submit">Save and close</button>
         <button @click="clearReposCache" class="ui grey button" type="submit">Clear repositories cache</button>
     </form>
 </template>
@@ -34,6 +34,12 @@
                return this.account !== this.newAccount
                 || this.username !== this.newUsername
                 || this.token !== this.newToken
+            },
+
+            isValid() {
+                return this.newAccount.length > 0
+                        && this.newUsername.length > 0
+                        && this.newToken.length > 0
             }
         },
 

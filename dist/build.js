@@ -21143,6 +21143,9 @@
 	    computed: {
 	        hasNewConfigItem: function hasNewConfigItem() {
 	            return this.account !== this.newAccount || this.username !== this.newUsername || this.token !== this.newToken;
+	        },
+	        isValid: function isValid() {
+	            return this.newAccount.length > 0 && this.newUsername.length > 0 && this.newToken.length > 0;
 	        }
 	    },
 
@@ -21178,7 +21181,7 @@
 	//             <label>Token</label>
 	//             <input v-model="newToken" type="text" name="newToken" placeholder="Beanstalk token">
 	//         </div>
-	//         <button @click="saveConfig" class="ui primary button" type="submit">Save and close</button>
+	//         <button disabled="{{ !isValid }}" @click="saveConfig" class="ui primary button" type="submit">Save and close</button>
 	//         <button @click="clearReposCache" class="ui grey button" type="submit">Clear repositories cache</button>
 	//     </form>
 	// </template>
@@ -21195,7 +21198,7 @@
 /* 125 */
 /***/ function(module, exports) {
 
-	module.exports = "\n<form class=\"ui form\">\n    <div class=\"field\">\n        <label>Account</label>\n        <input v-model=\"newAccount\" type=\"text\" name=\"newAccount\" placeholder=\"Beanstalk account\">\n    </div>\n    <div class=\"field\">\n        <label>Username</label>\n        <input v-model=\"newUsername\" type=\"text\" name=\"newUsername\" placeholder=\"Beanstalk username\">\n    </div>\n    <div class=\"field\">\n        <label>Token</label>\n        <input v-model=\"newToken\" type=\"text\" name=\"newToken\" placeholder=\"Beanstalk token\">\n    </div>\n    <button @click=\"saveConfig\" class=\"ui primary button\" type=\"submit\">Save and close</button>\n    <button @click=\"clearReposCache\" class=\"ui grey button\" type=\"submit\">Clear repositories cache</button>\n</form>\n";
+	module.exports = "\n<form class=\"ui form\">\n    <div class=\"field\">\n        <label>Account</label>\n        <input v-model=\"newAccount\" type=\"text\" name=\"newAccount\" placeholder=\"Beanstalk account\">\n    </div>\n    <div class=\"field\">\n        <label>Username</label>\n        <input v-model=\"newUsername\" type=\"text\" name=\"newUsername\" placeholder=\"Beanstalk username\">\n    </div>\n    <div class=\"field\">\n        <label>Token</label>\n        <input v-model=\"newToken\" type=\"text\" name=\"newToken\" placeholder=\"Beanstalk token\">\n    </div>\n    <button disabled=\"{{ !isValid }}\" @click=\"saveConfig\" class=\"ui primary button\" type=\"submit\">Save and close</button>\n    <button @click=\"clearReposCache\" class=\"ui grey button\" type=\"submit\">Clear repositories cache</button>\n</form>\n";
 
 /***/ },
 /* 126 */
