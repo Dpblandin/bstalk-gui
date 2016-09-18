@@ -21132,16 +21132,31 @@
 
 	exports.default = {
 	    props: ['account', 'username', 'token'],
+	    data: function data() {
+	        return {
+	            newAccount: this.account,
+	            newUsername: this.username,
+	            newToken: this.token
+	        };
+	    },
+
+	    computed: {
+	        hasNewConfigItem: function hasNewConfigItem() {
+	            return this.account !== this.newAccount || this.username !== this.newUsername || this.token !== this.newToken;
+	        }
+	    },
 
 	    methods: {
 	        saveConfig: function saveConfig() {
-	            var config = {
-	                account: this.account,
-	                username: this.username,
-	                token: this.token
-	            };
-	            _electron.ipcRenderer.send('config-file-changed', config);
-	            this.$dispatch('config-file-changed', config);
+	            if (this.hasNewConfigItem) {
+	                var config = {
+	                    account: this.newAccount,
+	                    username: this.newUsername,
+	                    token: this.newToken
+	                };
+	                _electron.ipcRenderer.send('config-file-changed', config);
+	                this.$dispatch('config-file-changed', config);
+	            }
 	        },
 	        clearReposCache: function clearReposCache() {
 	            _electron.ipcRenderer.send('remove-repos-cache');
@@ -21153,15 +21168,15 @@
 	//     <form class="ui form">
 	//         <div class="field">
 	//             <label>Account</label>
-	//             <input v-model="account" type="text" name="account" placeholder="Beanstalk account">
+	//             <input v-model="newAccount" type="text" name="newAccount" placeholder="Beanstalk account">
 	//         </div>
 	//         <div class="field">
 	//             <label>Username</label>
-	//             <input v-model="username" type="text" name="username" placeholder="Beanstalk username">
+	//             <input v-model="newUsername" type="text" name="newUsername" placeholder="Beanstalk username">
 	//         </div>
 	//         <div class="field">
 	//             <label>Token</label>
-	//             <input v-model="token" type="text" name="token" placeholder="Beanstalk token">
+	//             <input v-model="newToken" type="text" name="newToken" placeholder="Beanstalk token">
 	//         </div>
 	//         <button @click="saveConfig" class="ui primary button" type="submit">Save and close</button>
 	//         <button @click="clearReposCache" class="ui grey button" type="submit">Clear repositories cache</button>
@@ -21180,7 +21195,7 @@
 /* 125 */
 /***/ function(module, exports) {
 
-	module.exports = "\n<form class=\"ui form\">\n    <div class=\"field\">\n        <label>Account</label>\n        <input v-model=\"account\" type=\"text\" name=\"account\" placeholder=\"Beanstalk account\">\n    </div>\n    <div class=\"field\">\n        <label>Username</label>\n        <input v-model=\"username\" type=\"text\" name=\"username\" placeholder=\"Beanstalk username\">\n    </div>\n    <div class=\"field\">\n        <label>Token</label>\n        <input v-model=\"token\" type=\"text\" name=\"token\" placeholder=\"Beanstalk token\">\n    </div>\n    <button @click=\"saveConfig\" class=\"ui primary button\" type=\"submit\">Save and close</button>\n    <button @click=\"clearReposCache\" class=\"ui grey button\" type=\"submit\">Clear repositories cache</button>\n</form>\n";
+	module.exports = "\n<form class=\"ui form\">\n    <div class=\"field\">\n        <label>Account</label>\n        <input v-model=\"newAccount\" type=\"text\" name=\"newAccount\" placeholder=\"Beanstalk account\">\n    </div>\n    <div class=\"field\">\n        <label>Username</label>\n        <input v-model=\"newUsername\" type=\"text\" name=\"newUsername\" placeholder=\"Beanstalk username\">\n    </div>\n    <div class=\"field\">\n        <label>Token</label>\n        <input v-model=\"newToken\" type=\"text\" name=\"newToken\" placeholder=\"Beanstalk token\">\n    </div>\n    <button @click=\"saveConfig\" class=\"ui primary button\" type=\"submit\">Save and close</button>\n    <button @click=\"clearReposCache\" class=\"ui grey button\" type=\"submit\">Clear repositories cache</button>\n</form>\n";
 
 /***/ },
 /* 126 */
