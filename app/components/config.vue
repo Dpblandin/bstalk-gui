@@ -12,8 +12,18 @@
             <label>Token</label>
             <input v-model="newToken" type="text" name="newToken" placeholder="Beanstalk token">
         </div>
-        <button disabled="{{ !isValid }}" @click="saveConfig" class="ui primary button" type="submit">Save and close</button>
-        <button @click="clearReposCache" class="ui grey button" type="submit">Clear repositories cache</button>
+        <button disabled="{{ !isValid }}"
+                @click="saveConfig"
+                class="ui primary button"
+                type="submit">
+            Save and close
+        </button>
+        <button disabled="{{ !clearReposEntity.enabled }}"
+                @click.prevent="clearReposCache"
+                class="ui grey button"
+                type="submit">
+            {{ clearReposEntity.message }}
+        </button>
     </form>
 </template>
 
@@ -26,7 +36,12 @@
             return {
                 newAccount: this.account,
                 newUsername: this.username,
-                newToken: this.token
+                newToken: this.token,
+
+                clearReposEntity: {
+                    message: 'Clear repositories cache',
+                    enabled: true
+                }
             }
         },
         computed: {
@@ -58,6 +73,8 @@
 
             clearReposCache() {
                 ipcRenderer.send('remove-repos-cache')
+                this.clearReposEntity.enabled = false
+                this.clearReposEntity.message = 'Repositories cache cleared'
             }
         }
     }
