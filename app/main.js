@@ -14,6 +14,7 @@ new Vue({
     el: '#app',
     data() {
         return {
+            ready: false,
             repositories: [],
             isLoading: false,
             commandOpened: false,
@@ -50,10 +51,12 @@ new Vue({
 
     methods: {
         init() {
+            this.isLoading = true
+            this.ready = true
             if(this.incompleteConfigFile) {
+                this.isLoading = false
                 return ipcRenderer.send('remove-repos-cache')
             }
-            this.isLoading = true;
             beanstalk.setConfig(this.config)
             ipcRenderer.send('load-repos-cache');
             ipcRenderer.on('repos-cache-loaded', (event, err, repos) => {

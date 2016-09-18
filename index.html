@@ -13,7 +13,7 @@
         <sticky-refresh v-if="!isLoading"></sticky-refresh>
         <command v-if="commandOpened && !isLoading" :repositories="repositories"></command>
         <loader v-if="isLoading"></loader>
-        <config v-if="(incompleteConfigFile && !isLoading) || (toggledView === 'settings')"
+        <config v-if="(incompleteConfigFile && !isLoading && ready) || (toggledView === 'settings')"
                 :account="config.account"
                 :username="config.username"
                 :token="config.token">

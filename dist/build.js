@@ -96,6 +96,7 @@
 	    el: '#app',
 	    data: function data() {
 	        return {
+	            ready: false,
 	            repositories: [],
 	            isLoading: false,
 	            commandOpened: false,
@@ -137,10 +138,12 @@
 	        init: function init() {
 	            var _this2 = this;
 
+	            this.isLoading = true;
+	            this.ready = true;
 	            if (this.incompleteConfigFile) {
+	                this.isLoading = false;
 	                return _electron.ipcRenderer.send('remove-repos-cache');
 	            }
-	            this.isLoading = true;
 	            _api2.default.setConfig(this.config);
 	            _electron.ipcRenderer.send('load-repos-cache');
 	            _electron.ipcRenderer.on('repos-cache-loaded', function (event, err, repos) {
