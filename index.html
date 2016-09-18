@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Bstalk gui</title>
     <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
-    <link rel="stylesheet" href="./node_modules/vue-msgbox/lib/vue-msgbox.css">
+    <link rel="stylesheet" href="./node_modules/sweetalert/dist/sweetalert.css">
     <link rel="stylesheet" href="./app/css/app.css">
 </head>
 <body>
@@ -13,12 +13,12 @@
         <sticky-refresh v-if="!isLoading"></sticky-refresh>
         <command v-if="commandOpened"></command>
         <loader v-if="isLoading"></loader>
-        <config v-if="incompleteConfigFile && !isLoading"
+        <config v-if="(incompleteConfigFile && !isLoading) || (toggledView === 'settings')"
                 :account="config.account"
                 :username="config.username"
                 :token="config.token">
         </config>
-        <div v-if="!isLoading && !incompleteConfigFile" class="ui top segment">
+        <div v-if="!isLoading && !incompleteConfigFile && toggledView === 'repos'" class="ui top segment">
             <div class="ui divided items">
                 <repo-card v-for="repository in repositories | filterBy searchTerm in 'name'"
                            track-by="id"
@@ -36,6 +36,7 @@
 
 </script>
 <script src="semantic/dist/semantic.min.js"></script>
+<script src="./node_modules/sweetalert/dist/sweetalert.min.js"></script>
 <script src="dist/build.js"></script>
 </body>
 </html>

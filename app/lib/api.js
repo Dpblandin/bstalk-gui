@@ -54,21 +54,18 @@ const beanstalk = {
 
     getRepositories(cb) {
         this.api('repositories').end(function(err, res){
-            if(err){
-                reportError(err);
-            }
 
-            cb(res.body);
+            cb(err, res.body);
         });
     },
 
     getEnvironments(repoName, cb) {
         this.api(repoName + '/server_environments').end(function(err, res) {
             if (err) {
-                reportError(err);
+                this.reportError(err);
             }
 
-            cb(
+            cb( err,
                 _.indexBy(
                     _.map(res.body, function(item) {
                         return item.server_environment;
@@ -81,7 +78,7 @@ const beanstalk = {
     environment(repoName, serverEnvironmentId, cb) {
         this.api(repoName + '/server_enironments/' + serverEnvironmentId).end(function(err, res){
             if(err){
-                reportError(err);
+                this.reportError(err);
             }
 
             cb(res.body);
@@ -90,7 +87,7 @@ const beanstalk = {
    release(repoId, releaseId, cb) {
      this.api(repoId + '/releases/' + releaseId).end(function (err, res) {
        if (err) {
-         reportError(err);
+         this.reportError(err);
        }
 
        cb(res.body.release);

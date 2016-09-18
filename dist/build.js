@@ -62,32 +62,37 @@
 
 	var _repoCard2 = _interopRequireDefault(_repoCard);
 
-	var _loader = __webpack_require__(93);
+	var _loader = __webpack_require__(95);
 
 	var _loader2 = _interopRequireDefault(_loader);
 
-	var _command = __webpack_require__(98);
+	var _command = __webpack_require__(100);
 
 	var _command2 = _interopRequireDefault(_command);
 
-	var _config = __webpack_require__(101);
+	var _config = __webpack_require__(103);
 
 	var _config2 = _interopRequireDefault(_config);
 
-	var _stickyRefresh = __webpack_require__(105);
+	var _stickyRefresh = __webpack_require__(107);
 
 	var _stickyRefresh2 = _interopRequireDefault(_stickyRefresh);
+
+	var _errorReporter = __webpack_require__(89);
+
+	var _errorReporter2 = _interopRequireDefault(_errorReporter);
 
 	var _api = __webpack_require__(75);
 
 	var _api2 = _interopRequireDefault(_api);
 
-	var _electron = __webpack_require__(103);
+	var _electron = __webpack_require__(105);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	new _vue2.default({
 	    components: { RepoCard: _repoCard2.default, Loader: _loader2.default, Command: _command2.default, StickyRefresh: _stickyRefresh2.default, Config: _config2.default },
+	    mixins: [_errorReporter2.default],
 	    el: '#app',
 	    data: function data() {
 	        return {
@@ -95,6 +100,7 @@
 	            isLoading: false,
 	            commandOpened: false,
 	            searchTerm: null,
+	            toggledView: 'repos',
 	            config: {
 	                account: '',
 	                username: '',
@@ -119,6 +125,10 @@
 	            var conf = JSON.parse(arg);
 	            _this.config = conf;
 	            _this.init();
+	        });
+
+	        _electron.ipcRenderer.on('toggle-view', function (event, arg) {
+	            _this.toggledView = arg;
 	        });
 	    },
 
@@ -148,7 +158,13 @@
 	        loadRepos: function loadRepos() {
 	            var _this3 = this;
 
-	            _api2.default.getRepositories(function (repos) {
+	            _api2.default.getRepositories(function (err, repos) {
+	                if (err) {
+	                    _this3.reportError(err);
+	                    _this3.isLoading = false;
+
+	                    return false;
+	                }
 	                _this3.repositories = repos.map(function (repo) {
 	                    return repo.repository;
 	                });
@@ -162,7 +178,13 @@
 	                        var repo = _step.value;
 
 	                        promises.push(new _promise2.default(function (resolve, reject) {
-	                            _api2.default.getEnvironments(repo.name, function (envs) {
+	                            _api2.default.getEnvironments(repo.name, function (err, envs) {
+	                                if (err) {
+	                                    _this3.reportError(err);
+	                                    _this3.isLoading = false;
+
+	                                    return false;
+	                                }
 	                                repo.environments = envs;
 	                                resolve(repo);
 	                            });
@@ -226,7 +248,9 @@
 	        'repos-search': function reposSearch(search) {
 	            this.searchTerm = search;
 	        },
-	        'config-file-changed': function configFileChanged() {
+	        'config-file-changed': function configFileChanged(config) {
+	            console.log(config);
+	            this.config = config;
 	            this.init();
 	        },
 	        'repo-deployed': function repoDeployed() {
@@ -11994,7 +12018,7 @@
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] app\\components\\repoCard.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(92)
+	__vue_template__ = __webpack_require__(94)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -12026,7 +12050,7 @@
 
 	var _environment2 = _interopRequireDefault(_environment);
 
-	var _moment = __webpack_require__(89);
+	var _moment = __webpack_require__(91);
 
 	var _moment2 = _interopRequireDefault(_moment);
 
@@ -12075,7 +12099,7 @@
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] app\\components\\environment.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(91)
+	__vue_template__ = __webpack_require__(93)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -12111,14 +12135,37 @@
 
 	var _confirmModal2 = _interopRequireDefault(_confirmModal);
 
-	var _moment = __webpack_require__(89);
+	var _errorReporter = __webpack_require__(89);
+
+	var _errorReporter2 = _interopRequireDefault(_errorReporter);
+
+	var _moment = __webpack_require__(91);
 
 	var _moment2 = _interopRequireDefault(_moment);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+	// <template>
+	//     <confirm-modal :is-visible.sync="showModal"
+	//                    :environment="environment"
+	//                    :repository="repository"
+	//                    :on-confirm="pushToEnv"
+	//                    :release-state="releaseState"
+	//                    :release.sync="release"
+	//     >
+	//
+	//     </confirm-modal>
+	//     <button @click="displayModal"
+	//             class="ui labeled icon {{ environment.color_label }} button">
+	//         <i class="upload icon"></i>
+	//         {{ environment.name }}
+	//     </button>
+	// </template>
+	//
+	// <script type="es6">
 	exports.default = {
 	    components: { ConfirmModal: _confirmModal2.default },
+	    mixins: [_errorReporter2.default],
 	    props: ['repository', 'environment'],
 
 	    data: function data() {
@@ -12170,7 +12217,7 @@
 
 	            _api2.default.deploy(this.repository.id, this.environment.id, null, false, function (err, release) {
 	                if (err) {
-	                    //@todo alert err here
+	                    _this2.reportError(err);
 	                    return false;
 	                }
 	                _this2.release = release;
@@ -12181,24 +12228,6 @@
 	    }
 	};
 	// </script>
-	// <template>
-	//     <confirm-modal :is-visible.sync="showModal"
-	//                    :environment="environment"
-	//                    :repository="repository"
-	//                    :on-confirm="pushToEnv"
-	//                    :release-state="releaseState"
-	//                    :release.sync="release"
-	//     >
-	//
-	//     </confirm-modal>
-	//     <button @click="displayModal"
-	//             class="ui labeled icon {{ environment.color_label }} button">
-	//         <i class="upload icon"></i>
-	//         {{ environment.name }}
-	//     </button>
-	// </template>
-	//
-	// <script type="es6">
 
 /***/ },
 /* 75 */
@@ -12238,20 +12267,17 @@
 	  },
 	  getRepositories: function getRepositories(cb) {
 	    this.api('repositories').end(function (err, res) {
-	      if (err) {
-	        reportError(err);
-	      }
 
-	      cb(res.body);
+	      cb(err, res.body);
 	    });
 	  },
 	  getEnvironments: function getEnvironments(repoName, cb) {
 	    this.api(repoName + '/server_environments').end(function (err, res) {
 	      if (err) {
-	        reportError(err);
+	        this.reportError(err);
 	      }
 
-	      cb(_.indexBy(_.map(res.body, function (item) {
+	      cb(err, _.indexBy(_.map(res.body, function (item) {
 	        return item.server_environment;
 	      }), 'name'));
 	    });
@@ -12259,7 +12285,7 @@
 	  environment: function environment(repoName, serverEnvironmentId, cb) {
 	    this.api(repoName + '/server_enironments/' + serverEnvironmentId).end(function (err, res) {
 	      if (err) {
-	        reportError(err);
+	        this.reportError(err);
 	      }
 
 	      cb(res.body);
@@ -12268,7 +12294,7 @@
 	  release: function release(repoId, releaseId, cb) {
 	    this.api(repoId + '/releases/' + releaseId).end(function (err, res) {
 	      if (err) {
-	        reportError(err);
+	        this.reportError(err);
 	      }
 
 	      cb(res.body.release);
@@ -16017,6 +16043,58 @@
 
 /***/ },
 /* 89 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __vue_script__, __vue_template__
+	__vue_script__ = __webpack_require__(90)
+	if (__vue_script__ &&
+	    __vue_script__.__esModule &&
+	    Object.keys(__vue_script__).length > 1) {
+	  console.warn("[vue-loader] app\\mixins\\errorReporter.vue: named exports in *.vue files are ignored.")}
+	module.exports = __vue_script__ || {}
+	if (module.exports.__esModule) module.exports = module.exports.default
+	if (__vue_template__) {
+	(typeof module.exports === "function" ? (module.exports.options || (module.exports.options = {})) : module.exports).template = __vue_template__
+	}
+	if (false) {(function () {  module.hot.accept()
+	  var hotAPI = require("vue-hot-reload-api")
+	  hotAPI.install(require("vue"), false)
+	  if (!hotAPI.compatible) return
+	  var id = "./errorReporter.vue"
+	  if (!module.hot.data) {
+	    hotAPI.createRecord(id, module.exports)
+	  } else {
+	    hotAPI.update(id, module.exports, __vue_template__)
+	  }
+	})()}
+
+/***/ },
+/* 90 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	//
+	// <script type="es6">
+	exports.default = {
+	    methods: {
+	        reportError: function reportError(err) {
+	            var type = arguments.length <= 1 || arguments[1] === undefined ? 'error' : arguments[1];
+
+	            if (err.response.error.text) {
+	                swal('Oops!', 'Something went wrong with beanstalk, here is what we know: ' + err.response.error.text, type);
+	            }
+	            swal('Oops!', 'Something went wrong with beanstalk, here is what we know: ' + err, type);
+	        }
+	    }
+	};
+	// </script>
+
+/***/ },
+/* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {//! moment.js
@@ -20253,10 +20331,10 @@
 	    return _moment;
 
 	}));
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(90)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(92)(module)))
 
 /***/ },
-/* 90 */
+/* 92 */
 /***/ function(module, exports) {
 
 	module.exports = function(module) {
@@ -20272,29 +20350,29 @@
 
 
 /***/ },
-/* 91 */
+/* 93 */
 /***/ function(module, exports) {
 
 	module.exports = "\n<confirm-modal :is-visible.sync=\"showModal\"\n               :environment=\"environment\"\n               :repository=\"repository\"\n               :on-confirm=\"pushToEnv\"\n               :release-state=\"releaseState\"\n               :release.sync=\"release\"\n>\n\n</confirm-modal>\n<button @click=\"displayModal\"\n        class=\"ui labeled icon {{ environment.color_label }} button\">\n    <i class=\"upload icon\"></i>\n    {{ environment.name }}\n</button>\n";
 
 /***/ },
-/* 92 */
+/* 94 */
 /***/ function(module, exports) {
 
 	module.exports = "\n<div class=\"item\">\n    <div class=\"content\">\n        <div class=\"header\">\n            <h2>{{ repository.name }}</h2>\n        </div>\n        <div class=\"description\">\n            <p>Url: {{ repository.repository_url_https }}</p>\n            <p>Last updated: {{ formatedUpdatedDate }}</p>\n        </div>\n        <div class=\"extra\">\n                <span v-for=\"env in repository.environments\" track-by=\"id\">\n                   <environment :repository.sync=\"repository\" :environment=\"env\"></environment>\n                </span>\n        </div>\n    </div>\n</div>\n";
 
 /***/ },
-/* 93 */
+/* 95 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
-	__webpack_require__(94)
-	__vue_script__ = __webpack_require__(96)
+	__webpack_require__(96)
+	__vue_script__ = __webpack_require__(98)
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] app\\components\\loader.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(97)
+	__vue_template__ = __webpack_require__(99)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -20313,13 +20391,13 @@
 	})()}
 
 /***/ },
-/* 94 */
+/* 96 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(95);
+	var content = __webpack_require__(97);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(86)(content, {});
@@ -20339,7 +20417,7 @@
 	}
 
 /***/ },
-/* 95 */
+/* 97 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(85)();
@@ -20353,7 +20431,7 @@
 
 
 /***/ },
-/* 96 */
+/* 98 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -20389,22 +20467,22 @@
 	// </script>
 
 /***/ },
-/* 97 */
+/* 99 */
 /***/ function(module, exports) {
 
 	module.exports = "\n\n\n\n\n<div>\n    <div class=\"ui active inverted dimmer\">\n        <div class=\"ui massive text loader\">Loading repositories and environments</div>\n    </div>\n    <p></p>\n    <p></p>\n    <p></p>\n</div>\n";
 
 /***/ },
-/* 98 */
+/* 100 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
-	__vue_script__ = __webpack_require__(99)
+	__vue_script__ = __webpack_require__(101)
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] app\\components\\command.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(100)
+	__vue_template__ = __webpack_require__(102)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -20423,7 +20501,7 @@
 	})()}
 
 /***/ },
-/* 99 */
+/* 101 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -20461,22 +20539,22 @@
 	// </script>
 
 /***/ },
-/* 100 */
+/* 102 */
 /***/ function(module, exports) {
 
 	module.exports = "\n<div class=\"flex-container\">\n    <input v-el:search-input @keyup=\"sendSearchEvent\" v-model=\"search\" class=\"shortcut-command\" type=\"text\">\n</div>\n";
 
 /***/ },
-/* 101 */
+/* 103 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
-	__vue_script__ = __webpack_require__(102)
+	__vue_script__ = __webpack_require__(104)
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] app\\components\\config.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(104)
+	__vue_template__ = __webpack_require__(106)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -20495,7 +20573,7 @@
 	})()}
 
 /***/ },
-/* 102 */
+/* 104 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -20504,7 +20582,7 @@
 	    value: true
 	});
 
-	var _electron = __webpack_require__(103);
+	var _electron = __webpack_require__(105);
 
 	exports.default = {
 	    props: ['account', 'username', 'token'],
@@ -20517,7 +20595,10 @@
 	                token: this.token
 	            };
 	            _electron.ipcRenderer.send('config-file-changed', config);
-	            this.$dispatch('config-file-changed');
+	            this.$dispatch('config-file-changed', config);
+	        },
+	        clearReposCache: function clearReposCache() {
+	            _electron.ipcRenderer.send('remove-repos-cache');
 	        }
 	    }
 	};
@@ -20537,34 +20618,35 @@
 	//             <input v-model="token" type="text" name="token" placeholder="Beanstalk token">
 	//         </div>
 	//         <button @click="saveConfig" class="ui primary button" type="submit">Save and close</button>
+	//         <button @click="clearReposCache" class="ui grey button" type="submit">Clear repositories cache</button>
 	//     </form>
 	// </template>
 	//
 	// <script>
 
 /***/ },
-/* 103 */
+/* 105 */
 /***/ function(module, exports) {
 
 	module.exports = require("electron");
 
 /***/ },
-/* 104 */
+/* 106 */
 /***/ function(module, exports) {
 
-	module.exports = "\n<form class=\"ui form\">\n    <div class=\"field\">\n        <label>Account</label>\n        <input v-model=\"account\" type=\"text\" name=\"account\" placeholder=\"Beanstalk account\">\n    </div>\n    <div class=\"field\">\n        <label>Username</label>\n        <input v-model=\"username\" type=\"text\" name=\"username\" placeholder=\"Beanstalk username\">\n    </div>\n    <div class=\"field\">\n        <label>Token</label>\n        <input v-model=\"token\" type=\"text\" name=\"token\" placeholder=\"Beanstalk token\">\n    </div>\n    <button @click=\"saveConfig\" class=\"ui primary button\" type=\"submit\">Save and close</button>\n</form>\n";
+	module.exports = "\n<form class=\"ui form\">\n    <div class=\"field\">\n        <label>Account</label>\n        <input v-model=\"account\" type=\"text\" name=\"account\" placeholder=\"Beanstalk account\">\n    </div>\n    <div class=\"field\">\n        <label>Username</label>\n        <input v-model=\"username\" type=\"text\" name=\"username\" placeholder=\"Beanstalk username\">\n    </div>\n    <div class=\"field\">\n        <label>Token</label>\n        <input v-model=\"token\" type=\"text\" name=\"token\" placeholder=\"Beanstalk token\">\n    </div>\n    <button @click=\"saveConfig\" class=\"ui primary button\" type=\"submit\">Save and close</button>\n    <button @click=\"clearReposCache\" class=\"ui grey button\" type=\"submit\">Clear repositories cache</button>\n</form>\n";
 
 /***/ },
-/* 105 */
+/* 107 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
-	__vue_script__ = __webpack_require__(106)
+	__vue_script__ = __webpack_require__(108)
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] app\\components\\stickyRefresh.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(107)
+	__vue_template__ = __webpack_require__(109)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -20583,7 +20665,7 @@
 	})()}
 
 /***/ },
-/* 106 */
+/* 108 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -20606,7 +20688,7 @@
 	// </script>
 
 /***/ },
-/* 107 */
+/* 109 */
 /***/ function(module, exports) {
 
 	module.exports = "\n<div class=\"right ui rail\">\n    <div class=\"ui sticky\">\n        <button class=\"ui primary labeled icon button\">\n            <i class=\"refresh icon\"></i>\n            Refresh\n        </button>\n    </div>\n</div>\n";

@@ -4,11 +4,13 @@ import Loader from './components/loader.vue'
 import Command from './components/command.vue'
 import Config from './components/config.vue'
 import StickyRefresh from './components/stickyRefresh.vue'
+import ErrorReporter from'./mixins/errorReporter.vue'
 import beanstalk from './lib/api'
 import {ipcRenderer} from 'electron'
 
 new Vue({
     components: {RepoCard, Loader, Command, StickyRefresh, Config},
+    mixins: [ErrorReporter],
     el: '#app',
     data() {
         return {
@@ -16,6 +18,7 @@ new Vue({
             isLoading: false,
             commandOpened: false,
             searchTerm: null,
+            toggledView: 'repos',
             config:  {
                 account: '',
                 username: '',
@@ -38,6 +41,10 @@ new Vue({
             const conf = JSON.parse(arg)
             this.config = conf
             this.init()
+        })
+
+        ipcRenderer.on('toggle-view', (event, arg) => {
+            this.toggledView = arg
         })
     },
 
@@ -64,14 +71,26 @@ new Vue({
         },
 
         loadRepos() {
-            beanstalk.getRepositories((repos) => {
+            beanstalk.getRepositories((err, repos) => {
+                if(err) {
+                    this.reportError(err)
+                    this.isLoading = false
+
+                    return false
+                }
                 this.repositories = repos.map((repo) => {
                     return repo.repository
                 })
                 let promises = [];
                 for(let repo of this.repositories) {
                     promises.push(new Promise((resolve, reject) => {
-                        beanstalk.getEnvironments(repo.name, (envs) => {
+                        beanstalk.getEnvironments(repo.name, (err, envs) => {
+                            if(err) {
+                              this.reportError(err)
+                                this.isLoading = false
+
+                                return false
+                            }
                             repo.environments = envs
                             resolve(repo)
                         })
@@ -104,7 +123,7 @@ new Vue({
         },
         toggleCommand(force = false) {
             if(force) {
-                return this.commandOpened = false;
+                return this.commandOpened = false
             }
             return this.commandOpened = !this.commandOpened
         }
@@ -114,8 +133,10 @@ new Vue({
         'repos-search'(search) {
             this.searchTerm = search
         },
-        'config-file-changed'() {
-            this.init();
+        'config-file-changed'(config) {
+            console.log(config)
+            this.config = config
+            this.init()
         },
         'repo-deployed'() {
             this.sendReposLoadedEvent()

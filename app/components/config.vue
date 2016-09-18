@@ -13,6 +13,7 @@
             <input v-model="token" type="text" name="token" placeholder="Beanstalk token">
         </div>
         <button @click="saveConfig" class="ui primary button" type="submit">Save and close</button>
+        <button @click="clearReposCache" class="ui grey button" type="submit">Clear repositories cache</button>
     </form>
 </template>
 
@@ -30,7 +31,11 @@
                     token: this.token
                 }
                 ipcRenderer.send('config-file-changed', config)
-                this.$dispatch('config-file-changed')
+                this.$dispatch('config-file-changed', config)
+            },
+
+            clearReposCache() {
+                ipcRenderer.send('remove-repos-cache')
             }
         }
     }

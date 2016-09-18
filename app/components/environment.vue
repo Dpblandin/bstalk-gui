@@ -18,10 +18,12 @@
 <script type="es6">
     import beanstalk from '../lib/api'
     import ConfirmModal from './confirmModal.vue'
+    import ErrorReporter from '../mixins/errorReporter.vue'
     import moment from 'moment'
 
     export default {
         components: { ConfirmModal },
+        mixins: [ErrorReporter],
         props: ['repository', 'environment'],
 
         data() {
@@ -68,7 +70,7 @@
             pushToEnv() {
                 beanstalk.deploy(this.repository.id, this.environment.id, null, false, (err, release) => {
                     if(err) {
-                        //@todo alert err here
+                        this.reportError(err)
                         return false;
                     }
                     this.release = release

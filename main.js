@@ -12,17 +12,56 @@ const template = [
         submenu: [
             {
                 label: 'Settings',
-                accelerator: 'CmdOrCtrl+S'
+                accelerator: 'CmdOrCtrl+S',
+                click(item, focusedWindow) {
+                   if(focusedWindow) focusedWindow.webContents.send('toggle-view', 'settings')
+                }
             },
             {
                 label: 'Exit',
                 role: 'quit'
-            },
+            }
         ]
-    }
+    },
+    {
+        label: 'View',
+        submenu: [
+            {
+                label: 'Refresh',
+                accelerator: 'CmdOrCtrl+R',
+                click (item, focusedWindow) {
+                    if(focusedWindow) focusedWindow.reload()
+                }
+            },
+            {
+                label: 'Toggle Developer Tools',
+                accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
+                click (item, focusedWindow) {
+                    if (focusedWindow) focusedWindow.webContents.toggleDevTools()
+                }
+            },
+            {
+                label: 'Fullscreen',
+                role: 'togglefullscreen'
+            },
+
+        ]
+    },
+    {
+        role: 'window',
+        submenu: [
+            {
+                role: 'minimize'
+            },
+            {
+                role: 'close'
+            }
+        ]
+    },
 ]
 
 function init() {
+    buildMenu()
     createWindow()
     setUpConfigFile()
     listenForConfigChanges()
@@ -30,6 +69,11 @@ function init() {
     cacheRepositories()
     removeRepositoriesCache()
     setupGlobalShortcuts()
+}
+
+function buildMenu() {
+    const menu = Menu.buildFromTemplate(template)
+    Menu.setApplicationMenu(menu)
 }
 
 function setUpConfigFile() {
