@@ -94,7 +94,10 @@ new Vue({
 
                                 return false
                             }
-                            repo.environments = envs
+                            repo.environments = []
+                            for(let item in envs) {
+                                repo.environments.push(envs[item])
+                            }
                             resolve(repo)
                         })
                     }))
@@ -143,6 +146,10 @@ new Vue({
         },
         'repo-deployed'() {
             this.sendReposLoadedEvent()
+        },
+
+        'deploy-repo'(repo) {
+            this.$broadcast('deploy-repo', repo)
         }
     }
 })

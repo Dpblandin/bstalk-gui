@@ -1,21 +1,15 @@
 <template>
     <div class="search flex-container">
         <input v-el:search-input
-               @keydown="sendSearchEvent"
                v-model="search"
                class="shortcut-command"
                type="text"
         >
-        <div v-show="hasResults" class="ui divided items search-results">
-            <div v-for="repo in foundRepos" track-by="id">
-                <div v-if="!envSearch" v-for="nameAndEnv in repo.nameAndEnvs" class="result item">
-                    <div class="middle aligned content">
-                        {{ nameAndEnv }}
-                    </div>
-                </div>
-                <div v-if="envSearch" v-for="match in repo.matched" class="result item">
-                    <div class="middle aligned content">
-                        {{ match }}
+        <div v-if="search.length" class="ui divided items search-results">
+            <div v-for="repo in searchableRepos" track-by="id">
+                <div v-for="nameAndEnv in repo.nameAndEnvs | filterBy search in 'name'" class="result item">
+                    <div @click="sendDeployEvent(repo, nameAndEnv.id)" class="middle aligned content">
+                        {{ nameAndEnv.name }}
                     </div>
                 </div>
             </div>
@@ -34,50 +28,27 @@
         },
 
         computed: {
-            envSearch() {
-                const [repoName, env] = this.search.split(' ')
-
-                return env !== undefined
-            },
-            foundRepos() {
-                // (renault-qu)+(.)*( )+(rec?)+
-                if(this.search.length > 0) {
-                    const [repoName, env] = this.search.split(' ')
-                    let regex = new RegExp(`(${repoName})+(.)*( )+(.*?)+`, 'i')
-                    if(env) {
-                        regex = new RegExp(`(${repoName})+(.)*( )+(.*${env}?)+`, 'i')
+            searchableRepos() {
+                return this.repositories.map((repo) => {
+                    repo.nameAndEnvs = []
+                    for (let env of repo.environments) {
+                        repo.nameAndEnvs.push(
+                                {
+                                    name: repo.name + ' ' + env.name,
+                                    id: env.id
+                                }
+                        )
                     }
 
-                    return this.repositories.filter((repo) => {
-                        repo.nameAndEnvs = []
-                        for (let env in repo.environments) {
-                            repo.nameAndEnvs.push(repo.name + ' ' + env)
-                        }
+                    return repo
 
-
-                        repo.matched = []
-                        for (let env of repo.nameAndEnvs) {
-                            if (regex.exec(env)) {
-                                repo.matched.push(env)
-                            }
-                        }
-
-                    return repo.matched.length > 0
-
-                    })
-                }
-
-                return []
-            },
-
-            hasResults() {
-                return this.foundRepos.length > 0
+                })
             }
         },
 
         methods: {
-            sendSearchEvent() {
-                //this.$dispatch('repos-search', this.search)
+            sendDeployEvent(repo, envId) {
+              this.$dispatch('deploy-repo', {repoId: repo.id, envId})
             }
         },
 
