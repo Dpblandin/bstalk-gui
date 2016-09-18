@@ -1,5 +1,6 @@
-const {app, BrowserWindow, Menu, globalShortcut, ipcMain} = require('electron')
-const fs = require('fs');
+const {app, BrowserWindow, Menu, ipcMain} = require('electron')
+const electronLocalshortcut = require('electron-localshortcut');
+const fs = require('fs')
 const config = require('./app/lib/config')
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -123,11 +124,11 @@ function removeRepositoriesCache() {
 }
 
 function setupGlobalShortcuts() {
-    globalShortcut.register('ctrl+P', () => {
+    electronLocalshortcut.register(win, 'ctrl+P', () => {
         win.webContents.send('shortcut-command', 0)
     });
 
-    globalShortcut.register('Esc', () => {
+    electronLocalshortcut.register(win, 'Esc', () => {
         win.webContents.send('exit-command', 0)
     });
 }
@@ -174,4 +175,9 @@ app.on('activate', () => {
     if (win === null) {
         createWindow()
     }
+})
+
+app.on('will-quit', () => {
+    // Unregister all shortcuts.
+    electronLocalshortcut.unregisterAll(win)
 })
