@@ -1,24 +1,5 @@
-.mdl-button.red,
-.mdl-button.pink {
-    background-color: rgb(255, 148, 148);
-}
-.mdl-button.yellow {
-    background-color: rgb(230, 215, 65);
-}
-.mdl-button.orange {
-    background-color: rgb(247, 193, 128);
-}
-.mdl-button.violet {
-    background-color: rgb(241, 172, 251);
-}
-.mdl-button.blue,
-.mdl-button.green-blue,
-.mdl-button.sky-blue {
-    background-color: rgb(173, 203, 255);
-}
-.mdl-button.green,
-.mdl-button.aqua-green {
-    background-color: rgb(154, 255, 221);
+[v-cloak] {
+    display: none;
 }
 
 .flex-container {

@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="./app/css/app.css">
 </head>
 <body>
-<div id="app" class="app">
+<div v-cloak id="app" class="app">
     <main class="main">
         <sticky-refresh v-if="!isLoading"></sticky-refresh>
         <command v-if="commandOpened && !isLoading" :repositories="repositories"></command>
