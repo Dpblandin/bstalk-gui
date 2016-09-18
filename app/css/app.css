@@ -47,3 +47,8 @@
     width: 85%;
     z-index: 5;
 }
+
+.search-results {
+    position: relative;
+    z-index: 5;
+}
