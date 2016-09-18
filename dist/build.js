@@ -70,11 +70,11 @@
 
 	var _command2 = _interopRequireDefault(_command);
 
-	var _config = __webpack_require__(122);
+	var _config = __webpack_require__(126);
 
 	var _config2 = _interopRequireDefault(_config);
 
-	var _stickyRefresh = __webpack_require__(126);
+	var _stickyRefresh = __webpack_require__(130);
 
 	var _stickyRefresh2 = _interopRequireDefault(_stickyRefresh);
 
@@ -86,7 +86,7 @@
 
 	var _api2 = _interopRequireDefault(_api);
 
-	var _electron = __webpack_require__(124);
+	var _electron = __webpack_require__(128);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -20485,7 +20485,7 @@
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] app\\components\\command.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(121)
+	__vue_template__ = __webpack_require__(125)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -20517,20 +20517,35 @@
 
 	var _typeof3 = _interopRequireDefault(_typeof2);
 
+	var _getIterator2 = __webpack_require__(1);
+
+	var _getIterator3 = _interopRequireDefault(_getIterator2);
+
+	var _slicedToArray2 = __webpack_require__(121);
+
+	var _slicedToArray3 = _interopRequireDefault(_slicedToArray2);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	// <template>
 	//     <div class="search flex-container">
 	//         <input v-el:search-input
-	//                @keyup="sendSearchEvent"
+	//                @keydown="sendSearchEvent"
 	//                v-model="search"
 	//                class="shortcut-command"
 	//                type="text"
 	//         >
 	//         <div v-show="hasResults" class="ui divided items search-results">
-	//             <div v-for="repo in foundRepos" class="result item">
-	//                 <div class="middle aligned content">
-	//                     {{ repo.name }}
+	//             <div v-for="repo in foundRepos" track-by="id">
+	//                 <div v-if="!envSearch" v-for="nameAndEnv in repo.nameAndEnvs" class="result item">
+	//                     <div class="middle aligned content">
+	//                         {{ nameAndEnv }}
+	//                     </div>
+	//                 </div>
+	//                 <div v-if="envSearch" v-for="match in repo.matched" class="result item">
+	//                     <div class="middle aligned content">
+	//                         {{ match }}
+	//                     </div>
 	//                 </div>
 	//             </div>
 	//         </div>
@@ -20549,15 +20564,71 @@
 
 
 	    computed: {
+	        envSearch: function envSearch() {
+	            var _search$split = this.search.split(' ');
+
+	            var _search$split2 = (0, _slicedToArray3.default)(_search$split, 2);
+
+	            var repoName = _search$split2[0];
+	            var env = _search$split2[1];
+
+
+	            return env !== undefined;
+	        },
 	        foundRepos: function foundRepos() {
 	            var _this = this;
 
+	            // (renault-qu)+(.)*( )+(rec?)+
 	            if (this.search.length > 0) {
 	                var _ret = function () {
-	                    var regex = new RegExp(_this.search + '+', 'i');
+	                    var _search$split3 = _this.search.split(' ');
+
+	                    var _search$split4 = (0, _slicedToArray3.default)(_search$split3, 2);
+
+	                    var repoName = _search$split4[0];
+	                    var env = _search$split4[1];
+
+	                    var regex = new RegExp('(' + repoName + ')+(.)*( )+(.*?)+', 'i');
+	                    if (env) {
+	                        regex = new RegExp('(' + repoName + ')+(.)*( )+(.*' + env + '?)+', 'i');
+	                    }
+
 	                    return {
 	                        v: _this.repositories.filter(function (repo) {
-	                            return regex.exec(repo.name);
+	                            repo.nameAndEnvs = [];
+	                            for (var _env in repo.environments) {
+	                                repo.nameAndEnvs.push(repo.name + ' ' + _env);
+	                            }
+
+	                            repo.matched = [];
+	                            var _iteratorNormalCompletion = true;
+	                            var _didIteratorError = false;
+	                            var _iteratorError = undefined;
+
+	                            try {
+	                                for (var _iterator = (0, _getIterator3.default)(repo.nameAndEnvs), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	                                    var _env2 = _step.value;
+
+	                                    if (regex.exec(_env2)) {
+	                                        repo.matched.push(_env2);
+	                                    }
+	                                }
+	                            } catch (err) {
+	                                _didIteratorError = true;
+	                                _iteratorError = err;
+	                            } finally {
+	                                try {
+	                                    if (!_iteratorNormalCompletion && _iterator.return) {
+	                                        _iterator.return();
+	                                    }
+	                                } finally {
+	                                    if (_didIteratorError) {
+	                                        throw _iteratorError;
+	                                    }
+	                                }
+	                            }
+
+	                            return repo.matched.length > 0;
 	                        })
 	                    };
 	                }();
@@ -20574,7 +20645,7 @@
 
 	    methods: {
 	        sendSearchEvent: function sendSearchEvent() {
-	            this.$dispatch('repos-search', this.search);
+	            //this.$dispatch('repos-search', this.search)
 	        }
 	    },
 
@@ -21089,21 +21160,105 @@
 
 /***/ },
 /* 121 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-	module.exports = "\n<div class=\"search flex-container\">\n    <input v-el:search-input\n           @keyup=\"sendSearchEvent\"\n           v-model=\"search\"\n           class=\"shortcut-command\"\n           type=\"text\"\n    >\n    <div v-show=\"hasResults\" class=\"ui divided items search-results\">\n        <div v-for=\"repo in foundRepos\" class=\"result item\">\n            <div class=\"middle aligned content\">\n                {{ repo.name }}\n            </div>\n        </div>\n    </div>\n</div>\n";
+	"use strict";
+
+	exports.__esModule = true;
+
+	var _isIterable2 = __webpack_require__(122);
+
+	var _isIterable3 = _interopRequireDefault(_isIterable2);
+
+	var _getIterator2 = __webpack_require__(1);
+
+	var _getIterator3 = _interopRequireDefault(_getIterator2);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = function () {
+	  function sliceIterator(arr, i) {
+	    var _arr = [];
+	    var _n = true;
+	    var _d = false;
+	    var _e = undefined;
+
+	    try {
+	      for (var _i = (0, _getIterator3.default)(arr), _s; !(_n = (_s = _i.next()).done); _n = true) {
+	        _arr.push(_s.value);
+
+	        if (i && _arr.length === i) break;
+	      }
+	    } catch (err) {
+	      _d = true;
+	      _e = err;
+	    } finally {
+	      try {
+	        if (!_n && _i["return"]) _i["return"]();
+	      } finally {
+	        if (_d) throw _e;
+	      }
+	    }
+
+	    return _arr;
+	  }
+
+	  return function (arr, i) {
+	    if (Array.isArray(arr)) {
+	      return arr;
+	    } else if ((0, _isIterable3.default)(Object(arr))) {
+	      return sliceIterator(arr, i);
+	    } else {
+	      throw new TypeError("Invalid attempt to destructure non-iterable instance");
+	    }
+	  };
+	}();
 
 /***/ },
 /* 122 */
 /***/ function(module, exports, __webpack_require__) {
 
+	module.exports = { "default": __webpack_require__(123), __esModule: true };
+
+/***/ },
+/* 123 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(3);
+	__webpack_require__(49);
+	module.exports = __webpack_require__(124);
+
+/***/ },
+/* 124 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var classof   = __webpack_require__(53)
+	  , ITERATOR  = __webpack_require__(46)('iterator')
+	  , Iterators = __webpack_require__(7);
+	module.exports = __webpack_require__(16).isIterable = function(it){
+	  var O = Object(it);
+	  return O[ITERATOR] !== undefined
+	    || '@@iterator' in O
+	    || Iterators.hasOwnProperty(classof(O));
+	};
+
+/***/ },
+/* 125 */
+/***/ function(module, exports) {
+
+	module.exports = "\n<div class=\"search flex-container\">\n    <input v-el:search-input\n           @keydown=\"sendSearchEvent\"\n           v-model=\"search\"\n           class=\"shortcut-command\"\n           type=\"text\"\n    >\n    <div v-show=\"hasResults\" class=\"ui divided items search-results\">\n        <div v-for=\"repo in foundRepos\" track-by=\"id\">\n            <div v-if=\"!envSearch\" v-for=\"nameAndEnv in repo.nameAndEnvs\" class=\"result item\">\n                <div class=\"middle aligned content\">\n                    {{ nameAndEnv }}\n                </div>\n            </div>\n            <div v-if=\"envSearch\" v-for=\"match in repo.matched\" class=\"result item\">\n                <div class=\"middle aligned content\">\n                    {{ match }}\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n";
+
+/***/ },
+/* 126 */
+/***/ function(module, exports, __webpack_require__) {
+
 	var __vue_script__, __vue_template__
-	__vue_script__ = __webpack_require__(123)
+	__vue_script__ = __webpack_require__(127)
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] app\\components\\config.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(125)
+	__vue_template__ = __webpack_require__(129)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -21122,7 +21277,7 @@
 	})()}
 
 /***/ },
-/* 123 */
+/* 127 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21131,7 +21286,7 @@
 	    value: true
 	});
 
-	var _electron = __webpack_require__(124);
+	var _electron = __webpack_require__(128);
 
 	exports.default = {
 	    props: ['account', 'username', 'token'],
@@ -21209,28 +21364,28 @@
 	// <script>
 
 /***/ },
-/* 124 */
+/* 128 */
 /***/ function(module, exports) {
 
 	module.exports = require("electron");
 
 /***/ },
-/* 125 */
+/* 129 */
 /***/ function(module, exports) {
 
 	module.exports = "\n<form class=\"ui form\">\n    <div class=\"field\">\n        <label>Account</label>\n        <input v-model=\"newAccount\" type=\"text\" name=\"newAccount\" placeholder=\"Beanstalk account\">\n    </div>\n    <div class=\"field\">\n        <label>Username</label>\n        <input v-model=\"newUsername\" type=\"text\" name=\"newUsername\" placeholder=\"Beanstalk username\">\n    </div>\n    <div class=\"field\">\n        <label>Token</label>\n        <input v-model=\"newToken\" type=\"text\" name=\"newToken\" placeholder=\"Beanstalk token\">\n    </div>\n    <button disabled=\"{{ !isValid }}\"\n            @click=\"saveConfig\"\n            class=\"ui primary button\"\n            type=\"submit\">\n        Save and close\n    </button>\n    <button disabled=\"{{ !clearReposEntity.enabled }}\"\n            @click.prevent=\"clearReposCache\"\n            class=\"ui grey button\"\n            type=\"submit\">\n        {{ clearReposEntity.message }}\n    </button>\n</form>\n";
 
 /***/ },
-/* 126 */
+/* 130 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __vue_script__, __vue_template__
-	__vue_script__ = __webpack_require__(127)
+	__vue_script__ = __webpack_require__(131)
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
 	  console.warn("[vue-loader] app\\components\\stickyRefresh.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(128)
+	__vue_template__ = __webpack_require__(132)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -21249,7 +21404,7 @@
 	})()}
 
 /***/ },
-/* 127 */
+/* 131 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -21272,7 +21427,7 @@
 	// </script>
 
 /***/ },
-/* 128 */
+/* 132 */
 /***/ function(module, exports) {
 
 	module.exports = "\n<div class=\"right ui rail\">\n    <div class=\"ui sticky\">\n        <button class=\"ui primary labeled icon button\">\n            <i class=\"refresh icon\"></i>\n            Refresh\n        </button>\n    </div>\n</div>\n";
