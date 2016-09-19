@@ -20537,8 +20537,11 @@
 	//         >
 	//         <div v-if="search.length" class="ui divided items search-results">
 	//             <div v-for="repo in searchableRepos" track-by="id">
-	//                 <div v-for="(key, nameAndEnv) in repo.nameAndEnvs | filterBy search in 'name'" class="result item">
-	//                     <div @click="sendDeployEvent(repo, nameAndEnv.id)" class="middle aligned content">
+	//                 <div v-for="(key, nameAndEnv) in repo.nameAndEnvs | filterBy search in 'name'"
+	//                      class="result item"
+	//                      @click="sendDeployEvent(repo, nameAndEnv.id)"
+	//                 >
+	//                     <div class="middle aligned content">
 	//                         <span> {{ nameAndEnv.repoName }}</span>
 	//                         <a class="ui small {{ nameAndEnv.colorLabel }} label">{{ nameAndEnv.envName }}</a>
 	//                     </div>
@@ -20617,7 +20620,7 @@
 /* 102 */
 /***/ function(module, exports) {
 
-	module.exports = "\n<div class=\"search flex-container\">\n    <input v-el:search-input\n           v-model=\"search\"\n           class=\"shortcut-command\"\n           type=\"text\"\n    >\n    <div v-if=\"search.length\" class=\"ui divided items search-results\">\n        <div v-for=\"repo in searchableRepos\" track-by=\"id\">\n            <div v-for=\"(key, nameAndEnv) in repo.nameAndEnvs | filterBy search in 'name'\" class=\"result item\">\n                <div @click=\"sendDeployEvent(repo, nameAndEnv.id)\" class=\"middle aligned content\">\n                    <span> {{ nameAndEnv.repoName }}</span>\n                    <a class=\"ui small {{ nameAndEnv.colorLabel }} label\">{{ nameAndEnv.envName }}</a>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n";
+	module.exports = "\n<div class=\"search flex-container\">\n    <input v-el:search-input\n           v-model=\"search\"\n           class=\"shortcut-command\"\n           type=\"text\"\n    >\n    <div v-if=\"search.length\" class=\"ui divided items search-results\">\n        <div v-for=\"repo in searchableRepos\" track-by=\"id\">\n            <div v-for=\"(key, nameAndEnv) in repo.nameAndEnvs | filterBy search in 'name'\"\n                 class=\"result item\"\n                 @click=\"sendDeployEvent(repo, nameAndEnv.id)\"\n            >\n                <div class=\"middle aligned content\">\n                    <span> {{ nameAndEnv.repoName }}</span>\n                    <a class=\"ui small {{ nameAndEnv.colorLabel }} label\">{{ nameAndEnv.envName }}</a>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n";
 
 /***/ },
 /* 103 */

@@ -7,8 +7,11 @@
         >
         <div v-if="search.length" class="ui divided items search-results">
             <div v-for="repo in searchableRepos" track-by="id">
-                <div v-for="(key, nameAndEnv) in repo.nameAndEnvs | filterBy search in 'name'" class="result item">
-                    <div @click="sendDeployEvent(repo, nameAndEnv.id)" class="middle aligned content">
+                <div v-for="(key, nameAndEnv) in repo.nameAndEnvs | filterBy search in 'name'"
+                     class="result item"
+                     @click="sendDeployEvent(repo, nameAndEnv.id)"
+                >
+                    <div class="middle aligned content">
                         <span> {{ nameAndEnv.repoName }}</span>
                         <a class="ui small {{ nameAndEnv.colorLabel }} label">{{ nameAndEnv.envName }}</a>
                     </div>
