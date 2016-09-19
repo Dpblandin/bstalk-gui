@@ -74,10 +74,6 @@
 
 	var _config2 = _interopRequireDefault(_config);
 
-	var _stickyRefresh = __webpack_require__(126);
-
-	var _stickyRefresh2 = _interopRequireDefault(_stickyRefresh);
-
 	var _errorReporter = __webpack_require__(89);
 
 	var _errorReporter2 = _interopRequireDefault(_errorReporter);
@@ -91,7 +87,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	new _vue2.default({
-	    components: { RepoCard: _repoCard2.default, Loader: _loader2.default, Command: _command2.default, StickyRefresh: _stickyRefresh2.default, Config: _config2.default },
+	    components: { RepoCard: _repoCard2.default, Loader: _loader2.default, Command: _command2.default, Config: _config2.default },
 	    mixins: [_errorReporter2.default],
 	    el: '#app',
 	    data: function data() {
@@ -21178,32 +21174,34 @@
 	};
 	// </script>
 	// <template>
-	//     <form class="ui form">
-	//         <div class="field">
-	//             <label>Account</label>
-	//             <input v-model="newAccount" type="text" name="newAccount" placeholder="Beanstalk account">
-	//         </div>
-	//         <div class="field">
-	//             <label>Username</label>
-	//             <input v-model="newUsername" type="text" name="newUsername" placeholder="Beanstalk username">
-	//         </div>
-	//         <div class="field">
-	//             <label>Token</label>
-	//             <input v-model="newToken" type="text" name="newToken" placeholder="Beanstalk token">
-	//         </div>
-	//         <button disabled="{{ !isValid }}"
-	//                 @click="saveConfig"
-	//                 class="ui primary button"
-	//                 type="submit">
-	//             Save and close
-	//         </button>
-	//         <button disabled="{{ !clearReposEntity.enabled }}"
-	//                 @click.prevent="clearReposCache"
-	//                 class="ui grey button"
-	//                 type="submit">
-	//             {{ clearReposEntity.message }}
-	//         </button>
-	//     </form>
+	//     <div class="ui segment">
+	//         <form class="ui form">
+	//             <div class="field">
+	//                 <label>Account</label>
+	//                 <input v-model="newAccount" type="text" name="newAccount" placeholder="Beanstalk account">
+	//             </div>
+	//             <div class="field">
+	//                 <label>Username</label>
+	//                 <input v-model="newUsername" type="text" name="newUsername" placeholder="Beanstalk username">
+	//             </div>
+	//             <div class="field">
+	//                 <label>Token</label>
+	//                 <input v-model="newToken" type="text" name="newToken" placeholder="Beanstalk token">
+	//             </div>
+	//             <button disabled="{{ !isValid }}"
+	//                     @click="saveConfig"
+	//                     class="ui primary button"
+	//                     type="submit">
+	//                 Save and close
+	//             </button>
+	//             <button disabled="{{ !clearReposEntity.enabled }}"
+	//                     @click.prevent="clearReposCache"
+	//                     class="ui grey button"
+	//                     type="submit">
+	//                 {{ clearReposEntity.message }}
+	//             </button>
+	//         </form>
+	//     </div>
 	// </template>
 	//
 	// <script>
@@ -21218,64 +21216,7 @@
 /* 125 */
 /***/ function(module, exports) {
 
-	module.exports = "\n<form class=\"ui form\">\n    <div class=\"field\">\n        <label>Account</label>\n        <input v-model=\"newAccount\" type=\"text\" name=\"newAccount\" placeholder=\"Beanstalk account\">\n    </div>\n    <div class=\"field\">\n        <label>Username</label>\n        <input v-model=\"newUsername\" type=\"text\" name=\"newUsername\" placeholder=\"Beanstalk username\">\n    </div>\n    <div class=\"field\">\n        <label>Token</label>\n        <input v-model=\"newToken\" type=\"text\" name=\"newToken\" placeholder=\"Beanstalk token\">\n    </div>\n    <button disabled=\"{{ !isValid }}\"\n            @click=\"saveConfig\"\n            class=\"ui primary button\"\n            type=\"submit\">\n        Save and close\n    </button>\n    <button disabled=\"{{ !clearReposEntity.enabled }}\"\n            @click.prevent=\"clearReposCache\"\n            class=\"ui grey button\"\n            type=\"submit\">\n        {{ clearReposEntity.message }}\n    </button>\n</form>\n";
-
-/***/ },
-/* 126 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __vue_script__, __vue_template__
-	__vue_script__ = __webpack_require__(127)
-	if (__vue_script__ &&
-	    __vue_script__.__esModule &&
-	    Object.keys(__vue_script__).length > 1) {
-	  console.warn("[vue-loader] app\\components\\stickyRefresh.vue: named exports in *.vue files are ignored.")}
-	__vue_template__ = __webpack_require__(128)
-	module.exports = __vue_script__ || {}
-	if (module.exports.__esModule) module.exports = module.exports.default
-	if (__vue_template__) {
-	(typeof module.exports === "function" ? (module.exports.options || (module.exports.options = {})) : module.exports).template = __vue_template__
-	}
-	if (false) {(function () {  module.hot.accept()
-	  var hotAPI = require("vue-hot-reload-api")
-	  hotAPI.install(require("vue"), false)
-	  if (!hotAPI.compatible) return
-	  var id = "./stickyRefresh.vue"
-	  if (!module.hot.data) {
-	    hotAPI.createRecord(id, module.exports)
-	  } else {
-	    hotAPI.update(id, module.exports, __vue_template__)
-	  }
-	})()}
-
-/***/ },
-/* 127 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	// <template>
-	//     <div class="right ui rail">
-	//         <div class="ui sticky">
-	//             <button class="ui primary labeled icon button">
-	//                 <i class="refresh icon"></i>
-	//                 Refresh
-	//             </button>
-	//         </div>
-	//     </div>
-	// </template>
-	// <script>
-	exports.default = {};
-	// </script>
-
-/***/ },
-/* 128 */
-/***/ function(module, exports) {
-
-	module.exports = "\n<div class=\"right ui rail\">\n    <div class=\"ui sticky\">\n        <button class=\"ui primary labeled icon button\">\n            <i class=\"refresh icon\"></i>\n            Refresh\n        </button>\n    </div>\n</div>\n";
+	module.exports = "\n<div class=\"ui segment\">\n    <form class=\"ui form\">\n        <div class=\"field\">\n            <label>Account</label>\n            <input v-model=\"newAccount\" type=\"text\" name=\"newAccount\" placeholder=\"Beanstalk account\">\n        </div>\n        <div class=\"field\">\n            <label>Username</label>\n            <input v-model=\"newUsername\" type=\"text\" name=\"newUsername\" placeholder=\"Beanstalk username\">\n        </div>\n        <div class=\"field\">\n            <label>Token</label>\n            <input v-model=\"newToken\" type=\"text\" name=\"newToken\" placeholder=\"Beanstalk token\">\n        </div>\n        <button disabled=\"{{ !isValid }}\"\n                @click=\"saveConfig\"\n                class=\"ui primary button\"\n                type=\"submit\">\n            Save and close\n        </button>\n        <button disabled=\"{{ !clearReposEntity.enabled }}\"\n                @click.prevent=\"clearReposCache\"\n                class=\"ui grey button\"\n                type=\"submit\">\n            {{ clearReposEntity.message }}\n        </button>\n    </form>\n</div>\n";
 
 /***/ }
 /******/ ]);

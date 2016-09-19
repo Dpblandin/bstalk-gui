@@ -10,7 +10,6 @@
 <body>
 <div v-cloak id="app" class="app">
     <main class="main">
-        <sticky-refresh v-if="!isLoading"></sticky-refresh>
         <command v-if="commandOpened && !isLoading" :repositories="repositories"></command>
         <loader v-if="isLoading"></loader>
         <config v-if="(incompleteConfigFile && !isLoading && ready) || (toggledView === 'settings')"
@@ -19,7 +18,7 @@
                 :token="config.token">
         </config>
         <div v-if="!isLoading && !incompleteConfigFile && toggledView === 'repos'" class="ui top segment">
-            <div class="ui divided items">
+            <div id="repositories" class="ui divided items">
                 <repo-card v-for="repository in repositories | filterBy searchTerm in 'name'"
                            track-by="id"
                            :repository.sync="repository">
