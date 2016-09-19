@@ -12,6 +12,7 @@
     width: 100vw;
     z-index: 5;
     flex-direction: column;
+    top: 0;
     padding: 50px;
 
 }
@@ -36,6 +37,9 @@
 }
 
 .search-results {
+    max-height: 320px;
+    overflow-y: scroll;
+    overflow-x: hidden;
     position: absolute;
     width: 80.5%;
     padding: 10px;
@@ -50,6 +54,7 @@
 
 .search-results .result {
     cursor: pointer;
+    padding: 15px 10px;
 }
 
 .search-results .result:hover {

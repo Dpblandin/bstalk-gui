@@ -7,9 +7,10 @@
         >
         <div v-if="search.length" class="ui divided items search-results">
             <div v-for="repo in searchableRepos" track-by="id">
-                <div v-for="nameAndEnv in repo.nameAndEnvs | filterBy search in 'name'" class="result item">
+                <div v-for="(key, nameAndEnv) in repo.nameAndEnvs | filterBy search in 'name'" class="result item">
                     <div @click="sendDeployEvent(repo, nameAndEnv.id)" class="middle aligned content">
-                        {{ nameAndEnv.name }}
+                        <span> {{ nameAndEnv.repoName }}</span>
+                        <a class="ui small {{ nameAndEnv.colorLabel }} label">{{ nameAndEnv.envName }}</a>
                     </div>
                 </div>
             </div>
@@ -23,7 +24,7 @@
 
         data() {
             return {
-                search: '',
+                search: ''
             }
         },
 
@@ -35,6 +36,9 @@
                         repo.nameAndEnvs.push(
                                 {
                                     name: repo.name + ' ' + env.name,
+                                    repoName: repo.name,
+                                    envName: env.name,
+                                    colorLabel: env.color_label,
                                     id: env.id
                                 }
                         )
