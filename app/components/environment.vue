@@ -78,6 +78,13 @@
                     this.$dispatch('repo-deployed')
                 })
             }
+        },
+        events: {
+            'deploy-repo'(repoEnv) {
+                if(repoEnv.repoId === this.repository.id && repoEnv.envId === this.environment.id) {
+                    this.displayModal()
+                }
+            }
         }
     }
 </script>

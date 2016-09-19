@@ -1,15 +1,16 @@
 <template>
     <div class="search flex-container">
         <input v-el:search-input
-               @keyup="sendSearchEvent"
                v-model="search"
                class="shortcut-command"
                type="text"
         >
-        <div v-show="hasResults" class="ui divided items search-results">
-            <div v-for="repo in foundRepos" class="result item">
-                <div class="middle aligned content">
-                    {{ repo.name }}
+        <div v-if="search.length" class="ui divided items search-results">
+            <div v-for="repo in searchableRepos" track-by="id">
+                <div v-for="nameAndEnv in repo.nameAndEnvs | filterBy search in 'name'" class="result item">
+                    <div @click="sendDeployEvent(repo, nameAndEnv.id)" class="middle aligned content">
+                        {{ nameAndEnv.name }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -22,30 +23,32 @@
 
         data() {
             return {
-                search: ''
+                search: '',
             }
         },
 
         computed: {
-            foundRepos() {
-                if(this.search.length > 0) {
-                    const regex = new RegExp(`${this.search}+`, 'i')
-                    return this.repositories.filter((repo) => {
-                        return regex.exec(repo.name)
-                    })
-                }
+            searchableRepos() {
+                return this.repositories.map((repo) => {
+                    repo.nameAndEnvs = []
+                    for (let env of repo.environments) {
+                        repo.nameAndEnvs.push(
+                                {
+                                    name: repo.name + ' ' + env.name,
+                                    id: env.id
+                                }
+                        )
+                    }
 
-                return []
-            },
+                    return repo
 
-            hasResults() {
-                return this.foundRepos.length > 0
+                })
             }
         },
 
         methods: {
-            sendSearchEvent() {
-                this.$dispatch('repos-search', this.search)
+            sendDeployEvent(repo, envId) {
+              this.$dispatch('deploy-repo', {repoId: repo.id, envId})
             }
         },
 

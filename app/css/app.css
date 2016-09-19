@@ -3,12 +3,16 @@
 }
 
 .flex-container {
-    align-items: flex-start;
+    align-items: center;
     display: flex;
-    height: 100%;
-    justify-content: center;
+    justify-content: flex-start;
     margin: 0;
-    padding: 0;
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    z-index: 5;
+    flex-direction: column;
+    padding: 50px;
 
 }
 
@@ -16,20 +20,39 @@
     background: rgba(0,0,0,0.5);
     content: '';
     height: 100%;
-    position: fixed;
+    position: absolute;
     width: 100vw;
-    z-index: 3;
+    top: 0;
+    left: 0;
+    z-index: 0;
 }
 .shortcut-command {
+    border: 0 none;
     height: 42px;
     padding: 0 10px;
     position: relative;
-    top: 50px;
     width: 85%;
     z-index: 5;
 }
 
 .search-results {
-    position: relative;
-    z-index: 5;
+    position: absolute;
+    width: 80.5%;
+    padding: 10px;
+    top: 92px;
+    z-index: 6;
+    background: #efefef;
+}
+
+.search-results.ui.items {
+    margin: 0;
+}
+
+.search-results .result {
+    cursor: pointer;
+}
+
+.search-results .result:hover {
+    cursor: pointer;
+    background-color: #c1c1c1;
 }
