@@ -16,7 +16,7 @@
 </template>
 
 <script type="es6">
-    import beanstalk from '../lib/api'
+    import beanstalk from '../services/api'
     import ConfirmModal from './confirmModal.vue'
     import ErrorReporter from '../mixins/errorReporter.vue'
     import moment from 'moment'

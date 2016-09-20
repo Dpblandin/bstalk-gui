@@ -4,7 +4,7 @@ import Loader from './components/loader.vue'
 import Command from './components/command.vue'
 import Config from './components/config.vue'
 import ErrorReporter from'./mixins/errorReporter.vue'
-import beanstalk from './lib/api'
+import beanstalk from './services/api'
 import {ipcRenderer} from 'electron'
 
 new Vue({

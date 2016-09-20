@@ -1,7 +1,7 @@
 const {app, BrowserWindow, Menu, ipcMain} = require('electron')
-const electronLocalshortcut = require('electron-localshortcut');
+const electronLocalshortcut = require('electron-localshortcut')
 const fs = require('fs')
-const config = require('./app/lib/config')
+const config = require('./app/services/config')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
