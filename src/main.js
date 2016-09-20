@@ -139,7 +139,6 @@ new Vue({
             this.searchTerm = search
         },
         'config-file-changed'(config) {
-            console.log(config)
             this.config = config
             this.init()
         },

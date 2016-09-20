@@ -251,7 +251,6 @@
 	            this.searchTerm = search;
 	        },
 	        'config-file-changed': function configFileChanged(config) {
-	            console.log(config);
 	            this.config = config;
 	            this.init();
 	        },
@@ -12022,7 +12021,7 @@
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
-	  console.warn("[vue-loader] app\\components\\repoCard.vue: named exports in *.vue files are ignored.")}
+	  console.warn("[vue-loader] src\\components\\repoCard.vue: named exports in *.vue files are ignored.")}
 	__vue_template__ = __webpack_require__(94)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
@@ -12103,7 +12102,7 @@
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
-	  console.warn("[vue-loader] app\\components\\environment.vue: named exports in *.vue files are ignored.")}
+	  console.warn("[vue-loader] src\\components\\environment.vue: named exports in *.vue files are ignored.")}
 	__vue_template__ = __webpack_require__(93)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
@@ -12247,8 +12246,19 @@
 
 	'use strict';
 
-	var request = __webpack_require__(76);
-	var _ = __webpack_require__(81);
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _superagent = __webpack_require__(76);
+
+	var _superagent2 = _interopRequireDefault(_superagent);
+
+	var _underscore = __webpack_require__(81);
+
+	var _underscore2 = _interopRequireDefault(_underscore);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var beanstalk = {
 
@@ -12264,7 +12274,7 @@
 	    api: function api(endpoint, method) {
 	        var vmethod = typeof method === 'undefined' ? 'GET' : 'POST';
 	        var url = 'https://' + this.config.account + '.beanstalkapp.com/api/' + endpoint + '.json';
-	        var req = vmethod === 'GET' ? request.get(url) : request.post(url);
+	        var req = vmethod === 'GET' ? _superagent2.default.get(url) : _superagent2.default.post(url);
 
 	        return req.auth(this.config.username, this.config.token).set('Content-Type', 'application/json');
 	    },
@@ -12287,7 +12297,7 @@
 	                this.reportError(err);
 	            }
 
-	            cb(err, _.indexBy(_.map(res.body, function (item) {
+	            cb(err, _underscore2.default.indexBy(_underscore2.default.map(res.body, function (item) {
 	                return item.server_environment;
 	            }), 'name'));
 	        });
@@ -12360,7 +12370,7 @@
 	    }
 	};
 
-	module.exports = beanstalk;
+	exports.default = beanstalk;
 
 /***/ },
 /* 76 */
@@ -15487,7 +15497,7 @@
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
-	  console.warn("[vue-loader] app\\components\\confirmModal.vue: named exports in *.vue files are ignored.")}
+	  console.warn("[vue-loader] src\\components\\confirmModal.vue: named exports in *.vue files are ignored.")}
 	__vue_template__ = __webpack_require__(88)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
@@ -15865,7 +15875,7 @@
 	//     </div>
 	// </template>
 	//
-	// <script>
+	// <script type="es6">
 	exports.default = {
 	    props: ['isVisible', 'repository', 'environment', 'onConfirm', 'releaseState', 'release'],
 
@@ -15907,9 +15917,13 @@
 
 	    methods: {
 	        cancelAction: function cancelAction() {
+	            var _this = this;
+
 	            this.isVisible = false;
-	            this.confirmed = false;
-	            this.release = {};
+	            setTimeout(function () {
+	                _this.confirmed = false;
+	                _this.release = {};
+	            }, 1000);
 	        },
 	        confirmAction: function confirmAction() {
 	            this.confirmed = true;
@@ -15950,7 +15964,7 @@
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
-	  console.warn("[vue-loader] app\\mixins\\errorReporter.vue: named exports in *.vue files are ignored.")}
+	  console.warn("[vue-loader] src\\mixins\\errorReporter.vue: named exports in *.vue files are ignored.")}
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
 	if (__vue_template__) {
@@ -20271,7 +20285,7 @@
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
-	  console.warn("[vue-loader] app\\components\\loader.vue: named exports in *.vue files are ignored.")}
+	  console.warn("[vue-loader] src\\components\\loader.vue: named exports in *.vue files are ignored.")}
 	__vue_template__ = __webpack_require__(99)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
@@ -20381,7 +20395,7 @@
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
-	  console.warn("[vue-loader] app\\components\\command.vue: named exports in *.vue files are ignored.")}
+	  console.warn("[vue-loader] src\\components\\command.vue: named exports in *.vue files are ignored.")}
 	__vue_template__ = __webpack_require__(102)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
@@ -20423,9 +20437,10 @@
 	//                class="shortcut-command"
 	//                type="text"
 	//         >
-	//         <div v-if="search.length" class="ui divided items search-results">
+	//         <div v-show="search.length" class="ui divided items search-results">
 	//             <div v-for="repo in searchableRepos" track-by="id">
 	//                 <div v-for="(key, nameAndEnv) in repo.nameAndEnvs | filterBy search in 'name'"
+	//                      track-by="id"
 	//                      class="result item"
 	//                      @click="sendDeployEvent(repo, nameAndEnv.id)"
 	//                 >
@@ -20498,6 +20513,7 @@
 
 	    events: {
 	        'focus-command': function focusCommand() {
+	            this.search = '';
 	            this.$els.searchInput.focus();
 	        }
 	    }
@@ -20508,7 +20524,7 @@
 /* 102 */
 /***/ function(module, exports) {
 
-	module.exports = "\n<div class=\"search flex-container\">\n    <input v-el:search-input\n           v-model=\"search\"\n           class=\"shortcut-command\"\n           type=\"text\"\n    >\n    <div v-if=\"search.length\" class=\"ui divided items search-results\">\n        <div v-for=\"repo in searchableRepos\" track-by=\"id\">\n            <div v-for=\"(key, nameAndEnv) in repo.nameAndEnvs | filterBy search in 'name'\"\n                 class=\"result item\"\n                 @click=\"sendDeployEvent(repo, nameAndEnv.id)\"\n            >\n                <div class=\"middle aligned content\">\n                    <span> {{ nameAndEnv.repoName }}</span>\n                    <a class=\"ui small {{ nameAndEnv.colorLabel }} label\">{{ nameAndEnv.envName }}</a>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n";
+	module.exports = "\n<div class=\"search flex-container\">\n    <input v-el:search-input\n           v-model=\"search\"\n           class=\"shortcut-command\"\n           type=\"text\"\n    >\n    <div v-show=\"search.length\" class=\"ui divided items search-results\">\n        <div v-for=\"repo in searchableRepos\" track-by=\"id\">\n            <div v-for=\"(key, nameAndEnv) in repo.nameAndEnvs | filterBy search in 'name'\"\n                 track-by=\"id\"\n                 class=\"result item\"\n                 @click=\"sendDeployEvent(repo, nameAndEnv.id)\"\n            >\n                <div class=\"middle aligned content\">\n                    <span> {{ nameAndEnv.repoName }}</span>\n                    <a class=\"ui small {{ nameAndEnv.colorLabel }} label\">{{ nameAndEnv.envName }}</a>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n";
 
 /***/ },
 /* 103 */
@@ -20519,7 +20535,7 @@
 	if (__vue_script__ &&
 	    __vue_script__.__esModule &&
 	    Object.keys(__vue_script__).length > 1) {
-	  console.warn("[vue-loader] app\\components\\config.vue: named exports in *.vue files are ignored.")}
+	  console.warn("[vue-loader] src\\components\\config.vue: named exports in *.vue files are ignored.")}
 	__vue_template__ = __webpack_require__(106)
 	module.exports = __vue_script__ || {}
 	if (module.exports.__esModule) module.exports = module.exports.default
@@ -20623,6 +20639,11 @@
 	//             </button>
 	//         </form>
 	//     </div>
+	//     <div class="ui segment">
+	//         <h3>Shortcut commands</h3>
+	//         <p><i>CTRL / CMD + P</i> : Open search bar</p>
+	//         <p><i>CTRL / CMD + R</i> : Refresh</p>
+	//     </div>
 	// </template>
 	//
 	// <script>
@@ -20637,7 +20658,7 @@
 /* 106 */
 /***/ function(module, exports) {
 
-	module.exports = "\n<div class=\"ui segment\">\n    <form class=\"ui form\">\n        <div class=\"field\">\n            <label>Account</label>\n            <input v-model=\"newAccount\" type=\"text\" name=\"newAccount\" placeholder=\"Beanstalk account\">\n        </div>\n        <div class=\"field\">\n            <label>Username</label>\n            <input v-model=\"newUsername\" type=\"text\" name=\"newUsername\" placeholder=\"Beanstalk username\">\n        </div>\n        <div class=\"field\">\n            <label>Token</label>\n            <input v-model=\"newToken\" type=\"text\" name=\"newToken\" placeholder=\"Beanstalk token\">\n        </div>\n        <button disabled=\"{{ !isValid }}\"\n                @click=\"saveConfig\"\n                class=\"ui primary button\"\n                type=\"submit\">\n            Save and close\n        </button>\n        <button disabled=\"{{ !clearReposEntity.enabled }}\"\n                @click.prevent=\"clearReposCache\"\n                class=\"ui grey button\"\n                type=\"submit\">\n            {{ clearReposEntity.message }}\n        </button>\n    </form>\n</div>\n";
+	module.exports = "\n<div class=\"ui segment\">\n    <form class=\"ui form\">\n        <div class=\"field\">\n            <label>Account</label>\n            <input v-model=\"newAccount\" type=\"text\" name=\"newAccount\" placeholder=\"Beanstalk account\">\n        </div>\n        <div class=\"field\">\n            <label>Username</label>\n            <input v-model=\"newUsername\" type=\"text\" name=\"newUsername\" placeholder=\"Beanstalk username\">\n        </div>\n        <div class=\"field\">\n            <label>Token</label>\n            <input v-model=\"newToken\" type=\"text\" name=\"newToken\" placeholder=\"Beanstalk token\">\n        </div>\n        <button disabled=\"{{ !isValid }}\"\n                @click=\"saveConfig\"\n                class=\"ui primary button\"\n                type=\"submit\">\n            Save and close\n        </button>\n        <button disabled=\"{{ !clearReposEntity.enabled }}\"\n                @click.prevent=\"clearReposCache\"\n                class=\"ui grey button\"\n                type=\"submit\">\n            {{ clearReposEntity.message }}\n        </button>\n    </form>\n</div>\n<div class=\"ui segment\">\n    <h3>Shortcut commands</h3>\n    <p><i>CTRL / CMD + P</i> : Open search bar</p>\n    <p><i>CTRL / CMD + R</i> : Refresh</p>\n</div>\n";
 
 /***/ }
 /******/ ]);

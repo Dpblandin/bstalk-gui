@@ -2,17 +2,13 @@ var path = require('path')
 var webpack = require('webpack')
 
 module.exports = {
-    entry: './src/main.js',
+    entry: './src/background.js',
     output: {
         path: path.resolve(__dirname, './app'),
-        filename: 'app.js'
+        filename: 'background.js'
     },
     module: {
         loaders: [
-            {
-                test: /\.vue$/,
-                loader: 'vue'
-            },
             {
                 test: /\.js$/,
                 loader: 'babel',
@@ -24,14 +20,15 @@ module.exports = {
         "presets": ["es2015"],
         "plugins": ["transform-runtime"]
     },
+    node: {
+        __dirname: false,
+        __filename: false,
+        process: false
+    },
     plugins: [
         new webpack.ExternalsPlugin('commonjs', [
             'electron'
         ])
     ],
-    node: {
-        fs: "empty",
-        __dirname: false,
-        __filename: false
-    }
+    target: 'node'
 }

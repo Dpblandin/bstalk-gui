@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Bstalk gui</title>
+    <link rel="stylesheet" type="text/css" href="js/semantic/dist/semantic.min.css">
+    <link rel="stylesheet" href="node_modules/sweetalert/dist/sweetalert.css">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div v-cloak id="app" class="app">
+    <main class="main">
+        <command v-show="commandOpened && !isLoading" :repositories="repositories"></command>
+        <loader v-show="isLoading"></loader>
+        <config v-if="(incompleteConfigFile && !isLoading && ready) || (toggledView === 'settings')"
+                :account="config.account"
+                :username="config.username"
+                :token="config.token">
+        </config>
+        <div v-if="!isLoading && !incompleteConfigFile && toggledView === 'repos'" class="ui top segment">
+            <div id="repositories" class="ui divided items">
+                <repo-card v-for="repository in repositories | filterBy searchTerm in 'name'"
+                           track-by="id"
+                           :repository.sync="repository">
+
+                </repo-card>
+            </div>
+        </div>
+    </main>
+</div>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+        crossorigin="anonymous"
+        onload="window.$ = window.jQuery = module.exports;">
+
+</script>
+<script src="js/semantic/dist/semantic.min.js"></script>
+<script src="node_modules/sweetalert/dist/sweetalert.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

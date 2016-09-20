@@ -1,6 +1,5 @@
-var fs = require("fs"),
-    path = require("path"),
-    os = require('os');
+import fs from 'fs';
+import path from 'path';
 
 const config = {
   homePath() {
@@ -18,14 +17,6 @@ const config = {
   },
   configExists() {
     return fs.existsSync(this.configFile());
-  },
-  checkAndGetConfigItem(configItem) {
-   /* var value = nconf.get(configItem);
-     if(!value){
-     return false;
-     }
-
-     return value;*/
   },
   createConfigFile() {
     var dir = this.configDir();
@@ -45,7 +36,7 @@ const config = {
     var template = {
       account: "",
       username: "",
-      token: "",
+      token: ""
     };
 
     fs.writeFileSync(file, JSON.stringify(template, null, 4));
@@ -94,26 +85,8 @@ const config = {
     fs.writeFile(file, JSON.stringify(config, null, 4), () => {
       cb()
     })
-  },
-  
-  get() {
-    var dir = this.configDir();
-    var file = this.configFile(dir);
-
-    // Check existance
-    if (!this.configExists()){
-      return false;
-    }
-
-    //nconf.file(file);
-
-    return {
-      account: this.checkAndGetConfigItem('account'),
-      username: this.checkAndGetConfigItem('username'),
-      token: this.checkAndGetConfigItem('token')
-    };
   }
 
 }
 
-module.exports = config;
+export default config
