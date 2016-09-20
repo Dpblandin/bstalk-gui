@@ -15865,7 +15865,7 @@
 	//     </div>
 	// </template>
 	//
-	// <script>
+	// <script type="es6">
 	exports.default = {
 	    props: ['isVisible', 'repository', 'environment', 'onConfirm', 'releaseState', 'release'],
 
@@ -15907,9 +15907,13 @@
 
 	    methods: {
 	        cancelAction: function cancelAction() {
+	            var _this = this;
+
 	            this.isVisible = false;
-	            this.confirmed = false;
-	            this.release = {};
+	            setTimeout(function () {
+	                _this.confirmed = false;
+	                _this.release = {};
+	            }, 1000);
 	        },
 	        confirmAction: function confirmAction() {
 	            this.confirmed = true;
@@ -20423,9 +20427,10 @@
 	//                class="shortcut-command"
 	//                type="text"
 	//         >
-	//         <div v-if="search.length" class="ui divided items search-results">
+	//         <div v-show="search.length" class="ui divided items search-results">
 	//             <div v-for="repo in searchableRepos" track-by="id">
 	//                 <div v-for="(key, nameAndEnv) in repo.nameAndEnvs | filterBy search in 'name'"
+	//                      track-by="id"
 	//                      class="result item"
 	//                      @click="sendDeployEvent(repo, nameAndEnv.id)"
 	//                 >
@@ -20498,6 +20503,7 @@
 
 	    events: {
 	        'focus-command': function focusCommand() {
+	            this.search = '';
 	            this.$els.searchInput.focus();
 	        }
 	    }
@@ -20508,7 +20514,7 @@
 /* 102 */
 /***/ function(module, exports) {
 
-	module.exports = "\n<div class=\"search flex-container\">\n    <input v-el:search-input\n           v-model=\"search\"\n           class=\"shortcut-command\"\n           type=\"text\"\n    >\n    <div v-if=\"search.length\" class=\"ui divided items search-results\">\n        <div v-for=\"repo in searchableRepos\" track-by=\"id\">\n            <div v-for=\"(key, nameAndEnv) in repo.nameAndEnvs | filterBy search in 'name'\"\n                 class=\"result item\"\n                 @click=\"sendDeployEvent(repo, nameAndEnv.id)\"\n            >\n                <div class=\"middle aligned content\">\n                    <span> {{ nameAndEnv.repoName }}</span>\n                    <a class=\"ui small {{ nameAndEnv.colorLabel }} label\">{{ nameAndEnv.envName }}</a>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n";
+	module.exports = "\n<div class=\"search flex-container\">\n    <input v-el:search-input\n           v-model=\"search\"\n           class=\"shortcut-command\"\n           type=\"text\"\n    >\n    <div v-show=\"search.length\" class=\"ui divided items search-results\">\n        <div v-for=\"repo in searchableRepos\" track-by=\"id\">\n            <div v-for=\"(key, nameAndEnv) in repo.nameAndEnvs | filterBy search in 'name'\"\n                 track-by=\"id\"\n                 class=\"result item\"\n                 @click=\"sendDeployEvent(repo, nameAndEnv.id)\"\n            >\n                <div class=\"middle aligned content\">\n                    <span> {{ nameAndEnv.repoName }}</span>\n                    <a class=\"ui small {{ nameAndEnv.colorLabel }} label\">{{ nameAndEnv.envName }}</a>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n";
 
 /***/ },
 /* 103 */

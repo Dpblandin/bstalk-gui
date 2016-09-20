@@ -7,21 +7,28 @@ var plumber = require('gulp-plumber');
 var jetpack = require('fs-jetpack');
 var webpack = require('webpack');
 var webpackConfig = require('../webpack.config.js');
+var webpackConfigBackground = require('../webpack.config.background.js');
 var utils = require('./utils');
 
 var projectDir = jetpack;
 var srcDir = jetpack.cwd('./src');
 var destDir = jetpack.cwd('./app');
-var backgroundFile = 'src/background.js';
 
-gulp.task('bundle', function () {
-  projectDir.copy(backgroundFile, destDir.path('background.js'), { overwrite: true });
-  webpack(webpackConfig, function(err, stats) {
+gulp.task('bundle', function (cb) {
+  webpack(webpackConfigBackground, function(err, stats) {
     if (err) { throw new gutil.PluginError('webpack:build', err); }
     console.log('[webpack:build]', stats.toString({
       chunks: false, // Makes the build much quieter
       colors: true
     }));
+    webpack(webpackConfig, function(err, stats) {
+      if (err) { throw new gutil.PluginError('webpack:build', err); }
+      console.log('[webpack:build]', stats.toString({
+        chunks: false, // Makes the build much quieter
+        colors: true
+      }));
+      cb()
+    });
   });
 });
 

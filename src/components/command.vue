@@ -5,9 +5,10 @@
                class="shortcut-command"
                type="text"
         >
-        <div v-if="search.length" class="ui divided items search-results">
+        <div v-show="search.length" class="ui divided items search-results">
             <div v-for="repo in searchableRepos" track-by="id">
                 <div v-for="(key, nameAndEnv) in repo.nameAndEnvs | filterBy search in 'name'"
+                     track-by="id"
                      class="result item"
                      @click="sendDeployEvent(repo, nameAndEnv.id)"
                 >
@@ -61,7 +62,8 @@
 
         events: {
             'focus-command'() {
-               this.$els.searchInput.focus();
+                this.search = ''
+               this.$els.searchInput.focus()
             }
         }
     }

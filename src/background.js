@@ -1,7 +1,8 @@
-const {app, BrowserWindow, Menu, ipcMain} = require('electron')
-const electronLocalshortcut = require('electron-localshortcut')
-const fs = require('fs')
-const config = require('./services/config')
+import {app, BrowserWindow, Menu, ipcMain} from 'electron'
+import electronLocalshortcut from 'electron-localshortcut'
+import fs from 'fs'
+import config from './services/config'
+import env from './env'
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -144,8 +145,9 @@ function createWindow() {
     win.loadURL(`file://${__dirname}/index.html`)
 
     // Open the DevTools.
-    win.webContents.openDevTools()
-
+    if(env.name === 'development') {
+        win.webContents.openDevTools()
+    }
     // Emitted when the window is closed.
     win.on('closed', () => {
         // Dereference the window object, usually you would store windows

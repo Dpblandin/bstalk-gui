@@ -11,3 +11,5 @@ npm_debug.log
 app/js/semantic/dist/components
 app/js/semantic/src
 app/js/semantic/tasks
+
+/dist

@@ -30,7 +30,7 @@
     </div>
 </template>
 
-<script>
+<script type="es6">
     export default {
         props:['isVisible' ,'repository', 'environment', 'onConfirm', 'releaseState', 'release'],
 
@@ -70,14 +70,17 @@
 
             deployLabel() {
                 return `${this.release.environment_revision.substring(0, 8)}: ${this.release.comment}`
+
             }
         },
 
         methods: {
             cancelAction() {
                 this.isVisible = false
-                this.confirmed = false
-                this.release = {}
+                setTimeout(() => {
+                    this.confirmed = false
+                    this.release = {}
+                }, 1000)
             },
             confirmAction() {
                 this.confirmed = true
