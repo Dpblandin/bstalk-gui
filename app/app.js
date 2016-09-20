@@ -251,7 +251,6 @@
 	            this.searchTerm = search;
 	        },
 	        'config-file-changed': function configFileChanged(config) {
-	            console.log(config);
 	            this.config = config;
 	            this.init();
 	        },
@@ -20640,6 +20639,11 @@
 	//             </button>
 	//         </form>
 	//     </div>
+	//     <div class="ui segment">
+	//         <h3>Shortcut commands</h3>
+	//         <p><i>CTRL / CMD + P</i> : Open search bar</p>
+	//         <p><i>CTRL / CMD + R</i> : Refresh</p>
+	//     </div>
 	// </template>
 	//
 	// <script>
@@ -20654,7 +20658,7 @@
 /* 106 */
 /***/ function(module, exports) {
 
-	module.exports = "\n<div class=\"ui segment\">\n    <form class=\"ui form\">\n        <div class=\"field\">\n            <label>Account</label>\n            <input v-model=\"newAccount\" type=\"text\" name=\"newAccount\" placeholder=\"Beanstalk account\">\n        </div>\n        <div class=\"field\">\n            <label>Username</label>\n            <input v-model=\"newUsername\" type=\"text\" name=\"newUsername\" placeholder=\"Beanstalk username\">\n        </div>\n        <div class=\"field\">\n            <label>Token</label>\n            <input v-model=\"newToken\" type=\"text\" name=\"newToken\" placeholder=\"Beanstalk token\">\n        </div>\n        <button disabled=\"{{ !isValid }}\"\n                @click=\"saveConfig\"\n                class=\"ui primary button\"\n                type=\"submit\">\n            Save and close\n        </button>\n        <button disabled=\"{{ !clearReposEntity.enabled }}\"\n                @click.prevent=\"clearReposCache\"\n                class=\"ui grey button\"\n                type=\"submit\">\n            {{ clearReposEntity.message }}\n        </button>\n    </form>\n</div>\n";
+	module.exports = "\n<div class=\"ui segment\">\n    <form class=\"ui form\">\n        <div class=\"field\">\n            <label>Account</label>\n            <input v-model=\"newAccount\" type=\"text\" name=\"newAccount\" placeholder=\"Beanstalk account\">\n        </div>\n        <div class=\"field\">\n            <label>Username</label>\n            <input v-model=\"newUsername\" type=\"text\" name=\"newUsername\" placeholder=\"Beanstalk username\">\n        </div>\n        <div class=\"field\">\n            <label>Token</label>\n            <input v-model=\"newToken\" type=\"text\" name=\"newToken\" placeholder=\"Beanstalk token\">\n        </div>\n        <button disabled=\"{{ !isValid }}\"\n                @click=\"saveConfig\"\n                class=\"ui primary button\"\n                type=\"submit\">\n            Save and close\n        </button>\n        <button disabled=\"{{ !clearReposEntity.enabled }}\"\n                @click.prevent=\"clearReposCache\"\n                class=\"ui grey button\"\n                type=\"submit\">\n            {{ clearReposEntity.message }}\n        </button>\n    </form>\n</div>\n<div class=\"ui segment\">\n    <h3>Shortcut commands</h3>\n    <p><i>CTRL / CMD + P</i> : Open search bar</p>\n    <p><i>CTRL / CMD + R</i> : Refresh</p>\n</div>\n";
 
 /***/ }
 /******/ ]);

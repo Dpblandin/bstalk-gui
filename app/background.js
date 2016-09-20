@@ -91,6 +91,12 @@
 	            if (focusedWindow) focusedWindow.reload();
 	        }
 	    }, {
+	        label: 'Open search bar',
+	        accelerator: 'CmdOrCtrl+P',
+	        click: function click(item, focusedWindow) {
+	            if (focusedWindow) focusedWindow.webContents.send('shortcut-command', 0);
+	        }
+	    }, {
 	        label: 'Toggle Developer Tools',
 	        accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
 	        click: function click(item, focusedWindow) {

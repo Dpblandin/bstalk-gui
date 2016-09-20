@@ -63,7 +63,7 @@
         events: {
             'focus-command'() {
                 this.search = ''
-               this.$els.searchInput.focus()
+                this.$els.searchInput.focus()
             }
         }
     }

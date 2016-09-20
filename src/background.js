@@ -36,6 +36,13 @@ const template = [
                 }
             },
             {
+                label: 'Open search bar',
+                accelerator: 'CmdOrCtrl+P',
+                click (item, focusedWindow) {
+                    if (focusedWindow) focusedWindow.webContents.send('shortcut-command', 0)
+                }
+            },
+            {
                 label: 'Toggle Developer Tools',
                 accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
                 click (item, focusedWindow) {
@@ -45,7 +52,7 @@ const template = [
             {
                 label: 'Fullscreen',
                 role: 'togglefullscreen'
-            },
+            }
 
         ]
     },

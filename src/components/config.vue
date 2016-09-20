@@ -27,6 +27,11 @@
             </button>
         </form>
     </div>
+    <div class="ui segment">
+        <h3>Shortcut commands</h3>
+        <p><i>CTRL / CMD + P</i> : Open search bar</p>
+        <p><i>CTRL / CMD + R</i> : Refresh</p>
+    </div>
 </template>
 
 <script>
