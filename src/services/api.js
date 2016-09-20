@@ -1,5 +1,5 @@
-const request = require('superagent');
-const _ = require('underscore');
+import request from 'superagent';
+import _ from 'underscore';
 
 const beanstalk = {
 
@@ -126,4 +126,4 @@ deploy(repoId, serverEnvironmentId, revision, comment, cb) {
     }
 }
 
-module.exports = beanstalk;
+export default beanstalk

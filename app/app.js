@@ -12247,8 +12247,19 @@
 
 	'use strict';
 
-	var request = __webpack_require__(76);
-	var _ = __webpack_require__(81);
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+
+	var _superagent = __webpack_require__(76);
+
+	var _superagent2 = _interopRequireDefault(_superagent);
+
+	var _underscore = __webpack_require__(81);
+
+	var _underscore2 = _interopRequireDefault(_underscore);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var beanstalk = {
 
@@ -12264,7 +12275,7 @@
 	    api: function api(endpoint, method) {
 	        var vmethod = typeof method === 'undefined' ? 'GET' : 'POST';
 	        var url = 'https://' + this.config.account + '.beanstalkapp.com/api/' + endpoint + '.json';
-	        var req = vmethod === 'GET' ? request.get(url) : request.post(url);
+	        var req = vmethod === 'GET' ? _superagent2.default.get(url) : _superagent2.default.post(url);
 
 	        return req.auth(this.config.username, this.config.token).set('Content-Type', 'application/json');
 	    },
@@ -12287,7 +12298,7 @@
 	                this.reportError(err);
 	            }
 
-	            cb(err, _.indexBy(_.map(res.body, function (item) {
+	            cb(err, _underscore2.default.indexBy(_underscore2.default.map(res.body, function (item) {
 	                return item.server_environment;
 	            }), 'name'));
 	        });
@@ -12360,7 +12371,7 @@
 	    }
 	};
 
-	module.exports = beanstalk;
+	exports.default = beanstalk;
 
 /***/ },
 /* 76 */
