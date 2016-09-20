@@ -9,7 +9,7 @@
   },
   "author": "David Pascaud-Blandin",
   "license": "MIT",
-  "dependencies": {
+  "devDependencies": {
     "babel-core": "^6.14.0",
     "babel-loader": "^6.2.5",
     "babel-plugin-transform-runtime": "^6.15.0",
@@ -46,7 +46,6 @@
     "gulp-watch": "^4.3.9",
     "map-stream": "0.0.6",
     "moment": "^2.15.0",
-    "nconf": "^0.8.4",
     "require-dot-file": "^0.4.0",
     "run-sequence": "^1.2.2",
     "semantic-ui": "^2.2.4",
@@ -57,11 +56,9 @@
     "vue-hot-reload-api": "^1.2.0",
     "vue-html-loader": "^1.2.3",
     "vue-loader": "^8.5.2",
-    "vue-msgbox": "^0.2.11",
     "vue-style-loader": "^1.0.0",
     "webpack": "^1.13.2",
     "webpack-dev-server": "^1.15.1",
     "yamljs": "^0.2.8"
-  },
-  "devDependencies": {}
+  }
 }
