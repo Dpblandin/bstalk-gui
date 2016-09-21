@@ -94,6 +94,7 @@
 	        return {
 	            ready: false,
 	            repositories: [],
+	            allLoaded: false,
 	            isLoading: false,
 	            commandOpened: false,
 	            searchTerm: null,
@@ -148,6 +149,7 @@
 	                    _this2.loadRepos();
 	                } else {
 	                    _this2.repositories = repositories;
+	                    _this2.allLoaded = true;
 	                    _this2.isLoading = false;
 	                }
 
@@ -213,6 +215,7 @@
 
 	                _promise2.default.all(promises).then(function () {
 	                    _this3.isLoading = false;
+	                    _this3.allLoaded = true;
 	                    _this3.sendReposLoadedEvent();
 	                });
 	            });

@@ -15,6 +15,7 @@ new Vue({
         return {
             ready: false,
             repositories: [],
+            allLoaded: false,
             isLoading: false,
             commandOpened: false,
             searchTerm: null,
@@ -64,6 +65,7 @@ new Vue({
                     this.loadRepos()
                 } else {
                     this.repositories = repositories
+                    this.allLoaded = true
                     this.isLoading = false
                 }
 
@@ -103,6 +105,7 @@ new Vue({
                 }
                 Promise.all(promises).then(() => {
                     this.isLoading = false
+                    this.allLoaded = true
                     this.sendReposLoadedEvent()
                 })
             })
