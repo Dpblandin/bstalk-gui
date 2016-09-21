@@ -75,9 +75,9 @@ new Vue({
         loadRepos() {
             beanstalk.getRepositories((err, repos) => {
                 if(err) {
-                    this.reportError(err)
+                    this.reportError(err, 'error', true)
                     this.isLoading = false
-
+                 
                     return false
                 }
                 this.repositories = repos.map((repo) => {
@@ -88,7 +88,7 @@ new Vue({
                     promises.push(new Promise((resolve, reject) => {
                         beanstalk.getEnvironments(repo.name, (err, envs) => {
                             if(err) {
-                              this.reportError(err)
+                                this.reportError(err)
                                 this.isLoading = false
 
                                 return false

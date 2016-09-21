@@ -24,7 +24,7 @@
 
 <script type="es6">
     export default {
-        props: ['repositories'],
+        props: ['repositories', 'ready'],
 
         data() {
             return {
@@ -34,23 +34,25 @@
 
         computed: {
             searchableRepos() {
-                return this.repositories.map((repo) => {
-                    repo.nameAndEnvs = []
-                    for (let env of repo.environments) {
-                        repo.nameAndEnvs.push(
-                                {
-                                    name: repo.name + ' ' + env.name,
-                                    repoName: repo.name,
-                                    envName: env.name,
-                                    colorLabel: env.color_label,
-                                    id: env.id
-                                }
-                        )
-                    }
+                if(this.ready) {
+                    return this.repositories.map((repo) => {
+                        repo.nameAndEnvs = []
+                        for (let env of repo.environments) {
+                            repo.nameAndEnvs.push(
+                                    {
+                                        name: repo.name + ' ' + env.name,
+                                        repoName: repo.name,
+                                        envName: env.name,
+                                        colorLabel: env.color_label,
+                                        id: env.id
+                                    }
+                            )
+                        }
 
-                    return repo
+                        return repo
 
-                })
+                    })
+                }
             }
         },
 

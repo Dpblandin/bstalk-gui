@@ -159,7 +159,7 @@
 
 	            _api2.default.getRepositories(function (err, repos) {
 	                if (err) {
-	                    _this3.reportError(err);
+	                    _this3.reportError(err, 'error', true);
 	                    _this3.isLoading = false;
 
 	                    return false;
@@ -12247,7 +12247,7 @@
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	    value: true
+	  value: true
 	});
 
 	var _superagent = __webpack_require__(76);
@@ -12262,112 +12262,77 @@
 
 	var beanstalk = {
 
-	    config: {
-	        account: '',
-	        username: '',
-	        token: ''
-	    },
+	  config: {
+	    account: '',
+	    username: '',
+	    token: ''
+	  },
 
-	    setConfig: function setConfig(config) {
-	        this.config = config;
-	    },
-	    api: function api(endpoint, method) {
-	        var vmethod = typeof method === 'undefined' ? 'GET' : 'POST';
-	        var url = 'https://' + this.config.account + '.beanstalkapp.com/api/' + endpoint + '.json';
-	        var req = vmethod === 'GET' ? _superagent2.default.get(url) : _superagent2.default.post(url);
+	  setConfig: function setConfig(config) {
+	    this.config = config;
+	  },
+	  api: function api(endpoint, method) {
+	    var vmethod = typeof method === 'undefined' ? 'GET' : 'POST';
+	    var url = 'https://' + this.config.account + '.beanstalkapp.com/api/' + endpoint + '.json';
+	    var req = vmethod === 'GET' ? _superagent2.default.get(url) : _superagent2.default.post(url);
 
-	        return req.auth(this.config.username, this.config.token).set('Content-Type', 'application/json');
-	    },
-	    reportError: function reportError(err) {
-	        if (err.response.error.text) {
-	            console.log('Beanstalk error : ', JSON.parse(err.response.error.text).errors);
-	        }
-
-	        console.log('Beanstalk error  - ' + err);
-	    },
-	    getRepositories: function getRepositories(cb) {
-	        this.api('repositories').end(function (err, res) {
-
-	            cb(err, res.body);
-	        });
-	    },
-	    getEnvironments: function getEnvironments(repoName, cb) {
-	        this.api(repoName + '/server_environments').end(function (err, res) {
-	            if (err) {
-	                this.reportError(err);
-	            }
-
-	            cb(err, _underscore2.default.indexBy(_underscore2.default.map(res.body, function (item) {
-	                return item.server_environment;
-	            }), 'name'));
-	        });
-	    },
-	    environment: function environment(repoName, serverEnvironmentId, cb) {
-	        this.api(repoName + '/server_enironments/' + serverEnvironmentId).end(function (err, res) {
-	            if (err) {
-	                this.reportError(err);
-	            }
-
-	            cb(res.body);
-	        });
-	    },
-	    release: function release(repoId, releaseId, cb) {
-	        this.api(repoId + '/releases/' + releaseId).end(function (err, res) {
-	            if (err) {
-	                this.reportError(err);
-	            }
-
-	            cb(res.body.release);
-	        });
-	    },
-	    checkReleaseState: function checkReleaseState(repoId, releaseId, delay, cb) {
-	        var _this = this;
-
-	        setTimeout(function () {
-
-	            _this.release(repoId, releaseId, function (release) {
-	                switch (release.state) {
-
-	                    case 'waiting':
-	                        _this.checkReleaseState(repoId, releaseId, 2000, cb);
-	                        break;
-
-	                    case 'pending':
-	                        _this.checkReleaseState(repoId, releaseId, 2000, cb);
-	                        break;
-
-	                    case 'skipped':
-	                        cb.call('skipped');
-	                        break;
-
-	                    case 'failed':
-	                        cb.call('failed');
-	                        break;
-
-	                    case 'success':
-	                        cb.call('success');
-	                        break;
-
-	                    default:
-	                        cb.call(release.state);
-	                        break;
-	                }
-	            });
-	        }, delay || 0);
-	    },
-	    deploy: function deploy(repoId, serverEnvironmentId, revision, comment, cb) {
-	        var release = {
-	            revision: revision
-	        };
-
-	        if (comment) {
-	            release.comment = comment;
-	        }
-
-	        this.api(repoId + '/releases.json?environment_id=' + serverEnvironmentId, 'POST').send({ release: release }).end(function (err, res) {
-	            cb(err, res.body.release);
-	        });
+	    return req.auth(this.config.username, this.config.token).set('Content-Type', 'application/json');
+	  },
+	  reportError: function reportError(err) {
+	    if (err.response.error.text) {
+	      console.log('Beanstalk error : ', JSON.parse(err.response.error.text).errors);
 	    }
+
+	    console.log('Beanstalk error  - ' + err);
+	  },
+	  getRepositories: function getRepositories(cb) {
+	    this.api('repositories').end(function (err, res) {
+
+	      cb(err, res.body);
+	    });
+	  },
+	  getEnvironments: function getEnvironments(repoName, cb) {
+	    this.api(repoName + '/server_environments').end(function (err, res) {
+	      if (err) {
+	        this.reportError(err);
+	      }
+
+	      cb(err, _underscore2.default.indexBy(_underscore2.default.map(res.body, function (item) {
+	        return item.server_environment;
+	      }), 'name'));
+	    });
+	  },
+	  environment: function environment(repoName, serverEnvironmentId, cb) {
+	    this.api(repoName + '/server_enironments/' + serverEnvironmentId).end(function (err, res) {
+	      if (err) {
+	        this.reportError(err);
+	      }
+
+	      cb(res.body);
+	    });
+	  },
+	  release: function release(repoId, releaseId, cb) {
+	    this.api(repoId + '/releases/' + releaseId).end(function (err, res) {
+	      if (err) {
+	        this.reportError(err);
+	      }
+
+	      cb(res.body.release);
+	    });
+	  },
+	  deploy: function deploy(repoId, serverEnvironmentId, revision, comment, cb) {
+	    var release = {
+	      revision: revision
+	    };
+
+	    if (comment) {
+	      release.comment = comment;
+	    }
+
+	    this.api(repoId + '/releases.json?environment_id=' + serverEnvironmentId, 'POST').send({ release: release }).end(function (err, res) {
+	      cb(err, res.body.release);
+	    });
+	  }
 	};
 
 	exports.default = beanstalk;
@@ -15996,12 +15961,35 @@
 	exports.default = {
 	    methods: {
 	        reportError: function reportError(err) {
-	            var type = arguments.length <= 1 || arguments[1] === undefined ? 'error' : arguments[1];
+	            var _this = this;
 
-	            if (err.response.error.text) {
-	                swal('Oops!', 'Something went wrong with beanstalk, here is what we know: ' + err.response.error.text, type);
+	            var type = arguments.length <= 1 || arguments[1] === undefined ? 'error' : arguments[1];
+	            var advanced = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+
+	            var swalOpts = {
+	                title: 'Oops!',
+	                type: type,
+	                text: 'Something went wrong with beanstalk, here is what we know: ',
+	                showCloseButton: advanced || false,
+	                showCancelButton: advanced || false,
+	                confirmButtonClass: 'ui primary button',
+	                cancelButtonClass: 'ui teal button',
+	                cancelButtonColor: '#00B5AD',
+
+	                confirmButtonText: 'Go to settings',
+	                cancelButtonText: 'Try again'
+	            };
+	            swalOpts.text += err.response.error.text ? err.response.error.text : err;
+	            if (advanced) {
+	                return swal(swalOpts).then(function () {
+	                    _this.toggledView = 'settings';
+	                }, function (dismiss) {
+	                    _this.isLoading = true;
+	                    _this.loadRepos();
+	                });
 	            }
-	            swal('Oops!', 'Something went wrong with beanstalk, here is what we know: ' + err, type);
+
+	            return swal(swalOpts);
 	        }
 	    }
 	};
@@ -20456,7 +20444,7 @@
 	//
 	// <script type="es6">
 	exports.default = {
-	    props: ['repositories'],
+	    props: ['repositories', 'ready'],
 
 	    data: function data() {
 	        return {
@@ -20467,41 +20455,43 @@
 
 	    computed: {
 	        searchableRepos: function searchableRepos() {
-	            return this.repositories.map(function (repo) {
-	                repo.nameAndEnvs = [];
-	                var _iteratorNormalCompletion = true;
-	                var _didIteratorError = false;
-	                var _iteratorError = undefined;
+	            if (this.ready) {
+	                return this.repositories.map(function (repo) {
+	                    repo.nameAndEnvs = [];
+	                    var _iteratorNormalCompletion = true;
+	                    var _didIteratorError = false;
+	                    var _iteratorError = undefined;
 
-	                try {
-	                    for (var _iterator = (0, _getIterator3.default)(repo.environments), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-	                        var env = _step.value;
-
-	                        repo.nameAndEnvs.push({
-	                            name: repo.name + ' ' + env.name,
-	                            repoName: repo.name,
-	                            envName: env.name,
-	                            colorLabel: env.color_label,
-	                            id: env.id
-	                        });
-	                    }
-	                } catch (err) {
-	                    _didIteratorError = true;
-	                    _iteratorError = err;
-	                } finally {
 	                    try {
-	                        if (!_iteratorNormalCompletion && _iterator.return) {
-	                            _iterator.return();
+	                        for (var _iterator = (0, _getIterator3.default)(repo.environments), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+	                            var env = _step.value;
+
+	                            repo.nameAndEnvs.push({
+	                                name: repo.name + ' ' + env.name,
+	                                repoName: repo.name,
+	                                envName: env.name,
+	                                colorLabel: env.color_label,
+	                                id: env.id
+	                            });
 	                        }
+	                    } catch (err) {
+	                        _didIteratorError = true;
+	                        _iteratorError = err;
 	                    } finally {
-	                        if (_didIteratorError) {
-	                            throw _iteratorError;
+	                        try {
+	                            if (!_iteratorNormalCompletion && _iterator.return) {
+	                                _iterator.return();
+	                            }
+	                        } finally {
+	                            if (_didIteratorError) {
+	                                throw _iteratorError;
+	                            }
 	                        }
 	                    }
-	                }
 
-	                return repo;
-	            });
+	                    return repo;
+	                });
+	            }
 	        }
 	    },
 
