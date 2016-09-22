@@ -1,5 +1,25 @@
 var path = require('path')
 var webpack = require('webpack')
+var utils = require('./tasks/utils')
+
+var env = utils.getEnvName()
+var plugins = []
+
+if(env === 'production') {
+    plugins.push(
+      new webpack.optimize.UglifyJsPlugin({
+          compress: {warnings: false},
+          mangle: false
+      })
+    )
+}
+
+plugins.push(
+  new webpack.ExternalsPlugin('commonjs', [
+    'electron'
+  ])
+)
+
 
 module.exports = {
     entry: './src/main.js',
@@ -24,11 +44,7 @@ module.exports = {
         "presets": ["es2015"],
         "plugins": ["transform-runtime"]
     },
-    plugins: [
-        new webpack.ExternalsPlugin('commonjs', [
-            'electron'
-        ])
-    ],
+    plugins: plugins,
     node: {
         fs: "empty",
         __dirname: false,
