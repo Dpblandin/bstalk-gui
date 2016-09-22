@@ -4,6 +4,7 @@ var gulp = require('gulp');
 var watch = require('gulp-watch');
 var batch = require('gulp-batch');
 var plumber = require('gulp-plumber');
+var gutil = require('gulp-util');
 var jetpack = require('fs-jetpack');
 var webpack = require('webpack');
 var webpackConfig = require('../webpack.config.js');
