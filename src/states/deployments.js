@@ -2,7 +2,7 @@ export default {
   deployments: [],
   
   addDeployment(deployment) {
-    deployment.message = this.getDeploymentMessage(deployment);
+    this.setDeploymentMessage(deployment);
     this.deployments.push(deployment)
   },
 
@@ -10,11 +10,40 @@ export default {
     for(let deployment of this.deployments) {
       if(deployment.repository.id === repository.id && deployment.environment.id === environment.id) {
         deployment.release = release
+        this.setDeploymentMessage(deployment)
       }
     }
   },
 
-  getDeploymentMessage(deployment) {
-    return `Deploying <strong>${deployment.repository.name}</strong> on: <a class="ui ${deployment.environment.color_label } label">${deployment.environment.name }</a>`
+  setDeploymentMessage(deployment) {
+    let message = {
+      html : '<div class="ui active inline small loader"></div>'
+    }
+    if(deployment.release.state === 'skipped') {
+      message.html =
+        `<a class="ui label">Bypassed</a>
+        ${deployment.release.environment_revision.substring(0, 8)}: ${deployment.release.comment}
+        `
+    }
+    if(deployment.release.state === 'failed') {
+      message.html =
+        `<a class="ui red label">Failed deployment</a>
+        ${deployment.release.environment_revision.substring(0, 8)}: ${deployment.release.comment}
+        `
+    }
+    if(deployment.release.state === 'success') {
+      message.html =
+        `<a class="ui green label">Successfully deployed</a>
+        ${deployment.release.environment_revision.substring(0, 8)}: ${deployment.release.comment}
+        `
+    }
+    if(deployment.release.state !== 'skipped' && deployment.release.state !== 'failed' && deployment.release.state !== 'success') {
+      message.html +=
+        `Deploying <strong>${deployment.repository.name}</strong> on: 
+         <a class="ui ${deployment.environment.color_label } label">${deployment.environment.name }</a>
+        `
+    }
+
+    deployment.message = message
   }
 }

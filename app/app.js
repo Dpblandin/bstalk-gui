@@ -12186,12 +12186,14 @@
 	                case 'waiting':
 	                    _api2.default.release(this.repository.id, this.release.id, function (release) {
 	                        _this.release = release;
+	                        _deployments2.default.setDeploymentRelease(_this.release, _this.repository, _this.environment);
 	                    });
 	                    return 'waiting';
 	                    break;
 	                case 'pending':
 	                    _api2.default.release(this.repository.id, this.release.id, function (release) {
 	                        _this.release = release;
+	                        _deployments2.default.setDeploymentRelease(_this.release, _this.repository, _this.environment);
 	                    });
 	                    return 'pending';
 	                    break;
@@ -12219,7 +12221,8 @@
 
 	            _deployments2.default.addDeployment({
 	                repository: this.repository,
-	                environment: this.environment
+	                environment: this.environment,
+	                release: { state: 'pending' }
 	            });
 	            _api2.default.deploy(this.repository.id, this.environment.id, null, false, function (err, release) {
 	                if (err) {
@@ -16021,7 +16024,7 @@
 /* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -16037,7 +16040,7 @@
 	  deployments: [],
 
 	  addDeployment: function addDeployment(deployment) {
-	    deployment.message = this.getDeploymentMessage(deployment);
+	    this.setDeploymentMessage(deployment);
 	    this.deployments.push(deployment);
 	  },
 	  setDeploymentRelease: function setDeploymentRelease(release, repository, environment) {
@@ -16051,6 +16054,7 @@
 
 	        if (deployment.repository.id === repository.id && deployment.environment.id === environment.id) {
 	          deployment.release = release;
+	          this.setDeploymentMessage(deployment);
 	        }
 	      }
 	    } catch (err) {
@@ -16068,8 +16072,24 @@
 	      }
 	    }
 	  },
-	  getDeploymentMessage: function getDeploymentMessage(deployment) {
-	    return "Deploying <strong>" + deployment.repository.name + "</strong> on: <a class=\"ui " + deployment.environment.color_label + " label\">" + deployment.environment.name + "</a>";
+	  setDeploymentMessage: function setDeploymentMessage(deployment) {
+	    var message = {
+	      html: '<div class="ui active inline small loader"></div>'
+	    };
+	    if (deployment.release.state === 'skipped') {
+	      message.html = '<a class="ui label">Bypassed</a>\n        ' + deployment.release.environment_revision.substring(0, 8) + ': ' + deployment.release.comment + '\n        ';
+	    }
+	    if (deployment.release.state === 'failed') {
+	      message.html = '<a class="ui red label">Failed deployment</a>\n        ' + deployment.release.environment_revision.substring(0, 8) + ': ' + deployment.release.comment + '\n        ';
+	    }
+	    if (deployment.release.state === 'success') {
+	      message.html = '<a class="ui green label">Successfully deployed</a>\n        ' + deployment.release.environment_revision.substring(0, 8) + ': ' + deployment.release.comment + '\n        ';
+	    }
+	    if (deployment.release.state !== 'skipped' && deployment.release.state !== 'failed' && deployment.release.state !== 'success') {
+	      message.html += 'Deploying <strong>' + deployment.repository.name + '</strong> on: \n         <a class="ui ' + deployment.environment.color_label + ' label">' + deployment.environment.name + '</a>\n        ';
+	    }
+
+	    deployment.message = message;
 	  }
 	};
 
@@ -20516,7 +20536,7 @@
 
 
 	// module
-	exports.push([module.id, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n.toaster {\n    top: 10px;\n    right: 10px;\n    position: fixed;\n    z-index:999;\n}\n.toaster .toast {\n    padding: 2.5em 1.5em;\n    width: 100%;\n}\n/* always present */\n.expand-transition {\n    -webkit-transition: all .5s ease;\n    transition: all .5s ease;\n    overflow: hidden;\n}\n/* .expand-enter defines the starting state for entering */\n/* .expand-leave defines the ending state for leaving */\n.expand-enter, .expand-leave {\n    height: 0;\n    padding: 0 10px;\n    opacity: 0;\n}\n", ""]);
+	exports.push([module.id, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n.toaster {\n    top: 10px;\n    right: 10px;\n    position: fixed;\n    z-index:999;\n}\n.toaster .toast {\n    padding: 2.5em 1.5em;\n    width: 100%;\n}\n/* always present */\n.expand-transition {\n    -webkit-transition: all .5s ease;\n    transition: all .5s ease;\n    overflow: hidden;\n}\n/* .expand-enter defines the starting state for entering */\n/* .expand-leave defines the ending state for leaving */\n.expand-enter, .expand-leave {\n    height: 0;\n    padding: 0 10px;\n    opacity: 0;\n}\n", ""]);
 
 	// exports
 
@@ -20540,8 +20560,7 @@
 	//             <i class="close icon" @click="close(toast)"></i>
 	//             <i class="icon" v-if="toast.icon" v-bind:class="toast.icon"></i>
 	//             <div class="content">
-	//                 <div class="ui active inline small loader"></div>
-	//                 <span v-html="toast.message"></span>
+	//                 <span v-html="toast.message.html"></span>
 	//             </div>
 	//         </div>
 	//     </div>
@@ -20607,7 +20626,7 @@
 /* 105 */
 /***/ function(module, exports) {
 
-	module.exports = "\n<div class=\"toaster\">\n    <div class=\"toast ui floating message\"\n         v-for=\"toast in toasts\"\n         transition=\"expand\"\n         v-bind:class=\"classes(toast)\"\n    >\n        <i class=\"close icon\" @click=\"close(toast)\"></i>\n        <i class=\"icon\" v-if=\"toast.icon\" v-bind:class=\"toast.icon\"></i>\n        <div class=\"content\">\n            <div class=\"ui active inline small loader\"></div>\n            <span v-html=\"toast.message\"></span>\n        </div>\n    </div>\n</div>\n";
+	module.exports = "\n<div class=\"toaster\">\n    <div class=\"toast ui floating message\"\n         v-for=\"toast in toasts\"\n         transition=\"expand\"\n         v-bind:class=\"classes(toast)\"\n    >\n        <i class=\"close icon\" @click=\"close(toast)\"></i>\n        <i class=\"icon\" v-if=\"toast.icon\" v-bind:class=\"toast.icon\"></i>\n        <div class=\"content\">\n            <span v-html=\"toast.message.html\"></span>\n        </div>\n    </div>\n</div>\n";
 
 /***/ },
 /* 106 */

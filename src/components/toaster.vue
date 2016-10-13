@@ -8,8 +8,7 @@
             <i class="close icon" @click="close(toast)"></i>
             <i class="icon" v-if="toast.icon" v-bind:class="toast.icon"></i>
             <div class="content">
-                <div class="ui active inline small loader"></div>
-                <span v-html="toast.message"></span>
+                <span v-html="toast.message.html"></span>
             </div>
         </div>
     </div>

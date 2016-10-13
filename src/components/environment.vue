@@ -40,12 +40,14 @@
                     case 'waiting':
                         beanstalk.release(this.repository.id, this.release.id, (release) => {
                             this.release = release
+                            deployments.setDeploymentRelease(this.release, this.repository, this.environment)
                         })
                         return 'waiting'
                         break
                     case 'pending':
                         beanstalk.release(this.repository.id, this.release.id, (release) => {
                             this.release = release
+                            deployments.setDeploymentRelease(this.release, this.repository, this.environment)
                         })
                         return 'pending'
                         break
@@ -71,7 +73,8 @@
             pushToEnv() {
                 deployments.addDeployment({
                     repository: this.repository,
-                    environment: this.environment
+                    environment: this.environment,
+                    release: {state: 'pending'}
                 })
                 beanstalk.deploy(this.repository.id, this.environment.id, null, false, (err, release) => {
                     if(err) {
