@@ -124,7 +124,6 @@
 	    cacheRepositories();
 	    removeRepositoriesCache();
 	    setupGlobalShortcuts();
-	    _electron.BrowserWindow.addDevToolsExtension('C:/Users/Skalp/AppData/Local/Google/Chrome/User Data/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/2.1.2_0');
 	}
 
 	function buildMenu() {
@@ -582,18 +581,18 @@
 
 	var append = __webpack_require__(13);
 	var dir = __webpack_require__(16);
-	var file = __webpack_require__(37);
-	var find = __webpack_require__(38);
-	var inspect = __webpack_require__(41);
-	var inspectTree = __webpack_require__(39);
-	var copy = __webpack_require__(44);
-	var exists = __webpack_require__(45);
-	var list = __webpack_require__(42);
-	var move = __webpack_require__(46);
-	var read = __webpack_require__(47);
-	var remove = __webpack_require__(48);
-	var symlink = __webpack_require__(49);
-	var streams = __webpack_require__(50);
+	var file = __webpack_require__(38);
+	var find = __webpack_require__(39);
+	var inspect = __webpack_require__(42);
+	var inspectTree = __webpack_require__(40);
+	var copy = __webpack_require__(45);
+	var exists = __webpack_require__(46);
+	var list = __webpack_require__(43);
+	var move = __webpack_require__(47);
+	var read = __webpack_require__(48);
+	var remove = __webpack_require__(49);
+	var symlink = __webpack_require__(50);
+	var streams = __webpack_require__(51);
 	var write = __webpack_require__(14);
 
 	// The Jetpack Context object.
@@ -3158,7 +3157,7 @@
 	var mkdirp = __webpack_require__(15);
 	var rimraf = __webpack_require__(17);
 
-	var modeUtil = __webpack_require__(36);
+	var modeUtil = __webpack_require__(37);
 
 	var getCriteriaDefaults = function (passedCriteria) {
 	  var criteria = passedCriteria || {};
@@ -4166,9 +4165,6 @@
 	  if (this.aborted)
 	    return
 
-	  if (this.matches[index][e])
-	    return
-
 	  if (isIgnored(this, e))
 	    return
 
@@ -4179,14 +4175,20 @@
 
 	  var abs = this._makeAbs(e)
 
+	  if (this.mark)
+	    e = this._mark(e)
+
+	  if (this.absolute)
+	    e = abs
+
+	  if (this.matches[index][e])
+	    return
+
 	  if (this.nodir) {
 	    var c = this.cache[abs]
 	    if (c === 'DIR' || Array.isArray(c))
 	      return
 	  }
-
-	  if (this.mark)
-	    e = this._mark(e)
 
 	  this.matches[index][e] = true
 
@@ -6158,18 +6160,18 @@
 
 	function posix(path) {
 		return path.charAt(0) === '/';
-	};
+	}
 
 	function win32(path) {
-		// https://github.com/joyent/node/blob/b3fcc245fb25539909ef1d5eaa01dbf92e168633/lib/path.js#L56
+		// https://github.com/nodejs/node/blob/b3fcc245fb25539909ef1d5eaa01dbf92e168633/lib/path.js#L56
 		var splitDeviceRe = /^([a-zA-Z]:|[\\\/]{2}[^\\\/]+[\\\/]+[^\\\/]+)?([\\\/])?([\s\S]*?)$/;
 		var result = splitDeviceRe.exec(path);
 		var device = result[1] || '';
-		var isUnc = !!device && device.charAt(1) !== ':';
+		var isUnc = Boolean(device && device.charAt(1) !== ':');
 
 		// UNC paths are always absolute
-		return !!result[2] || isUnc;
-	};
+		return Boolean(result[2] || isUnc);
+	}
 
 	module.exports = process.platform === 'win32' ? win32 : posix;
 	module.exports.posix = posix;
@@ -6198,6 +6200,7 @@
 	var setopts = common.setopts
 	var ownProp = common.ownProp
 	var childrenIgnored = common.childrenIgnored
+	var isIgnored = common.isIgnored
 
 	function globSync (pattern, options) {
 	  if (typeof options === 'function' || arguments.length === 3)
@@ -6369,7 +6372,7 @@
 	      if (e.charAt(0) === '/' && !this.nomount) {
 	        e = path.join(this.root, e)
 	      }
-	      this.matches[index][e] = true
+	      this._emitMatch(index, e)
 	    }
 	    // This was the last one, and no stats were needed
 	    return
@@ -6391,20 +6394,29 @@
 
 
 	GlobSync.prototype._emitMatch = function (index, e) {
+	  if (isIgnored(this, e))
+	    return
+
 	  var abs = this._makeAbs(e)
+
 	  if (this.mark)
 	    e = this._mark(e)
+
+	  if (this.absolute) {
+	    e = abs
+	  }
 
 	  if (this.matches[index][e])
 	    return
 
 	  if (this.nodir) {
-	    var c = this.cache[this._makeAbs(e)]
+	    var c = this.cache[abs]
 	    if (c === 'DIR' || Array.isArray(c))
 	      return
 	  }
 
 	  this.matches[index][e] = true
+
 	  if (this.stat)
 	    this._stat(e)
 	}
@@ -6581,7 +6593,7 @@
 	    prefix = prefix.replace(/\\/g, '/')
 
 	  // Mark this as a match
-	  this.matches[index][prefix] = true
+	  this._emitMatch(index, prefix)
 	}
 
 	// Returns either 'DIR', 'FILE', or false
@@ -6736,6 +6748,7 @@
 	  self.nocase = !!options.nocase
 	  self.stat = !!options.stat
 	  self.noprocess = !!options.noprocess
+	  self.absolute = !!options.absolute
 
 	  self.maxLength = options.maxLength || Infinity
 	  self.cache = options.cache || Object.create(null)
@@ -6984,7 +6997,7 @@
 /* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var wrappy = __webpack_require__(34)
+	var wrappy = __webpack_require__(36)
 	module.exports = wrappy(once)
 	module.exports.strict = wrappy(onceStrict)
 
@@ -7032,6 +7045,45 @@
 /* 36 */
 /***/ function(module, exports) {
 
+	// Returns a wrapper function that returns a wrapped callback
+	// The wrapper function should do some stuff, and return a
+	// presumably different callback function.
+	// This makes sure that own properties are retained, so that
+	// decorations and such are not lost along the way.
+	module.exports = wrappy
+	function wrappy (fn, cb) {
+	  if (fn && cb) return wrappy(fn)(cb)
+
+	  if (typeof fn !== 'function')
+	    throw new TypeError('need wrapper function')
+
+	  Object.keys(fn).forEach(function (k) {
+	    wrapper[k] = fn[k]
+	  })
+
+	  return wrapper
+
+	  function wrapper() {
+	    var args = new Array(arguments.length)
+	    for (var i = 0; i < args.length; i++) {
+	      args[i] = arguments[i]
+	    }
+	    var ret = fn.apply(this, args)
+	    var cb = args[args.length-1]
+	    if (typeof ret === 'function' && ret !== cb) {
+	      Object.keys(cb).forEach(function (k) {
+	        ret[k] = cb[k]
+	      })
+	    }
+	    return ret
+	  }
+	}
+
+
+/***/ },
+/* 37 */
+/***/ function(module, exports) {
+
 	// Logic for unix file mode operations.
 
 	'use strict';
@@ -7049,7 +7101,7 @@
 
 
 /***/ },
-/* 37 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7057,7 +7109,7 @@
 	var fs = __webpack_require__(3);
 	var Q = __webpack_require__(12);
 
-	var modeUtil = __webpack_require__(36);
+	var modeUtil = __webpack_require__(37);
 	var write = __webpack_require__(14);
 
 	var getCriteriaDefaults = function (passedCriteria) {
@@ -7249,15 +7301,15 @@
 
 
 /***/ },
-/* 38 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var pathUtil = __webpack_require__(8);
 	var Q = __webpack_require__(12);
-	var inspectTree = __webpack_require__(39);
-	var matcher = __webpack_require__(43);
+	var inspectTree = __webpack_require__(40);
+	var matcher = __webpack_require__(44);
 
 	var normalizeOptions = function (options) {
 	  var opts = options || {};
@@ -7368,16 +7420,16 @@
 
 
 /***/ },
-/* 39 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var crypto = __webpack_require__(40);
+	var crypto = __webpack_require__(41);
 	var pathUtil = __webpack_require__(8);
 	var Q = __webpack_require__(12);
-	var inspect = __webpack_require__(41);
-	var list = __webpack_require__(42);
+	var inspect = __webpack_require__(42);
+	var list = __webpack_require__(43);
 
 	var generateTreeNodeRelativePath = function (parent, path) {
 	  if (!parent) {
@@ -7578,19 +7630,19 @@
 
 
 /***/ },
-/* 40 */
+/* 41 */
 /***/ function(module, exports) {
 
 	module.exports = require("crypto");
 
 /***/ },
-/* 41 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var fs = __webpack_require__(3);
-	var crypto = __webpack_require__(40);
+	var crypto = __webpack_require__(41);
 	var pathUtil = __webpack_require__(8);
 	var Q = __webpack_require__(12);
 
@@ -7751,7 +7803,7 @@
 
 
 /***/ },
-/* 42 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7809,7 +7861,7 @@
 
 
 /***/ },
-/* 43 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// Matcher for glob patterns (e.g. *.txt, /a/b/**/z)
@@ -7916,7 +7968,7 @@
 
 
 /***/ },
-/* 44 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7926,10 +7978,10 @@
 	var Q = __webpack_require__(12);
 	var mkdirp = __webpack_require__(15);
 
-	var exists = __webpack_require__(45);
-	var matcher = __webpack_require__(43);
-	var fileMode = __webpack_require__(36);
-	var inspectTree = __webpack_require__(39);
+	var exists = __webpack_require__(46);
+	var matcher = __webpack_require__(44);
+	var fileMode = __webpack_require__(37);
+	var inspectTree = __webpack_require__(40);
 	var write = __webpack_require__(14);
 
 	var parseOptions = function (options, from) {
@@ -8151,7 +8203,7 @@
 
 
 /***/ },
-/* 45 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8217,7 +8269,7 @@
 
 
 /***/ },
-/* 46 */
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8226,7 +8278,7 @@
 	var fs = __webpack_require__(3);
 	var Q = __webpack_require__(12);
 	var mkdirp = __webpack_require__(15);
-	var exists = __webpack_require__(45);
+	var exists = __webpack_require__(46);
 
 	var generateSourceDoesntExistError = function (path) {
 	  var err = new Error("Path to move doesn't exist " + path);
@@ -8328,7 +8380,7 @@
 
 
 /***/ },
-/* 47 */
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* eslint no-console:1 */
@@ -8454,7 +8506,7 @@
 
 
 /***/ },
-/* 48 */
+/* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8489,7 +8541,7 @@
 
 
 /***/ },
-/* 49 */
+/* 50 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -8554,7 +8606,7 @@
 
 
 /***/ },
-/* 50 */
+/* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';

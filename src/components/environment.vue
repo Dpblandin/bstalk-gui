@@ -4,7 +4,6 @@
                    :repository="repository"
                    :on-confirm="pushToEnv"
                    :release-state="releaseState"
-                   :release.sync="release"
     >
 
     </confirm-modal>
@@ -15,7 +14,7 @@
     </button>
 </template>
 
-<script type="es6">
+<script type="text/ecmascript-6">
     import beanstalk from '../services/api'
     import ConfirmModal from './confirmModal.vue'
     import ErrorReporter from '../mixins/errorReporter.vue'
