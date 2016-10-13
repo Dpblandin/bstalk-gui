@@ -19,6 +19,7 @@
     import beanstalk from '../services/api'
     import ConfirmModal from './confirmModal.vue'
     import ErrorReporter from '../mixins/errorReporter.vue'
+    import deployments from '../states/deployments'
     import moment from 'moment'
 
     export default {
@@ -68,6 +69,10 @@
                 this.showModal = true
             },
             pushToEnv() {
+                deployments.addDeployment({
+                    repository: this.repository,
+                    environment: this.environment
+                })
                 beanstalk.deploy(this.repository.id, this.environment.id, null, false, (err, release) => {
                     if(err) {
                         this.reportError(err)
@@ -75,6 +80,7 @@
                     }
                     this.release = release
                     this.repository.updated_at = moment().format()
+                    deployments.setDeploymentRelease(this.release, this.repository, this.environment)
                     this.$dispatch('repo-deployed')
                 })
             }

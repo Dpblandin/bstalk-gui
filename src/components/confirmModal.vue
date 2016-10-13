@@ -84,6 +84,7 @@
             },
             confirmAction() {
                 this.confirmed = true
+                this.isVisible = false
                 this.onConfirm()
             }
         },

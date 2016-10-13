@@ -78,6 +78,7 @@ function init() {
     cacheRepositories()
     removeRepositoriesCache()
     setupGlobalShortcuts()
+    BrowserWindow.addDevToolsExtension('C:/Users/Skalp/AppData/Local/Google/Chrome/User Data/Default/Extensions/nhdogjmejiglipccpnnnanhbledajbpd/2.1.2_0')
 }
 
 function buildMenu() {
