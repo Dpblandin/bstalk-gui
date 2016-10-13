@@ -16077,13 +16077,13 @@
 	      html: '<div class="ui active inline small loader"></div>'
 	    };
 	    if (deployment.release.state === 'skipped') {
-	      message.html = '<a class="ui label">Bypassed</a>\n        ' + deployment.release.environment_revision.substring(0, 8) + ': ' + deployment.release.comment + '\n        ';
+	      message.html = '<a class="ui label">Bypassed</a>\n         <strong>' + deployment.repository.name + '</strong> on: \n         <a class="ui ' + deployment.environment.color_label + ' label">' + deployment.environment.name + '</a>\n        ' + deployment.release.environment_revision.substring(0, 8) + ': ' + deployment.release.comment + '\n        ';
 	    }
 	    if (deployment.release.state === 'failed') {
-	      message.html = '<a class="ui red label">Failed deployment</a>\n        ' + deployment.release.environment_revision.substring(0, 8) + ': ' + deployment.release.comment + '\n        ';
+	      message.html = '<a class="ui red label">Failed deployment</a>\n         <strong>' + deployment.repository.name + '</strong> on: \n         <a class="ui ' + deployment.environment.color_label + ' label">' + deployment.environment.name + '</a>\n        ' + deployment.release.environment_revision.substring(0, 8) + ': ' + deployment.release.comment + '\n        ';
 	    }
 	    if (deployment.release.state === 'success') {
-	      message.html = '<a class="ui green label">Successfully deployed</a>\n        ' + deployment.release.environment_revision.substring(0, 8) + ': ' + deployment.release.comment + '\n        ';
+	      message.html = '<a class="ui green label">Successfully deployed</a>\n         <strong>' + deployment.repository.name + '</strong> on: \n         <a class="ui ' + deployment.environment.color_label + ' label">' + deployment.environment.name + '</a>\n        ' + deployment.release.environment_revision.substring(0, 8) + ': ' + deployment.release.comment + '\n        ';
 	    }
 	    if (deployment.release.state !== 'skipped' && deployment.release.state !== 'failed' && deployment.release.state !== 'success') {
 	      message.html += 'Deploying <strong>' + deployment.repository.name + '</strong> on: \n         <a class="ui ' + deployment.environment.color_label + ' label">' + deployment.environment.name + '</a>\n        ';
