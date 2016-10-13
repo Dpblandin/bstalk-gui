@@ -12270,7 +12270,7 @@
 
 	    computed: {
 	        formatedUpdatedDate: function formatedUpdatedDate() {
-	            return (0, _moment2.default)(this.repository.updated_at).format('MMM Do YYYY [at] hh:mm');
+	            return (0, _moment2.default)(this.repository.updated_at).format('MMM Do YYYY [at] HH:mm');
 	        }
 	    }
 	};
