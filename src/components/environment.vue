@@ -9,7 +9,7 @@
 
     </confirm-modal>
     <button @click="displayModal"
-            disabled="{{ release.state && !releaseDone }}"
+            disabled="{{ release.state !== '' && !releaseDone }}"
             class="ui labeled icon {{ environment.color_label }} button">
         <i class="upload icon"></i>
         {{ environment.name }}
@@ -31,7 +31,9 @@
         data() {
             return {
                 showModal: false,
-                release: {}
+                release: {
+                    state: ''
+                }
             }
         },
 
