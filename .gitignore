@@ -6,10 +6,10 @@ Thumbs.db
 node_modules
 npm_debug.log
 /src/config.js
-/app/env.json
+app/env.json
 /app/**/*.map
-/app/app.js
-/app/background.js
+app/app.js
+app/background.js
 app/js/semantic/dist/components
 app/js/semantic/src
 app/js/semantic/tasks
