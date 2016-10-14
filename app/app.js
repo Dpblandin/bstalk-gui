@@ -12255,6 +12255,7 @@
 	//                    :repository="repository"
 	//                    :on-confirm="pushToEnv"
 	//                    :release-state="releaseState"
+	//                    :release-done="releaseDone"
 	//     >
 	//
 	//     </confirm-modal>
@@ -15852,35 +15853,22 @@
 	//             </div>
 	//         </div>
 	//         <div class="actions">
-	//             <button @click="cancelAction" disabled="{{ confirmed }}" class="ui red button">Cancel</button>
-	//             <button @click="confirmAction" disabled="{{ confirmed }}" class="ui primary button">Deploy</button>
+	//             <button @click="cancelAction" class="ui red button">Cancel</button>
+	//             <button @click="confirmAction" disabled="{{ releaseState !== '' && !releaseDone }}" class="ui primary button">Deploy</button>
 	//         </div>
 	//     </div>
 	// </template>
 	//
 	// <script type="text/ecmascript-6">
 	exports.default = {
-	    props: ['isVisible', 'repository', 'environment', 'onConfirm', 'releaseState'],
-
-	    data: function data() {
-	        return {
-	            confirmed: false
-	        };
-	    },
-
+	    props: ['isVisible', 'repository', 'environment', 'onConfirm', 'releaseState', 'releaseDone'],
 
 	    methods: {
 	        cancelAction: function cancelAction() {
 	            this.isVisible = false;
 	        },
 	        confirmAction: function confirmAction() {
-	            var _this = this;
-
 	            this.isVisible = false;
-	            this.confirmed = true;
-	            setTimeout(function () {
-	                _this.confirmed = false;
-	            }, 1500);
 	            this.onConfirm();
 	        }
 	    },
@@ -15907,7 +15895,7 @@
 /* 88 */
 /***/ function(module, exports) {
 
-	module.exports = "\n\n\n\n\n\n<div v-modal=\"isVisible\" class=\"ui modal\">\n    <div class=\"header\">\n        Confirm deployment for: {{ repository.name }}\n    </div>\n    <div class=\"content\">\n        <div class=\"description\">\n            <p>Deploy on: <a class=\"ui {{ environment.color_label }} label\">{{ environment.name }} ?</a></p>\n        </div>\n    </div>\n    <div class=\"actions\">\n        <button @click=\"cancelAction\" disabled=\"{{ confirmed }}\" class=\"ui red button\">Cancel</button>\n        <button @click=\"confirmAction\" disabled=\"{{ confirmed }}\" class=\"ui primary button\">Deploy</button>\n    </div>\n</div>\n";
+	module.exports = "\n\n\n\n\n\n<div v-modal=\"isVisible\" class=\"ui modal\">\n    <div class=\"header\">\n        Confirm deployment for: {{ repository.name }}\n    </div>\n    <div class=\"content\">\n        <div class=\"description\">\n            <p>Deploy on: <a class=\"ui {{ environment.color_label }} label\">{{ environment.name }} ?</a></p>\n        </div>\n    </div>\n    <div class=\"actions\">\n        <button @click=\"cancelAction\" class=\"ui red button\">Cancel</button>\n        <button @click=\"confirmAction\" disabled=\"{{ releaseState !== '' && !releaseDone }}\" class=\"ui primary button\">Deploy</button>\n    </div>\n</div>\n";
 
 /***/ },
 /* 89 */
@@ -20321,7 +20309,7 @@
 /* 94 */
 /***/ function(module, exports) {
 
-	module.exports = "\n<confirm-modal :is-visible.sync=\"showModal\"\n               :environment=\"environment\"\n               :repository=\"repository\"\n               :on-confirm=\"pushToEnv\"\n               :release-state=\"releaseState\"\n>\n\n</confirm-modal>\n<button @click=\"displayModal\"\n        disabled=\"{{ release.state && !releaseDone }}\"\n        class=\"ui labeled icon {{ environment.color_label }} button\">\n    <i class=\"upload icon\"></i>\n    {{ environment.name }}\n</button>\n";
+	module.exports = "\n<confirm-modal :is-visible.sync=\"showModal\"\n               :environment=\"environment\"\n               :repository=\"repository\"\n               :on-confirm=\"pushToEnv\"\n               :release-state=\"releaseState\"\n               :release-done=\"releaseDone\"\n>\n\n</confirm-modal>\n<button @click=\"displayModal\"\n        disabled=\"{{ release.state && !releaseDone }}\"\n        class=\"ui labeled icon {{ environment.color_label }} button\">\n    <i class=\"upload icon\"></i>\n    {{ environment.name }}\n</button>\n";
 
 /***/ },
 /* 95 */

@@ -4,6 +4,7 @@
                    :repository="repository"
                    :on-confirm="pushToEnv"
                    :release-state="releaseState"
+                   :release-done="releaseDone"
     >
 
     </confirm-modal>
