@@ -4,21 +4,22 @@
                    :repository="repository"
                    :on-confirm="pushToEnv"
                    :release-state="releaseState"
-                   :release.sync="release"
     >
 
     </confirm-modal>
     <button @click="displayModal"
+            disabled="{{ release.state && !releaseDone }}"
             class="ui labeled icon {{ environment.color_label }} button">
         <i class="upload icon"></i>
         {{ environment.name }}
     </button>
 </template>
 
-<script type="es6">
+<script type="text/ecmascript-6">
     import beanstalk from '../services/api'
     import ConfirmModal from './confirmModal.vue'
     import ErrorReporter from '../mixins/errorReporter.vue'
+    import deployments from '../states/deployments'
     import moment from 'moment'
 
     export default {
@@ -39,12 +40,14 @@
                     case 'waiting':
                         beanstalk.release(this.repository.id, this.release.id, (release) => {
                             this.release = release
+                            deployments.setDeploymentRelease(this.release, this.repository, this.environment)
                         })
                         return 'waiting'
                         break
                     case 'pending':
                         beanstalk.release(this.repository.id, this.release.id, (release) => {
                             this.release = release
+                            deployments.setDeploymentRelease(this.release, this.repository, this.environment)
                         })
                         return 'pending'
                         break
@@ -60,6 +63,10 @@
                 }
 
                 return ''
+            },
+
+            releaseDone() {
+                return this.releaseState === 'success' || this.releaseState === 'skipped' || this.releaseState === 'failed'
             }
         },
 
@@ -68,6 +75,12 @@
                 this.showModal = true
             },
             pushToEnv() {
+                this.release.state = 'pending'
+                deployments.addDeployment({
+                    repository: this.repository,
+                    environment: this.environment,
+                    release: {state: this.release.state}
+                })
                 beanstalk.deploy(this.repository.id, this.environment.id, null, false, (err, release) => {
                     if(err) {
                         this.reportError(err)
@@ -75,6 +88,7 @@
                     }
                     this.release = release
                     this.repository.updated_at = moment().format()
+                    deployments.setDeploymentRelease(this.release, this.repository, this.environment)
                     this.$dispatch('repo-deployed')
                 })
             }

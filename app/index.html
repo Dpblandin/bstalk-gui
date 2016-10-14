@@ -17,6 +17,7 @@
                 :username="config.username"
                 :token="config.token">
         </config>
+        <toaster v-show="deployments.length" :toasts.sync="deployments"></toaster>
         <div v-if="!isLoading && !incompleteConfigFile && toggledView === 'repos'" class="ui top segment">
             <div id="repositories" class="ui divided items">
                 <repo-card v-for="repository in repositories | filterBy searchTerm in 'name'"

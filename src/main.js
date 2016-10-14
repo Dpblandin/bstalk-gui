@@ -1,14 +1,17 @@
 import Vue from 'vue';
 import RepoCard from './components/repoCard.vue'
 import Loader from './components/loader.vue'
+import Toaster from './components/toaster.vue'
 import Command from './components/command.vue'
 import Config from './components/config.vue'
 import ErrorReporter from'./mixins/errorReporter.vue'
 import beanstalk from './services/api'
 import {ipcRenderer} from 'electron'
+import deployments from './states/deployments'
+
 
 new Vue({
-    components: {RepoCard, Loader, Command, Config},
+    components: {RepoCard, Loader, Command, Config, Toaster},
     mixins: [ErrorReporter],
     el: '#app',
     data() {
@@ -24,7 +27,8 @@ new Vue({
                 account: '',
                 username: '',
                 token: ''
-            }
+            },
+            deployments: deployments.deployments
         }
     },
 
