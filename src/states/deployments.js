@@ -8,7 +8,11 @@ export default {
 
   setDeploymentRelease(release, repository, environment) {
     for(let deployment of this.deployments) {
-      if(deployment.repository.id === repository.id && deployment.environment.id === environment.id) {
+      if(deployment.release.id && deployment.release.id === release.id) {
+        deployment.release = release
+        this.setDeploymentMessage(deployment)
+      }
+      if(!deployment.release.id && deployment.repository.id === repository.id && deployment.environment.id === environment.id) {
         deployment.release = release
         this.setDeploymentMessage(deployment)
       }

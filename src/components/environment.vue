@@ -8,6 +8,7 @@
 
     </confirm-modal>
     <button @click="displayModal"
+            disabled="{{ release.state && !releaseDone }}"
             class="ui labeled icon {{ environment.color_label }} button">
         <i class="upload icon"></i>
         {{ environment.name }}
@@ -62,6 +63,10 @@
                 }
 
                 return ''
+            },
+
+            releaseDone() {
+                return this.releaseState === 'success' || this.releaseState === 'skipped' || this.releaseState === 'failed'
             }
         },
 
@@ -70,10 +75,11 @@
                 this.showModal = true
             },
             pushToEnv() {
+                this.release.state = 'pending'
                 deployments.addDeployment({
                     repository: this.repository,
                     environment: this.environment,
-                    release: {state: 'pending'}
+                    release: {state: this.release.state}
                 })
                 beanstalk.deploy(this.repository.id, this.environment.id, null, false, (err, release) => {
                     if(err) {

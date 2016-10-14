@@ -14,8 +14,8 @@
             </div>
         </div>
         <div class="actions">
-            <div @click="cancelAction" class="ui red button">Cancel</div>
-            <div @click="confirmAction" class="ui primary button">Deploy</div>
+            <button @click="cancelAction" disabled="{{ confirmed }}" class="ui red button">Cancel</button>
+            <button @click="confirmAction" disabled="{{ confirmed }}" class="ui primary button">Deploy</button>
         </div>
     </div>
 </template>
@@ -24,12 +24,22 @@
     export default {
         props:['isVisible' ,'repository', 'environment', 'onConfirm', 'releaseState'],
 
+        data() {
+            return {
+                confirmed: false
+            }
+        },
+
         methods: {
             cancelAction() {
                 this.isVisible = false
             },
             confirmAction() {
                 this.isVisible = false
+                this.confirmed = true
+                setTimeout(() => {
+                    this.confirmed = false
+                }, 1500)
                 this.onConfirm()
             }
         },
