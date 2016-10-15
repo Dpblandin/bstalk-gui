@@ -24,6 +24,7 @@
     import ConfirmModal from './confirmModal.vue'
     import ErrorReporter from '../mixins/errorReporter.vue'
     import deployments from '../states/deployments'
+    import eventHub from '../events/hub'
 
     export default {
         components: { ConfirmModal },
@@ -82,7 +83,17 @@
             }
         },
 
+        created() {
+            eventHub.$on('environment.deploy-repo', this.deployFromCommand)
+        },
+
         methods: {
+            deployFromCommand(repoEnv) {
+                if(repoEnv.repoId === this.repository.id && repoEnv.envId === this.environment.id) {
+                    this.displayModal()
+                }
+            },
+
             displayModal() {
                 this.showModal = true
             },
@@ -102,15 +113,8 @@
                     }
                     this.release = release
                     deployments.setDeploymentRelease(this.release, this.repository, this.environment)
-                    this.$dispatch('repo-deployed')
+                    eventHub.$emit('main.repo-deployed')
                 })
-            }
-        },
-        events: {
-            'deploy-repo'(repoEnv) {
-                if(repoEnv.repoId === this.repository.id && repoEnv.envId === this.environment.id) {
-                    this.displayModal()
-                }
             }
         }
     }

@@ -40,6 +40,7 @@ new Vue({
     },
     created() {
         ipcRenderer.send('vue-ready')
+        eventHub.$on('main.repo-deployed', this.sendReposLoadedEvent)
     },
 
     mounted() {
@@ -125,7 +126,7 @@ new Vue({
                 this.toggleCommand()
                 if(this.commandOpened) {
                     this.$nextTick(() => {
-                        eventHub.$emit('focus-command')
+                        eventHub.$emit('command.focus')
                     })
                 }
             })
@@ -146,13 +147,6 @@ new Vue({
         'config-file-changed'(config) {
             this.config = config
             this.init()
-        },
-        'repo-deployed'() {
-            this.sendReposLoadedEvent()
-        },
-
-        'deploy-repo'(repo) {
-            this.$broadcast('deploy-repo', repo)
         }
     }
 })
