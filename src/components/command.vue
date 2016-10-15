@@ -64,12 +64,12 @@
         },
 
         created() {
-            eventHub.$on('focus-command', this.focusCommand)
+            eventHub.$on('command.focus', this.focusCommand)
         },
 
         methods: {
             sendDeployEvent(repo, envId) {
-              this.$dispatch('deploy-repo', {repoId: repo.id, envId})
+                eventHub.$emit('environment.deploy-repo', { repoId: repo.id, envId })
             },
 
             focusCommand() {
