@@ -38,6 +38,7 @@
 
 <script>
     import {ipcRenderer} from 'electron'
+    import eventHub from '../events/hub'
 
     export default {
         props: ['account', 'username', 'token'],
@@ -76,7 +77,7 @@
                         token: this.newToken
                     }
                     ipcRenderer.send('config-file-changed', config)
-                    this.$dispatch('config-file-changed', config)
+                    eventHub.$emit('main.config-file-changed', config)
                 }
             },
 

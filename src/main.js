@@ -41,6 +41,7 @@ new Vue({
     created() {
         ipcRenderer.send('vue-ready')
         eventHub.$on('main.repo-deployed', this.sendReposLoadedEvent)
+        eventHub.$on('main.config-file-changed', this.updateConfigAndInit)
     },
 
     mounted() {
@@ -78,6 +79,11 @@ new Vue({
                 this.initCommandListeners()
             })
 
+        },
+
+        updateConfigAndInit(config) {
+          this.config = config
+          this.init()
         },
 
         loadRepos() {
