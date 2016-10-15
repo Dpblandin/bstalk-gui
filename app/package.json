@@ -12,6 +12,6 @@
     "superagent": "^2.2.0",
     "sweetalert2": "^5.0.4",
     "underscore": "^1.8.3",
-    "vue": "^1.0.26"
+    "vue": "^2.0.3"
   }
 }
