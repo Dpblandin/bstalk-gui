@@ -64,12 +64,15 @@
                         return 'pending'
                         break
                     case 'success':
+                        this.resetRelease()
                         return 'success'
                         break
                     case 'skipped':
+                        this.resetRelease()
                         return 'skipped'
                         break
                     case 'failed':
+                        this.resetRelease()
                         return 'failed'
                         break
                     default:
@@ -92,6 +95,10 @@
                 if(repoEnv.repoId === this.repository.id && repoEnv.envId === this.environment.id) {
                     this.displayModal()
                 }
+            },
+
+            resetRelease() {
+                this.release = { state: '' }
             },
 
             displayModal() {

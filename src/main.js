@@ -147,13 +147,6 @@ new Vue({
             }
             return this.commandOpened = !this.commandOpened
         }
-    },
-
-    events: {
-        'config-file-changed'(config) {
-            this.config = config
-            this.init()
-        }
     }
 })
 
