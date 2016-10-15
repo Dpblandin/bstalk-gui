@@ -56,20 +56,12 @@ const beanstalk = {
   },
   environment(repoName, serverEnvironmentId, cb) {
     this.api(repoName + '/server_enironments/' + serverEnvironmentId).end(function (err, res) {
-      if (err) {
-        this.reportError(err);
-      }
-
-      cb(res.body);
+      cb(err, res.body);
     });
   },
   release(repoId, releaseId, cb) {
     this.api(repoId + '/releases/' + releaseId).end(function (err, res) {
-      if (err) {
-        this.reportError(err);
-      }
-
-      cb(res.body.release);
+      cb(err, res.body.release);
     });
   },
 

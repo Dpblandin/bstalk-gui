@@ -1,20 +1,20 @@
 <template>
     <div class="search flex-container">
-        <input v-el:search-input
+        <input ref="search-input"
                v-model="search"
                class="shortcut-command"
                type="text"
         >
         <div v-show="search.length" class="ui divided items search-results">
-            <div v-for="repo in searchableRepos" track-by="id">
-                <div v-for="(key, nameAndEnv) in repo.nameAndEnvs | filterBy search in 'name'"
+            <div v-for="repo in searchableRepos" v-bind:key="repo.id">
+                <div v-for="nameAndEnv in repo.nameAndEnvs"
                      track-by="id"
                      class="result item"
                      @click="sendDeployEvent(repo, nameAndEnv.id)"
                 >
                     <div class="middle aligned content">
                         <span> {{ nameAndEnv.repoName }}</span>
-                        <a class="ui small {{ nameAndEnv.colorLabel }} label">{{ nameAndEnv.envName }}</a>
+                        <a v-bind:class="'ui small ' + nameAndEnv.colorLabel + ' label'">{{ nameAndEnv.envName }}</a>
                     </div>
                 </div>
             </div>
@@ -35,7 +35,7 @@
         computed: {
             searchableRepos() {
                 if(this.ready) {
-                    return this.repositories.map((repo) => {
+                    const repositories = this.repositories.map((repo) => {
                         repo.nameAndEnvs = []
                         for (let env of repo.environments) {
                             repo.nameAndEnvs.push(
@@ -48,9 +48,14 @@
                                     }
                             )
                         }
-
                         return repo
 
+                    })
+                    const searchRegex = new RegExp(this.search, 'i')
+                    return repositories.filter((repo) => {
+                        for(let nameAndEnv of repo.nameAndEnvs) {
+                            return searchRegex.test(nameAndEnv.name)
+                        }
                     })
                 }
             }
@@ -65,7 +70,7 @@
         events: {
             'focus-command'() {
                 this.search = ''
-                this.$els.searchInput.focus()
+                this.$refs.searchInput.focus()
             }
         }
     }

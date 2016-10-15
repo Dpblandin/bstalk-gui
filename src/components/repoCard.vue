@@ -9,8 +9,8 @@
                 <p>Last updated: {{ formatedUpdatedDate }}</p>
             </div>
             <div class="extra">
-                    <span v-for="env in repository.environments" track-by="id">
-                       <environment :repository.sync="repository" :environment="env"></environment>
+                    <span v-for="env in repository.environments" v-bind:key="env.id">
+                       <environment v-on:update-repository-date="updateRepositoryDate" :repository="repository" :environment="env"></environment>
                     </span>
             </div>
         </div>
@@ -29,6 +29,12 @@ import moment from 'moment'
         computed: {
             formatedUpdatedDate() {
                 return moment(this.repository.updated_at).format('MMM Do YYYY [at] HH:mm')
+            }
+        },
+
+        methods: {
+            updateRepositoryDate() {
+                this.repository.updated_at = moment().format()
             }
         }
     }

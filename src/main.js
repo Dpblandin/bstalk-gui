@@ -41,7 +41,7 @@ new Vue({
         ipcRenderer.send('vue-ready')
     },
 
-    ready() {
+    mounted() {
         ipcRenderer.on('config-file-ready', (event, arg) => {
             const conf = JSON.parse(arg)
             this.config = conf
@@ -142,9 +142,6 @@ new Vue({
     },
 
     events: {
-        'repos-search'(search) {
-            this.searchTerm = search
-        },
         'config-file-changed'(config) {
             this.config = config
             this.init()

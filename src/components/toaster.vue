@@ -54,12 +54,11 @@
         width: 100%;
     }
     /* always present */
-    .expand-transition {
+    .expand-enter-active, .expand-leave-active {
         transition: all .5s ease;
         overflow: hidden;
     }
-    /* .expand-enter defines the starting state for entering */
-    /* .expand-leave defines the ending state for leaving */
+
     .expand-enter, .expand-leave {
         height: 0;
         padding: 0 10px;
