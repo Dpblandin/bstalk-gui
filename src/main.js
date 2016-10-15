@@ -8,6 +8,7 @@ import ErrorReporter from'./mixins/errorReporter.vue'
 import beanstalk from './services/api'
 import {ipcRenderer} from 'electron'
 import deployments from './states/deployments'
+import eventHub from './events/hub'
 
 
 new Vue({
@@ -124,7 +125,7 @@ new Vue({
                 this.toggleCommand()
                 if(this.commandOpened) {
                     this.$nextTick(() => {
-                        this.$broadcast('focus-command');
+                        eventHub.$emit('focus-command')
                     })
                 }
             })

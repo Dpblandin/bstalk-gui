@@ -1,6 +1,6 @@
 <template>
     <div class="search flex-container">
-        <input ref="search-input"
+        <input ref="searchInput"
                v-model="search"
                class="shortcut-command"
                type="text"
@@ -22,7 +22,9 @@
     </div>
 </template>
 
-<script type="es6">
+<script type="text/ecmascript-6">
+    import eventHub from '../events/hub'
+
     export default {
         props: ['repositories', 'ready'],
 
@@ -61,17 +63,19 @@
             }
         },
 
+        created() {
+            eventHub.$on('focus-command', this.focusCommand)
+        },
+
         methods: {
             sendDeployEvent(repo, envId) {
               this.$dispatch('deploy-repo', {repoId: repo.id, envId})
-            }
-        },
+            },
 
-        events: {
-            'focus-command'() {
+            focusCommand() {
                 this.search = ''
                 this.$refs.searchInput.focus()
             }
-        }
+        },
     }
 </script>
