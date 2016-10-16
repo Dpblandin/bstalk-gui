@@ -90,6 +90,10 @@
             eventHub.$on('environment.deploy-repo', this.deployFromCommand)
         },
 
+        beforeDestroy: function () {
+            eventHub.$off('environment.deploy-repo', this.deployFromCommand)
+        },
+        
         methods: {
             deployFromCommand(repoEnv) {
                 if(repoEnv.repoId === this.repository.id && repoEnv.envId === this.environment.id) {

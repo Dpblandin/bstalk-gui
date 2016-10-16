@@ -66,6 +66,9 @@
         created() {
             eventHub.$on('command.focus', this.focusCommand)
         },
+        beforeDestroy: function () {
+            eventHub.$off('command-focus', this.focusCommand)
+        },
 
         methods: {
             sendDeployEvent(repo, envId) {

@@ -44,6 +44,12 @@ new Vue({
         eventHub.$on('main.config-file-changed', this.updateConfigAndInit)
     },
 
+    beforeDestroy: function () {
+        eventHub.$off('main.repo-deployed', this.sendReposLoadedEvent)
+        eventHub.$off('main.config-file-changed', this.updateConfigAndInit)
+    },
+
+
     mounted() {
         ipcRenderer.on('config-file-ready', (event, arg) => {
             const conf = JSON.parse(arg)
