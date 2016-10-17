@@ -26,7 +26,7 @@ export default {
         `<a class="ui label">Bypassed</a>
          <strong>${deployment.repository.name}</strong> on: 
          <a class="ui ${deployment.environment.color_label } label">${deployment.environment.name }</a>
-        ${deployment.release.environment_revision.substring(0, 8)}: ${deployment.release.comment}
+        <strong>${deployment.release.environment_revision.substring(0, 8)}</strong>: ${deployment.release.comment}
         `
     }
     if(deployment.release.state === 'failed') {
@@ -34,7 +34,7 @@ export default {
         `<a class="ui red label">Failed deployment</a>
          <strong>${deployment.repository.name}</strong> on: 
          <a class="ui ${deployment.environment.color_label } label">${deployment.environment.name }</a>
-        ${deployment.release.environment_revision.substring(0, 8)}: ${deployment.release.comment}
+        <strong>${deployment.release.environment_revision.substring(0, 8)}</strong>: ${deployment.release.comment}
         `
     }
     if(deployment.release.state === 'success') {
@@ -42,7 +42,7 @@ export default {
         `<a class="ui green label">Successfully deployed</a>
          <strong>${deployment.repository.name}</strong> on: 
          <a class="ui ${deployment.environment.color_label } label">${deployment.environment.name }</a>
-        ${deployment.release.environment_revision.substring(0, 8)}: ${deployment.release.comment}
+        <strong>${deployment.release.environment_revision.substring(0, 8)}</strong>: ${deployment.release.comment}
         `
     }
     if(deployment.release.state !== 'skipped' && deployment.release.state !== 'failed' && deployment.release.state !== 'success') {
