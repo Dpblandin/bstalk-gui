@@ -20,9 +20,7 @@ export default {
   },
 
   setDeploymentMessage(deployment) {
-    let message = {
-      html : '<div class="ui active inline small loader"></div>'
-    }
+    let message = deployment.message || {}
     if(deployment.release.state === 'skipped') {
       message.html =
         `<a class="ui label">Bypassed</a>
@@ -48,8 +46,10 @@ export default {
         `
     }
     if(deployment.release.state !== 'skipped' && deployment.release.state !== 'failed' && deployment.release.state !== 'success') {
-      message.html +=
-        `Deploying <strong>${deployment.repository.name}</strong> on: 
+      message.state = 'loading'
+      message.html =
+        `<div class="ui active inline small loader"></div>
+         Deploying <strong>${deployment.repository.name}</strong> on: 
          <a class="ui ${deployment.environment.color_label } label">${deployment.environment.name }</a>
         `
     }
