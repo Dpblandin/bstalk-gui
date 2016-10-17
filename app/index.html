@@ -21,7 +21,7 @@
         <div v-if="!isLoading && !incompleteConfigFile && toggledView === 'repos'" class="ui top segment">
             <div id="repositories" class="ui divided items">
                 <repo-card v-for="repository in repositories"
-                           track-by="id"
+                           v-bind:key="repository.id"
                            :repository.sync="repository">
 
                 </repo-card>
