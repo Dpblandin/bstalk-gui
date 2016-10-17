@@ -4,7 +4,7 @@
   "description": "Deploy Beanstalk projects with easy to use interface",
   "version": "1.1.11",
   "author": "David Pascaud-BLandin",
-  "copyright": "© 2016, Dpblandiny inc.",
+  "copyright": "© 2016, Dpblandin inc.",
   "license": "MIT",
   "main": "background.js",
   "dependencies": {
