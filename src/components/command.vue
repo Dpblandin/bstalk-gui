@@ -8,7 +8,7 @@
         <div v-show="search.length" class="ui divided items search-results">
             <div v-for="repo in searchableRepos" v-bind:key="repo.id">
                 <div v-for="nameAndEnv in repo.nameAndEnvs"
-                     track-by="id"
+                     v-bind:key="nameAndEnv.id"
                      class="result item"
                      @click="sendDeployEvent(repo, nameAndEnv.id)"
                 >
