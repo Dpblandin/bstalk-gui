@@ -1,4 +1,5 @@
-import Vue from 'vue';
+import Vue from 'vue'
+import Vuex from 'vuex'
 import RepoCard from './components/repoCard.vue'
 import Loader from './components/loader.vue'
 import Toaster from './components/toaster.vue'
@@ -10,6 +11,7 @@ import {ipcRenderer} from 'electron'
 import deployments from './states/deployments'
 import eventHub from './events/hub'
 
+Vue.use(Vuex)
 
 new Vue({
     components: {RepoCard, Loader, Command, Config, Toaster},
