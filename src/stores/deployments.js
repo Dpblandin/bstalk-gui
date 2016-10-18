@@ -54,9 +54,8 @@ const mutations = {
     state.deployments.push(deployment)
   },
 
-  SET_DEPLOYMENT_RELEASE: (state, release, repository, environment) => {
+  SET_DEPLOYMENT_RELEASE: (state, {release, repository, environment}) => {
     for(let deployment of state.deployments) {
-      console.log(deployment)
       if(deployment.release.id && deployment.release.id === release.id) {
         deployment.release = release
         internal.setDeploymentMessage(deployment)
@@ -70,12 +69,12 @@ const mutations = {
 }
 
 const actions = {
-  addDeployment: (store, deployment) => {
+  addDeployment(store, deployment) {
     store.commit('ADD_DEPLOYMENT', deployment)
   },
 
-  setDeploymentRelease: (store, release, repository, environment) => {
-    store.commit('SET_DEPLOYMENT_RELEASE', release, repository, environment)
+  setDeploymentRelease(store, {release, repository, environment}) {
+    store.commit('SET_DEPLOYMENT_RELEASE', {release, repository, environment})
   }
 }
 
@@ -83,6 +82,5 @@ export default new Vuex.Store({
   state: state,
   getters: getters,
   mutations: mutations,
-  actions: actions,
-  strict: true
+  actions: actions
 })

@@ -52,7 +52,7 @@
                                 this.reportError(err)
                             }
                             this.release = release
-                            this.setDeploymentRelease(this.release, this.repository, this.environment)
+                            this.setDeploymentRelease({release: this.release, repository: this.repository, environment: this.environment})
                         })
                         return 'waiting'
                         break
@@ -62,7 +62,7 @@
                                 this.reportError(err)
                             }
                             this.release = release
-                            this.setDeploymentRelease(this.release, this.repository, this.environment)
+                            this.setDeploymentRelease({release: this.release, repository: this.repository, environment: this.environment})
                         })
                         return 'pending'
                         break
@@ -127,7 +127,7 @@
                         return false;
                     }
                     this.release = release
-                    this.setDeploymentRelease(this.release, this.repository, this.environment)
+                    this.setDeploymentRelease({release: this.release, repository: this.repository, environment: this.environment})
                     eventHub.$emit('main.repo-deployed')
                 })
             }
