@@ -40,6 +40,11 @@ module.exports = {
             }
         ]
     },
+    resolve: {
+        alias: {
+            'vue$': 'vue/dist/vue.js'
+        }
+    },
     babel: {
         "presets": ["es2015"],
         "plugins": ["transform-runtime"]

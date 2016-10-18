@@ -8,6 +8,7 @@ import ErrorReporter from'./mixins/errorReporter.vue'
 import beanstalk from './services/api'
 import {ipcRenderer} from 'electron'
 import deployments from './states/deployments'
+import eventHub from './events/hub'
 
 
 new Vue({
@@ -39,9 +40,17 @@ new Vue({
     },
     created() {
         ipcRenderer.send('vue-ready')
+        eventHub.$on('main.repo-deployed', this.sendReposLoadedEvent)
+        eventHub.$on('main.config-file-changed', this.updateConfigAndInit)
     },
 
-    ready() {
+    beforeDestroy: function () {
+        eventHub.$off('main.repo-deployed', this.sendReposLoadedEvent)
+        eventHub.$off('main.config-file-changed', this.updateConfigAndInit)
+    },
+
+
+    mounted() {
         ipcRenderer.on('config-file-ready', (event, arg) => {
             const conf = JSON.parse(arg)
             this.config = conf
@@ -76,6 +85,11 @@ new Vue({
                 this.initCommandListeners()
             })
 
+        },
+
+        updateConfigAndInit(config) {
+          this.config = config
+          this.init()
         },
 
         loadRepos() {
@@ -124,7 +138,7 @@ new Vue({
                 this.toggleCommand()
                 if(this.commandOpened) {
                     this.$nextTick(() => {
-                        this.$broadcast('focus-command');
+                        eventHub.$emit('command.focus')
                     })
                 }
             })
@@ -138,23 +152,6 @@ new Vue({
                 return this.commandOpened = false
             }
             return this.commandOpened = !this.commandOpened
-        }
-    },
-
-    events: {
-        'repos-search'(search) {
-            this.searchTerm = search
-        },
-        'config-file-changed'(config) {
-            this.config = config
-            this.init()
-        },
-        'repo-deployed'() {
-            this.sendReposLoadedEvent()
-        },
-
-        'deploy-repo'(repo) {
-            this.$broadcast('deploy-repo', repo)
         }
     }
 })

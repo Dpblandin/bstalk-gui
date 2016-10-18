@@ -1,5 +1,5 @@
 
-<script type="es6">
+<script type="text/ecmascript-6">
     export default{
         methods : {
             reportError(err, type = 'error', advanced = false) {
@@ -18,7 +18,7 @@
                     cancelButtonText:
                             'Try again'
                 }
-                swalOpts.text += err.response.error.text ? err.response.error.text : err
+                swalOpts.text += err.response ? err.response.error.text : err
                 if(advanced) {
                     return swal(swalOpts).then(() => {
                         this.toggledView='settings'

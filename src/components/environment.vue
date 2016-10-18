@@ -1,19 +1,22 @@
 <template>
-    <confirm-modal :is-visible.sync="showModal"
-                   :environment="environment"
-                   :repository="repository"
-                   :on-confirm="pushToEnv"
-                   :release-state="releaseState"
-                   :release-done="releaseDone"
-    >
+    <span>
+        <confirm-modal :is-visible="showModal"
+                       v-on:toggle-modal="toggleModal"
+                       :environment="environment"
+                       :repository="repository"
+                       :on-confirm="pushToEnv"
+                       :release-state="releaseState"
+                       :release-done="releaseDone"
+        >
 
-    </confirm-modal>
-    <button @click="displayModal"
-            disabled="{{ release.state !== '' && !releaseDone }}"
-            class="ui labeled icon {{ environment.color_label }} button">
-        <i class="upload icon"></i>
-        {{ environment.name }}
-    </button>
+        </confirm-modal>
+        <button @click="displayModal"
+                v-bind:disabled="release.state !== '' && !releaseDone"
+                v-bind:class="'ui labeled icon ' + environment.color_label + ' button'">
+            <i class="upload icon"></i>
+            {{ environment.name }}
+        </button>
+    </span>
 </template>
 
 <script type="text/ecmascript-6">
@@ -21,7 +24,7 @@
     import ConfirmModal from './confirmModal.vue'
     import ErrorReporter from '../mixins/errorReporter.vue'
     import deployments from '../states/deployments'
-    import moment from 'moment'
+    import eventHub from '../events/hub'
 
     export default {
         components: { ConfirmModal },
@@ -41,31 +44,41 @@
             releaseState() {
                 switch (this.release.state) {
                     case 'waiting':
-                        beanstalk.release(this.repository.id, this.release.id, (release) => {
+                        beanstalk.release(this.repository.id, this.release.id, (err, release) => {
+                            if(err) {
+                                this.reportError(err)
+                            }
                             this.release = release
                             deployments.setDeploymentRelease(this.release, this.repository, this.environment)
                         })
                         return 'waiting'
                         break
                     case 'pending':
-                        beanstalk.release(this.repository.id, this.release.id, (release) => {
+                        beanstalk.release(this.repository.id, this.release.id, (err, release) => {
+                            if(err) {
+                                this.reportError(err)
+                            }
                             this.release = release
                             deployments.setDeploymentRelease(this.release, this.repository, this.environment)
                         })
                         return 'pending'
                         break
                     case 'success':
+                        this.resetRelease()
                         return 'success'
                         break
                     case 'skipped':
+                        this.resetRelease()
                         return 'skipped'
                         break
                     case 'failed':
+                        this.resetRelease()
                         return 'failed'
                         break
+                    default:
+                        return ''
+                        break
                 }
-
-                return ''
             },
 
             releaseDone() {
@@ -73,16 +86,36 @@
             }
         },
 
+        created() {
+            eventHub.$on('environment.deploy-repo', this.deployFromCommand)
+        },
+
+        beforeDestroy: function () {
+            eventHub.$off('environment.deploy-repo', this.deployFromCommand)
+        },
+        
         methods: {
+            deployFromCommand(repoEnv) {
+                if(repoEnv.repoId === this.repository.id && repoEnv.envId === this.environment.id) {
+                    this.displayModal()
+                }
+            },
+
+            resetRelease() {
+                this.release = { state: '' }
+            },
+
             displayModal() {
                 this.showModal = true
             },
+            toggleModal() {
+                this.showModal = !this.showModal
+            },
             pushToEnv() {
-                this.release.state = 'pending'
                 deployments.addDeployment({
                     repository: this.repository,
                     environment: this.environment,
-                    release: {state: this.release.state}
+                    release: this.release
                 })
                 beanstalk.deploy(this.repository.id, this.environment.id, null, false, (err, release) => {
                     if(err) {
@@ -90,17 +123,9 @@
                         return false;
                     }
                     this.release = release
-                    this.repository.updated_at = moment().format()
                     deployments.setDeploymentRelease(this.release, this.repository, this.environment)
-                    this.$dispatch('repo-deployed')
+                    eventHub.$emit('main.repo-deployed')
                 })
-            }
-        },
-        events: {
-            'deploy-repo'(repoEnv) {
-                if(repoEnv.repoId === this.repository.id && repoEnv.envId === this.environment.id) {
-                    this.displayModal()
-                }
             }
         }
     }

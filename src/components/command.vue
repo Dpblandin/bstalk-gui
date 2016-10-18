@@ -1,20 +1,20 @@
 <template>
     <div class="search flex-container">
-        <input v-el:search-input
+        <input ref="searchInput"
                v-model="search"
                class="shortcut-command"
                type="text"
         >
         <div v-show="search.length" class="ui divided items search-results">
-            <div v-for="repo in searchableRepos" track-by="id">
-                <div v-for="(key, nameAndEnv) in repo.nameAndEnvs | filterBy search in 'name'"
-                     track-by="id"
+            <div v-for="repo in searchableRepos" v-bind:key="repo.id">
+                <div v-for="nameAndEnv in repo.nameAndEnvs"
+                     v-bind:key="nameAndEnv.id"
                      class="result item"
                      @click="sendDeployEvent(repo, nameAndEnv.id)"
                 >
                     <div class="middle aligned content">
                         <span> {{ nameAndEnv.repoName }}</span>
-                        <a class="ui small {{ nameAndEnv.colorLabel }} label">{{ nameAndEnv.envName }}</a>
+                        <a v-bind:class="'ui small ' + nameAndEnv.colorLabel + ' label'">{{ nameAndEnv.envName }}</a>
                     </div>
                 </div>
             </div>
@@ -22,7 +22,9 @@
     </div>
 </template>
 
-<script type="es6">
+<script type="text/ecmascript-6">
+    import eventHub from '../events/hub'
+
     export default {
         props: ['repositories', 'ready'],
 
@@ -35,7 +37,7 @@
         computed: {
             searchableRepos() {
                 if(this.ready) {
-                    return this.repositories.map((repo) => {
+                    const repositories = this.repositories.map((repo) => {
                         repo.nameAndEnvs = []
                         for (let env of repo.environments) {
                             repo.nameAndEnvs.push(
@@ -48,25 +50,35 @@
                                     }
                             )
                         }
-
                         return repo
 
+                    })
+                    const searchRegex = new RegExp(this.search, 'i')
+                    return repositories.filter((repo) => {
+                        for(let nameAndEnv of repo.nameAndEnvs) {
+                            return searchRegex.test(nameAndEnv.name)
+                        }
                     })
                 }
             }
         },
 
-        methods: {
-            sendDeployEvent(repo, envId) {
-              this.$dispatch('deploy-repo', {repoId: repo.id, envId})
-            }
+        created() {
+            eventHub.$on('command.focus', this.focusCommand)
+        },
+        beforeDestroy: function () {
+            eventHub.$off('command-focus', this.focusCommand)
         },
 
-        events: {
-            'focus-command'() {
+        methods: {
+            sendDeployEvent(repo, envId) {
+                eventHub.$emit('environment.deploy-repo', { repoId: repo.id, envId })
+            },
+
+            focusCommand() {
                 this.search = ''
-                this.$els.searchInput.focus()
+                this.$refs.searchInput.focus()
             }
-        }
+        },
     }
 </script>

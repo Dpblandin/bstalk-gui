@@ -2,9 +2,9 @@
   "name": "bstalk-gui",
   "productName": "bstalkGUI",
   "description": "Deploy Beanstalk projects with easy to use interface",
-  "version": "1.1.0",
+  "version": "1.1.11",
   "author": "David Pascaud-BLandin",
-  "copyright": "© 2016, Dpblandiny inc.",
+  "copyright": "© 2016, Dpblandin inc.",
   "license": "MIT",
   "main": "background.js",
   "dependencies": {
@@ -12,6 +12,6 @@
     "superagent": "^2.2.0",
     "sweetalert2": "^5.0.4",
     "underscore": "^1.8.3",
-    "vue": "^1.0.26"
+    "vue": "^2.0.3"
   }
 }

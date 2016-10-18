@@ -28,12 +28,16 @@
     z-index: 0;
 }
 .shortcut-command {
-    border: 0 none;
+    border: 4px solid #3d9adc;
     height: 42px;
     padding: 0 10px;
     position: relative;
     width: 85%;
     z-index: 5;
+}
+
+.shortcut-command:focus {
+    outline: none;
 }
 
 .search-results {
