@@ -79,6 +79,12 @@ const beanstalk = {
       .end(function (err, res) {
         cb(err, res.body.release);
       });
+  },
+  
+  changeSet(revisionHash, repoId, cb) {
+    this.api('changesets/' + revisionHash + '.json?repository_id=' + repoId).end(function(err, res) {
+      cb(err, res.body)
+    })
   }
 }
 

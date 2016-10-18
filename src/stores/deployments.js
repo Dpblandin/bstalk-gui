@@ -1,4 +1,5 @@
 import Vuex from 'vuex'
+import beanstalk from '../services/api'
 
 const state = {
   deployments: []
@@ -18,6 +19,12 @@ const internal = {
          <a class="ui ${deployment.environment.color_label } label">${deployment.environment.name }</a>
         <strong>${deployment.release.environment_revision.substring(0, 8)}</strong>: ${deployment.release.comment}
         `
+      beanstalk.changeSet(deployment.release.revision, deployment.repository.id, (err, res) => {
+        message.changeSet = {
+          changedFiles: res.changed_files,
+          changedDirs: res.changed_dirs
+        }
+      })
     }
     if(deployment.release.state === 'failed') {
       message.html =
@@ -34,6 +41,12 @@ const internal = {
          <a class="ui ${deployment.environment.color_label } label">${deployment.environment.name }</a>
         <strong>${deployment.release.environment_revision.substring(0, 8)}</strong>: ${deployment.release.comment}
         `
+      beanstalk.changeSet(deployment.release.revision, deployment.repository.id, (err, res) => {
+        message.changeSet = {
+          changedFiles: res.changed_files,
+          changedDirs: res.changed_dirs
+        }
+      })
     }
     if(deployment.release.state !== 'skipped' && deployment.release.state !== 'failed' && deployment.release.state !== 'success') {
       message.state = 'loading'
