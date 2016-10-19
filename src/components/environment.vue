@@ -24,6 +24,7 @@
     import ConfirmModal from './confirmModal.vue'
     import ErrorReporter from '../mixins/errorReporter.vue'
     import deployments from '../stores/deployments'
+    import * as deploymentTypes from '../constants/deploymentTypes'
     import {mapActions, mapGetters} from 'vuex'
     import eventHub from '../events/hub'
 
@@ -46,7 +47,7 @@
             ...mapGetters(['deployments']),
             releaseState() {
                 switch (this.release.state) {
-                    case 'pending':
+                    case deploymentTypes.PENDING:
                         beanstalk.release(this.repository.id, this.release.id, (err, release) => {
                             if(err) {
                                 this.reportError(err)
@@ -54,9 +55,9 @@
                             this.release = release
                             this.setDeploymentRelease({release: this.release, repository: this.repository, environment: this.environment})
                         })
-                        return 'pending'
+                        return deploymentTypes.PENDING
                         break
-                    case 'waiting':
+                    case deploymentTypes.WAITING:
                         beanstalk.release(this.repository.id, this.release.id, (err, release) => {
                             if(err) {
                                 this.reportError(err)
@@ -64,19 +65,19 @@
                             this.release = release
                             this.setDeploymentRelease({release: this.release, repository: this.repository, environment: this.environment})
                         })
-                        return 'waiting'
+                        return deploymentTypes.WAITING
                         break
-                    case 'success':
+                    case deploymentTypes.SUCCESS:
                         this.resetRelease()
-                        return 'success'
+                        return deploymentTypes.SUCCESS
                         break
-                    case 'skipped':
+                    case deploymentTypes.SKIPPED:
                         this.resetRelease()
-                        return 'skipped'
+                        return deploymentTypes.SKIPPED
                         break
-                    case 'failed':
+                    case deploymentTypes.FAILED:
                         this.resetRelease()
-                        return 'failed'
+                        return deploymentTypes.FAILED
                         break
                     default:
                         return ''
@@ -85,7 +86,7 @@
             },
 
             releaseDone() {
-                return this.releaseState === 'success' || this.releaseState === 'skipped' || this.releaseState === 'failed'
+                return this.releaseState === deploymentTypes.SUCCESS || this.releaseState === deploymentTypes.SKIPPED || this.releaseState === deploymentTypes.FAILED
             }
         },
 
