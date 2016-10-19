@@ -9,9 +9,9 @@
             <i class="icon" v-if="deployment.icon" v-bind:class="deployment.icon"></i>
             <div class="content">
                 <loading-deployment v-if="isLoading(deployment)" :deployment="deployment"></loading-deployment>
-                <skipped-deployment v-if="deployment.release.state === 'skipped'" :deployment="deployment"></skipped-deployment>
-                <success-deployment v-if="deployment.release.state === 'success'" :deployment="deployment"></success-deployment>
-                <failed-deployment v-if="deployment.release.state === 'failed'" :deployment="deployment"></failed-deployment>
+                <skipped-deployment v-if="deployment.release.state === deploymentTypes.SKIPPED" :deployment="deployment"></skipped-deployment>
+                <success-deployment v-if="deployment.release.state === deploymentTypes.SUCCESS" :deployment="deployment"></success-deployment>
+                <failed-deployment v-if="deployment.release.state === deploymentTypes.FAILED" :deployment="deployment"></failed-deployment>
             </div>
         </div>
     </div>
@@ -21,6 +21,7 @@
     import loadingDeployment from './loading.vue'
     import successDeployment from './success.vue'
     import failedDeployment from './failed.vue'
+    import * as deploymentTypes from '../../constants/deploymentTypes'
     export default {
         components: { loadingDeployment, skippedDeployment, successDeployment, failedDeployment },
         props: {
@@ -31,10 +32,15 @@
                 type: Array
             }
         },
+        data() {
+            return {
+                deploymentTypes
+            }
+        },
         methods: {
             isLoading(deployment) {
-                return deployment.release.state === 'pending'
-                        || deployment.release.state === 'waiting'
+                return deployment.release.state === deploymentTypes.PENDING
+                        || deployment.release.state === deploymentTypes.WAITING
                         || deployment.release.state === ''
             },
             classes(deployments) {
