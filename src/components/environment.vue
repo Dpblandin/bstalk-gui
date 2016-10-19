@@ -23,10 +23,12 @@
     import beanstalk from '../services/api'
     import ConfirmModal from './confirmModal.vue'
     import ErrorReporter from '../mixins/errorReporter.vue'
-    import deployments from '../states/deployments'
+    import deployments from '../stores/deployments'
+    import {mapActions, mapGetters} from 'vuex'
     import eventHub from '../events/hub'
 
     export default {
+        store: deployments,
         components: { ConfirmModal },
         mixins: [ErrorReporter],
         props: ['repository', 'environment'],
@@ -41,27 +43,28 @@
         },
 
         computed: {
+            ...mapGetters(['deployments']),
             releaseState() {
                 switch (this.release.state) {
-                    case 'waiting':
-                        beanstalk.release(this.repository.id, this.release.id, (err, release) => {
-                            if(err) {
-                                this.reportError(err)
-                            }
-                            this.release = release
-                            deployments.setDeploymentRelease(this.release, this.repository, this.environment)
-                        })
-                        return 'waiting'
-                        break
                     case 'pending':
                         beanstalk.release(this.repository.id, this.release.id, (err, release) => {
                             if(err) {
                                 this.reportError(err)
                             }
                             this.release = release
-                            deployments.setDeploymentRelease(this.release, this.repository, this.environment)
+                            this.setDeploymentRelease({release: this.release, repository: this.repository, environment: this.environment})
                         })
                         return 'pending'
+                        break
+                    case 'waiting':
+                        beanstalk.release(this.repository.id, this.release.id, (err, release) => {
+                            if(err) {
+                                this.reportError(err)
+                            }
+                            this.release = release
+                            this.setDeploymentRelease({release: this.release, repository: this.repository, environment: this.environment})
+                        })
+                        return 'waiting'
                         break
                     case 'success':
                         this.resetRelease()
@@ -95,6 +98,7 @@
         },
         
         methods: {
+            ...mapActions(['addDeployment', 'setDeploymentRelease']),
             deployFromCommand(repoEnv) {
                 if(repoEnv.repoId === this.repository.id && repoEnv.envId === this.environment.id) {
                     this.displayModal()
@@ -112,7 +116,7 @@
                 this.showModal = !this.showModal
             },
             pushToEnv() {
-                deployments.addDeployment({
+                this.addDeployment({
                     repository: this.repository,
                     environment: this.environment,
                     release: this.release
@@ -123,7 +127,7 @@
                         return false;
                     }
                     this.release = release
-                    deployments.setDeploymentRelease(this.release, this.repository, this.environment)
+                    this.setDeploymentRelease({release: this.release, repository: this.repository, environment: this.environment})
                     eventHub.$emit('main.repo-deployed')
                 })
             }

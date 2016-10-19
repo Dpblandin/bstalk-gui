@@ -9,25 +9,7 @@
 </head>
 <body>
 <div v-cloak id="app" class="app">
-    <main class="main">
-        <command v-show="commandOpened && !isLoading" :repositories="repositories" :ready="allLoaded"></command>
-        <loader v-show="isLoading"></loader>
-        <config v-if="(incompleteConfigFile && !isLoading && ready) || (toggledView === 'settings')"
-                :account="config.account"
-                :username="config.username"
-                :token="config.token">
-        </config>
-        <toaster v-show="deployments.length" :toasts="deployments"></toaster>
-        <div v-if="!isLoading && !incompleteConfigFile && toggledView === 'repos'" class="ui top segment">
-            <div id="repositories" class="ui divided items">
-                <repo-card v-for="repository in repositories"
-                           v-bind:key="repository.id"
-                           :repository.sync="repository">
-
-                </repo-card>
-            </div>
-        </div>
-    </main>
+    <app></app>
 </div>
 <script src="https://code.jquery.com/jquery-2.2.4.min.js"
         integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
