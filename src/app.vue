@@ -7,7 +7,7 @@
                 :username="config.username"
                 :token="config.token">
         </config>
-        <toaster v-show="deployments.length" :toasts="deployments"></toaster>
+        <deployments-toaster v-show="deployments.length" :deployments="deployments"></deployments-toaster>
         <div v-if="!isLoading && !incompleteConfigFile && toggledView === 'repos'" class="ui top segment">
             <div id="repositories" class="ui divided items">
                 <repo-card v-for="repository in repositories"
@@ -23,7 +23,7 @@
 <script type="text/ecmascript-6">
     import RepoCard from './components/repoCard.vue'
     import Loader from './components/loader.vue'
-    import Toaster from './components/toaster.vue'
+    import DeploymentsToaster from './components/deployments/deployments.vue'
     import Command from './components/command.vue'
     import Config from './components/config.vue'
     import ErrorReporter from'./mixins/errorReporter.vue'
@@ -35,7 +35,7 @@
 
     export default {
         store: deployments,
-        components: {RepoCard, Loader, Command, Config, Toaster},
+        components: {RepoCard, Loader, Command, Config, DeploymentsToaster},
         mixins: [ErrorReporter],
         data() {
             return {

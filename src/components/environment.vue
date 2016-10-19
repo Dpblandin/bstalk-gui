@@ -46,16 +46,6 @@
             ...mapGetters(['deployments']),
             releaseState() {
                 switch (this.release.state) {
-                    case 'waiting':
-                        beanstalk.release(this.repository.id, this.release.id, (err, release) => {
-                            if(err) {
-                                this.reportError(err)
-                            }
-                            this.release = release
-                            this.setDeploymentRelease({release: this.release, repository: this.repository, environment: this.environment})
-                        })
-                        return 'waiting'
-                        break
                     case 'pending':
                         beanstalk.release(this.repository.id, this.release.id, (err, release) => {
                             if(err) {
@@ -65,6 +55,16 @@
                             this.setDeploymentRelease({release: this.release, repository: this.repository, environment: this.environment})
                         })
                         return 'pending'
+                        break
+                    case 'waiting':
+                        beanstalk.release(this.repository.id, this.release.id, (err, release) => {
+                            if(err) {
+                                this.reportError(err)
+                            }
+                            this.release = release
+                            this.setDeploymentRelease({release: this.release, repository: this.repository, environment: this.environment})
+                        })
+                        return 'waiting'
                         break
                     case 'success':
                         this.resetRelease()
