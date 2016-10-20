@@ -2,6 +2,7 @@
     <div>
         <div class="ui segment">
             <form class="ui form">
+                <h4 class="ui dividing header">Beanstalk settings</h4>
                 <div class="field">
                     <label>Account</label>
                     <input v-model="newAccount" type="text" name="newAccount" placeholder="Beanstalk account">
@@ -13,6 +14,17 @@
                 <div class="field">
                     <label>Token</label>
                     <input v-model="newToken" type="text" name="newToken" placeholder="Beanstalk token">
+                </div>
+                <h4 class="ui dividing header">Ui preferences</h4>
+                <div class="field">
+                    <label>Theme</label>
+                    <select v-model="newTheme" @change="saveUi" class="ui fluid dropdown">
+                        <option v-for="(atheme, key) in themes"
+                                :value="key"
+                        :selected="key === newTheme">
+                            {{ atheme }}
+                        </option>
+                    </select>
                 </div>
                 <button v-bind:disabled="!isValid"
                         @click="saveConfig"
@@ -37,16 +49,19 @@
 </template>
 
 <script>
+    import themes from '../constants/themes'
     import {ipcRenderer} from 'electron'
     import eventHub from '../events/hub'
 
     export default {
-        props: ['account', 'username', 'token'],
+        props: ['account', 'username', 'token', 'theme'],
         data() {
             return {
+                themes,
                 newAccount: this.account,
                 newUsername: this.username,
                 newToken: this.token,
+                newTheme: this.theme,
 
                 clearReposEntity: {
                     message: 'Clear repositories cache',
@@ -79,6 +94,13 @@
                     ipcRenderer.send('config-file-changed', config)
                     eventHub.$emit('main.config-file-changed', config)
                 }
+            },
+
+            saveUi(){
+                const ui = {
+                    theme: this.newTheme
+                }
+                ipcRenderer.send('ui-file-changed', ui)
             },
 
             clearReposCache() {

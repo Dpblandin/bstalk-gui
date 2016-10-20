@@ -11,16 +11,21 @@ const config = {
   configFile() {
     return path.resolve(this.configDir(), "config.json");
   },
-
+  uiFile() {
+    return path.resolve(this.configDir(), "ui.json");
+  },
   reposFile() {
     return path.resolve(this.configDir(), "repositories.json");
   },
   configExists() {
     return fs.existsSync(this.configFile());
   },
+  uiExists() {
+    return fs.existsSync(this.uiFile());
+  },
   createConfigFile() {
-    var dir = this.configDir();
-    var file = this.configFile(dir);
+    const dir = this.configDir();
+    const file = this.configFile();
 
     // Quit if already created
     if (this.configExists()){
@@ -33,7 +38,7 @@ const config = {
     }
 
     // Create file
-    var template = {
+    const template = {
       account: "",
       username: "",
       token: ""
@@ -42,10 +47,25 @@ const config = {
     fs.writeFileSync(file, JSON.stringify(template, null, 4));
 
   },
+  
+  createUiFile() {
+    const dir = this.configDir();
+    const file = this.uiFile();
+
+    if(!fs.existsSync(dir)){
+      fs.mkdirSync(dir, 0o700);
+    }
+    
+    const template = {
+      theme: 'light'
+    }
+
+    fs.writeFileSync(file, JSON.stringify(template, null, 4));
+  },
 
   createReposFile(repos) {
-    var dir = this.configDir();
-    var file = this.reposFile();
+    const dir = this.configDir();
+    const file = this.reposFile();
 
     if(!fs.existsSync(dir)){
       fs.mkdirSync(dir, 0o700);
@@ -55,7 +75,7 @@ const config = {
   },
   
   loadReposFile(cb) {
-    var file = this.reposFile();
+    const file = this.reposFile();
     if(fs.existsSync(file)) {
       fs.readFile(file, 'utf-8', (err, data) => {
         cb(err, data)
@@ -67,7 +87,7 @@ const config = {
   },
 
   removeReposFile(cb) {
-    var file = this.reposFile();
+    const file = this.reposFile();
     if(fs.existsSync(file)) {
       fs.unlink(file, (err) => {
         cb(err)
@@ -79,10 +99,19 @@ const config = {
   },
   
   updateConfigFile(config, cb) {
-    var dir = this.configDir();
-    var file = this.configFile(dir);
+    const dir = this.configDir();
+    const file = this.configFile(dir);
 
     fs.writeFile(file, JSON.stringify(config, null, 4), () => {
+      cb()
+    })
+  },
+  
+  updateUiFile(ui, cb) {
+    const dir = this.configDir();
+    const file = this.uiFile(dir);
+
+    fs.writeFile(file, JSON.stringify(ui, null, 4), () => {
       cb()
     })
   }

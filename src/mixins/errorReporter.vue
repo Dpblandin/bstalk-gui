@@ -2,7 +2,7 @@
 <script type="text/ecmascript-6">
     export default{
         methods : {
-            reportError(err, type = 'error', advanced = false) {
+            reportError(res, type = 'error', advanced = false) {
                 let swalOpts = {
                     title: 'Oops!',
                     type: type,
@@ -18,7 +18,8 @@
                     cancelButtonText:
                             'Try again'
                 }
-                swalOpts.text += err.response ? err.response.error.text : err
+                swalOpts.text += [...res.errors] || res
+
                 if(advanced) {
                     return swal(swalOpts).then(() => {
                         this.toggledView='settings'

@@ -5,7 +5,8 @@
         <config v-if="(incompleteConfigFile && !isLoading && ready) || (toggledView === 'settings')"
                 :account="config.account"
                 :username="config.username"
-                :token="config.token">
+                :token="config.token"
+                :theme="ui.theme">
         </config>
         <deployments-toaster v-show="deployments.length" :deployments="deployments"></deployments-toaster>
         <div v-if="!isLoading && !incompleteConfigFile && toggledView === 'repos'" class="ui top segment">
@@ -51,6 +52,9 @@
                     username: '',
                     token: ''
                 },
+                ui: {
+                    theme: ''
+                }
             }
         },
 
@@ -76,6 +80,11 @@
                 const conf = JSON.parse(arg)
                 this.config = conf
                 this.init()
+            })
+
+            ipcRenderer.on('ui-file-ready', (event, arg) => {
+                const ui = JSON.parse(arg)
+                this.ui = ui
             })
 
             ipcRenderer.on('toggle-view', (event, arg) => {
@@ -115,14 +124,14 @@
             },
 
             loadRepos() {
-                beanstalk.getRepositories((err, repos) => {
+                beanstalk.getRepositories((err, res) => {
                     if(err) {
-                        this.reportError(err, 'error', true)
+                        this.reportError(res, 'error', true)
                         this.isLoading = false
 
                         return false
                     }
-                    this.repositories = repos.map((repo) => {
+                    this.repositories = res.map((repo) => {
                             return repo.repository
                         }
                     )

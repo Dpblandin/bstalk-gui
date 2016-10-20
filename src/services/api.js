@@ -33,7 +33,6 @@ const beanstalk = {
 
   getRepositories(cb) {
     this.api('repositories').end(function (err, res) {
-
       cb(err, res.body);
     });
   },

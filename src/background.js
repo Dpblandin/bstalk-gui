@@ -73,7 +73,9 @@ function init() {
     buildMenu()
     createWindow()
     setUpConfigFile()
+    setUpUiFile()
     listenForConfigChanges()
+    listenForUiChanges()
     readRepositoriesCache()
     cacheRepositories()
     removeRepositoriesCache()
@@ -97,6 +99,17 @@ function setUpConfigFile() {
     })
 }
 
+function setUpUiFile() {
+    ipcMain.on('vue-ready', (event) => {
+        if (!config.uiExists()) {
+            config.createUiFile()
+        }
+        fs.readFile(config.uiFile(), 'utf-8', (err, data) => {
+            event.sender.send('ui-file-ready', data)
+        })
+    })
+}
+
 function listenForConfigChanges() {
     ipcMain.on('config-file-changed', (event, arg) =>  {
         config.removeReposFile((err) => {
@@ -104,6 +117,14 @@ function listenForConfigChanges() {
         });
         config.updateConfigFile(arg, () => {
             event.sender.send('config-file-saved')
+        })
+    })
+}
+
+function listenForUiChanges() {
+    ipcMain.on('ui-file-changed', (event, arg) =>  {
+        config.updateUiFile(arg, () => {
+            event.sender.send('ui-file-saved')
         })
     })
 }
