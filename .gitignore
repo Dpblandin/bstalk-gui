@@ -14,5 +14,5 @@ app/js/semantic/dist/components
 app/js/semantic/src
 app/js/semantic/tasks
 resources/icons/*.psd
-resources/icons/*.jpg
+resources/icons/beanstalk_logo.png
 /dist
