@@ -1,43 +1,26 @@
 <template>
-    <div class="file-diff">
-        <h4 class="ui-header">Changed files: {{ filesCount }}</h4>
+    <div>
         <table class="ui sortable celled table">
             <thead>
             <tr>
                 <th @click="sortByName">Name</th>
-                <th @click="sortByAction">Action</th>
             </tr>
             </thead>
             <tbody>
             <tr v-bind:class="rowClass(file)" v-for="file in files">
-                <td>{{ fileName(file) }}</td>
-                <td>{{ changeType(file) }}</td>
+               <file :file="file"></file>
             </tr>
             </tbody>
         </table>
     </div>
 </template>
-<style>
-    .file-diff {
-        margin-top: 30px;
-    }
-</style>
 <script type="text/ecmascript-6">
+    import File from './file.vue'
     import * as diffTypes from '../../../constants/diffTypes'
-    export default{
+    export default {
         props: ['files'],
-
-        computed: {
-            filesCount() {
-                return this.files.length
-            }
-        },
-
+        components: { File },
         methods: {
-            fileName(file) {
-                return file[0]
-            },
-
             changeType(file) {
                 return file[1]
             },
