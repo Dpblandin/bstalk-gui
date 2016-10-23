@@ -48,6 +48,7 @@
             beanstalk.changeSet(this.deployment.release.revision, this.deployment.repository.id, (err, res) => {
                 if (err) {
                     this.reportError(err)
+                    return false
                 }
                 this.changedFiles = res.revision_cache.changed_files
             })
