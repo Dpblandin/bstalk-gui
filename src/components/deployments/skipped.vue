@@ -1,8 +1,12 @@
 <template>
-    <base-deployment :state="'Bypassed'" :deployment="deployment"></base-deployment>
+    <div>
+        <base-deployment :state="'Bypassed'" :deployment="deployment"></base-deployment>
+    </div>
 </template>
-<script>
+
+<script type="text/ecmascript-6">
     import baseDeployment from './base.vue'
+
     export default{
         props: ['deployment'],
         components: { baseDeployment }
