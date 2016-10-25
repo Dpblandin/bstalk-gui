@@ -11,7 +11,7 @@
                 Changed files: {{ filesCount }}
             </div>
             <div class="content">
-                <file-diff :files="changedFiles"></file-diff>
+                <file-diff :files="changedFiles" :files-count="filesCount"></file-diff>
             </div>
         </div>
     </div>
