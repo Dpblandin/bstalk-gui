@@ -22,6 +22,7 @@
 </template>
 
 <script type="text/ecmascript-6">
+    import {version} from '../app/package.json'
     import RepoCard from './components/repoCard.vue'
     import Loader from './components/loader.vue'
     import DeploymentsToaster from './components/deployments/deployments.vue'
@@ -65,6 +66,7 @@
             }
         },
         created() {
+            document.title = `Bstalk Gui ${version}`
             ipcRenderer.send('vue-ready')
             eventHub.$on('main.repo-deployed', this.sendReposLoadedEvent)
             eventHub.$on('main.config-file-changed', this.updateConfigAndInit)
