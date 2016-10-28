@@ -11,7 +11,7 @@
                 Changed files: {{ filesCount }}
             </div>
             <div class="content">
-                <file-diff :files="changedFiles" :files-count="filesCount"></file-diff>
+                <change-set :files="changedFiles" :files-count="filesCount"></change-set>
             </div>
         </div>
     </div>
@@ -24,12 +24,12 @@
 <script type="text/ecmascript-6">
     import baseDeployment from './base.vue'
     import beanstalk from '../../services/api'
-    import fileDiff from './diff/fileDiff.vue'
+    import changeSet from './changes/changeSet.vue'
     import errorReporter from '../../mixins/errorReporter.vue'
 
     export default {
         props: ['deployment'],
-        components: { baseDeployment, fileDiff },
+        components: { baseDeployment, changeSet },
         mixins: [errorReporter],
         data(){
             return {
