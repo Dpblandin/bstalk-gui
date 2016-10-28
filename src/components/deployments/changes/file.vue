@@ -1,19 +1,25 @@
 <template>
-    <td><i v-bind:class="fileIcon + ' icon'"></i>{{ fileName }}</td>
+    <td>
+        <i v-bind:class="fileIcon + ' icon'"></i>{{ fileName }}
+        <file-diff :file="file"></file-diff>
+    </td>
 </template>
 
 <script>
     import * as diffTypes from '../../../constants/diffTypes'
+    import FileDiff from './fileDiff.vue'
+
     export default{
         props: ['file'],
+        components: { FileDiff },
 
         computed: {
             fileName() {
-                return this.file[0]
+                return this.file.path
             },
 
             changeType() {
-                return this.file[1]
+                return this.file.status
             },
 
             fileIcon() {

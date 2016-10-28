@@ -84,7 +84,7 @@
             },
 
             changeType(file) {
-                return file[1]
+                return file.status
             },
 
             rowClass(file) {
