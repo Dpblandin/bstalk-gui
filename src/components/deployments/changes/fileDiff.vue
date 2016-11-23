@@ -5,8 +5,14 @@
         </p>
     </div>
 </template>
-<style>
+<style scoped>
+    p.positive {
+        background: #52c164;
+    }
 
+    p.negative {
+        background: #e89797;
+    }
 </style>
 <script type="text/ecmascript-6">
     export default{
