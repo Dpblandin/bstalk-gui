@@ -1,9 +1,15 @@
 <template>
-    <td>
+    <td @click="toggleDiff" class="file-row">
         <i v-bind:class="fileIcon + ' icon'"></i>{{ fileName }}
-        <file-diff :file="file"></file-diff>
+        <file-diff v-show="showDiff" :file="file"></file-diff>
     </td>
 </template>
+
+<style scoped>
+    .file-row {
+        cursor: pointer;
+    }
+</style>
 
 <script>
     import * as diffTypes from '../../../constants/diffTypes'
@@ -12,6 +18,12 @@
     export default{
         props: ['file'],
         components: { FileDiff },
+
+        data() {
+            return {
+                showDiff: false
+            }
+        },
 
         computed: {
             fileName() {
@@ -32,6 +44,12 @@
                 if (this.changeType === diffTypes.DELETE) {
                     return 'trash'
                 }
+            }
+        },
+
+        methods: {
+            toggleDiff() {
+                this.showDiff = !this.showDiff
             }
         }
     }

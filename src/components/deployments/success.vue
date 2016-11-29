@@ -19,6 +19,9 @@
 <style>
     .change-set {
         margin-top: 30px;
+        width: 500px;
+        overflow: scroll;
+        max-height: 500px;
     }
 </style>
 <script type="text/ecmascript-6">

@@ -6,12 +6,20 @@
     </div>
 </template>
 <style scoped>
+    .file-diff {
+        background: #393e3f;
+        color: #FFF;
+    }
     p.positive {
-        background: #52c164;
+        background: #48643c;
+        margin: 0;
+        padding: 3px 0;
     }
 
     p.negative {
-        background: #e89797;
+        background: #663637;
+        margin: 0;
+        padding: 3px 0;
     }
 </style>
 <script type="text/ecmascript-6">
