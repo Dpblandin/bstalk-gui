@@ -9,8 +9,8 @@
             <i class="icon" v-if="deployment.icon" v-bind:class="deployment.icon"></i>
             <div class="content">
                 <loading-deployment v-if="isLoading(deployment)" :deployment="deployment"></loading-deployment>
-                <skipped-deployment v-if="deployment.release.state === deploymentTypes.SKIPPED" :deployment="deployment"></skipped-deployment>
-                <success-deployment v-if="deployment.release.state === deploymentTypes.SUCCESS" :deployment="deployment"></success-deployment>
+                <!--<skipped-deployment v-if="deployment.release.state === deploymentTypes.SKIPPED" :deployment="deployment"></skipped-deployment>-->
+                <success-deployment v-if="deployment.release.state === deploymentTypes.SUCCESS || deployment.release.state === deploymentTypes.SKIPPED" :deployment="deployment"></success-deployment>
                 <failed-deployment v-if="deployment.release.state === deploymentTypes.FAILED" :deployment="deployment"></failed-deployment>
             </div>
         </div>

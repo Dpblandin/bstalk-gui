@@ -5,7 +5,7 @@
                          :deployment="deployment">
 
         </base-deployment>
-        <div v-accordion="hasChangedFiles" v-if="hasChangedFiles" class="file-diff ui styled accordion">
+        <div v-accordion="hasChangedFiles" v-if="hasChangedFiles" class="change-set ui styled accordion">
             <div class="title">
                 <i class="dropdown icon"></i>
                 Changed files: {{ filesCount }}
@@ -17,8 +17,11 @@
     </div>
 </template>
 <style>
-    .file-diff {
+    .change-set {
         margin-top: 30px;
+        width: 500px;
+        overflow: scroll;
+        max-height: 500px;
     }
 </style>
 <script type="text/ecmascript-6">
@@ -45,12 +48,13 @@
             }
         },
         created() {
-            beanstalk.changeSet(this.deployment.release.revision, this.deployment.repository.id, (err, res) => {
+            beanstalk.changeSetDiffs(this.deployment.release.revision, this.deployment.repository.id, (err, res) => {
                 if (err) {
                     this.reportError(err)
                     return false
                 }
-                this.changedFiles = res.revision_cache.changed_files
+                console.log(res)
+                this.changedFiles = res.files
             })
         },
 

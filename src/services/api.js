@@ -84,6 +84,12 @@ const beanstalk = {
     this.api('changesets/' + revisionHash + '.json?repository_id=' + repoId).end(function(err, res) {
       cb(err, res.body)
     })
+  },
+  
+  changeSetDiffs(revisionHash, repoId, cb) {
+    this.api('changesets/' + revisionHash + '/differences.json?repository_id=' + repoId).end(function(err, res) {
+      cb(err, res.body)
+    })
   }
 }
 

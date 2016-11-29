@@ -1,0 +1,50 @@
+<template>
+    <div class="file-diff">
+        <p v-for="line in lines" v-bind:class="parseLine(line)">
+            {{ line }}
+        </p>
+    </div>
+</template>
+<style scoped>
+    .file-diff {
+        background: #393e3f;
+        color: #FFF;
+    }
+    p.positive {
+        background: #48643c;
+        margin: 0;
+        padding: 3px 0;
+    }
+
+    p.negative {
+        background: #663637;
+        margin: 0;
+        padding: 3px 0;
+    }
+</style>
+<script type="text/ecmascript-6">
+    export default{
+        props: ['file'],
+        computed: {
+            parsedDiff() {
+                return this.file.diff.replace(/([\s\S]*?)(?=@)/, "").replace(/@@+.*/g, "")
+            },
+            lines() {
+                return this.parsedDiff.split('\n')
+            }
+        },
+
+        methods: {
+            parseLine(line) {
+                if(line[0] === '+') {
+                    return 'positive';
+                }
+                if(line[0] === '-') {
+                    return 'negative'
+                }
+
+                return ''
+            }
+        }
+    }
+</script>
