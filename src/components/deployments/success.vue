@@ -53,7 +53,6 @@
                     this.reportError(err)
                     return false
                 }
-                console.log(res)
                 this.changedFiles = res.files
             })
         },
