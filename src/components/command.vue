@@ -4,13 +4,15 @@
                v-model="search"
                class="shortcut-command"
                type="text"
+               @keydown.down="selectItem"
         >
         <div v-show="search.length" class="ui divided items search-results">
             <div v-for="repo in searchableRepos" v-bind:key="repo.id">
                 <div v-for="nameAndEnv in repo.nameAndEnvs"
                      v-bind:key="nameAndEnv.id"
-                     class="result item"
+                     :class="'result item'"
                      @click="sendDeployEvent(repo, nameAndEnv.id)"
+                     :ref="nameAndEnv.id"
                 >
                     <div class="middle aligned content">
                         <span> {{ nameAndEnv.repoName }}</span>
@@ -30,7 +32,10 @@
 
         data() {
             return {
-                search: ''
+                search: '',
+                selectRepo: 0,
+                selectEnv: 0,
+                selectedItem: null
             }
         },
 
@@ -78,7 +83,20 @@
             focusCommand() {
                 this.search = ''
                 this.$refs.searchInput.focus()
+            },
+
+            selectItem() {
+                if(this.searchableRepos.length) {
+                    this.selectedItem = this.searchableRepos[this.selectRepo].nameAndEnvs[this.selectEnv].id
+                    if(this.searchableRepos[this.selectRepo].nameAndEnvs[this.selectEnv + 1]) {
+                        return this.selectEnv++;
+                    }
+                    if(this.searchableRepos[this.selectRepo + 1]) {
+                        this.selectEnv = 0;
+                        return this.selectRepo++;
+                    }
+                }
             }
-        },
+        }
     }
 </script>
