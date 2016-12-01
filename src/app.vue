@@ -2,6 +2,10 @@
     <div>
         <command v-show="commandOpened && !isLoading" :repositories="repositories" :ready="allLoaded"></command>
         <loader v-show="isLoading"></loader>
+        <repository-loader v-show="isLoading && repositoriesCount > 0"
+                           :current="currentLoadingRepoIndex"
+                           :total="repositoriesCount">
+        </repository-loader>
         <config v-if="(incompleteConfigFile && !isLoading && ready) || (toggledView === 'settings')"
                 :account="config.account"
                 :username="config.username"
@@ -25,6 +29,7 @@
     import {version} from '../app/package.json'
     import RepoCard from './components/repoCard.vue'
     import Loader from './components/loader.vue'
+    import RepositoryLoader from './components/repositoryLoader.vue'
     import DeploymentsToaster from './components/deployments/deployments.vue'
     import Command from './components/command.vue'
     import Config from './components/config.vue'
@@ -37,12 +42,13 @@
 
     export default {
         store: deployments,
-        components: {RepoCard, Loader, Command, Config, DeploymentsToaster},
+        components: {RepoCard, Loader, Command, Config, DeploymentsToaster, RepositoryLoader},
         mixins: [ErrorReporter],
         data() {
             return {
                 ready: false,
                 repositories: [],
+                currentLoadingRepoIndex: 1,
                 allLoaded: false,
                 isLoading: false,
                 commandOpened: false,
@@ -63,6 +69,10 @@
             ...mapGetters(['deployments']),
             incompleteConfigFile() {
                 return this.config.account === '' || this.config.username === '' || this.config.token === ''
+            },
+
+            repositoriesCount() {
+                return this.repositories.length
             }
         },
         created() {
@@ -150,6 +160,9 @@
                                 repo.environments = []
                                 for (let item in envs) {
                                     repo.environments.push(envs[item])
+                                }
+                                if(this.currentLoadingRepoIndex < this.repositoriesCount) {
+                                    this.currentLoadingRepoIndex++
                                 }
                                 resolve(repo)
                             })
