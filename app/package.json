@@ -2,7 +2,7 @@
   "name": "bstalk-gui",
   "productName": "bstalkGUI",
   "description": "Deploy Beanstalk projects with easy to use interface",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "author": "David Pascaud-BLandin",
   "copyright": "© 2016, Dpblandin inc.",
   "license": "MIT",
