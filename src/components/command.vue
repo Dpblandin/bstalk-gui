@@ -4,13 +4,17 @@
                v-model="search"
                class="shortcut-command"
                type="text"
-               @keydown.down="selectItem"
+               @keydown.down="selectItemDown"
+               @keydown.up.prevent="selectItemUp"
+               @keydown.delete="resetSelected"
+               @keydown.enter="sendDeployEvent(selectedRepo, selectedItem)"
         >
         <div v-show="search.length" class="ui divided items search-results">
             <div v-for="repo in searchableRepos" v-bind:key="repo.id">
                 <div v-for="nameAndEnv in repo.nameAndEnvs"
                      v-bind:key="nameAndEnv.id"
-                     :class="'result item'"
+                     class="result item"
+                     :class="{ 'is-selected' : isSelected(nameAndEnv.id) }"
                      @click="sendDeployEvent(repo, nameAndEnv.id)"
                      :ref="nameAndEnv.id"
                 >
@@ -24,6 +28,12 @@
     </div>
 </template>
 
+<style>
+    .result.item.is-selected {
+        background-color: #c1c1c1
+    }
+</style>
+
 <script type="text/ecmascript-6">
     import eventHub from '../events/hub'
 
@@ -33,9 +43,10 @@
         data() {
             return {
                 search: '',
-                selectRepo: 0,
-                selectEnv: 0,
-                selectedItem: null
+                selectRepo: -1,
+                selectEnv: -1,
+                selectedItem: null,
+                selectedRepo: null
             }
         },
 
@@ -82,20 +93,70 @@
 
             focusCommand() {
                 this.search = ''
+                this.resetSelected()
                 this.$refs.searchInput.focus()
             },
 
-            selectItem() {
+            selectItemDown() {
                 if(this.searchableRepos.length) {
-                    this.selectedItem = this.searchableRepos[this.selectRepo].nameAndEnvs[this.selectEnv].id
+                    if(this.selectEnv === -1 && this.selectRepo === -1) {
+                        this.selectEnv++
+                        this.selectRepo++
+                        this.selectedItem = this.searchableRepos[this.selectRepo].nameAndEnvs[this.selectEnv].id
+                        this.selectedRepo = this.searchableRepos[this.selectRepo]
+                        this.$refs[this.selectedItem][0].scrollIntoView(false)
+                        return
+                    }
                     if(this.searchableRepos[this.selectRepo].nameAndEnvs[this.selectEnv + 1]) {
-                        return this.selectEnv++;
+                        this.selectEnv++
+                        this.selectedItem = this.searchableRepos[this.selectRepo].nameAndEnvs[this.selectEnv].id
+                        this.selectedRepo = this.searchableRepos[this.selectRepo]
+                        this.$refs[this.selectedItem][0].scrollIntoView(false)
+                        return
                     }
                     if(this.searchableRepos[this.selectRepo + 1]) {
-                        this.selectEnv = 0;
-                        return this.selectRepo++;
+                        this.selectEnv = 0
+                        this.selectRepo++
+                        this.selectedItem = this.searchableRepos[this.selectRepo].nameAndEnvs[this.selectEnv].id
+                        this.selectedRepo = this.searchableRepos[this.selectRepo]
+                        this.$refs[this.selectedItem][0].scrollIntoView(false)
+                        return
                     }
                 }
+            },
+
+            selectItemUp() {
+                if(this.searchableRepos.length) {
+                    if(this.searchableRepos[this.selectRepo].nameAndEnvs[this.selectEnv - 1]) {
+                        this.selectEnv--
+                        this.selectedItem = this.searchableRepos[this.selectRepo].nameAndEnvs[this.selectEnv].id
+                        this.selectedRepo = this.searchableRepos[this.selectRepo]
+                        this.$refs[this.selectedItem][0].scrollIntoView(false)
+                        return
+
+                    }
+                    if(this.searchableRepos[this.selectRepo - 1]) {
+                        this.selectEnv = this.searchableRepos[this.selectRepo - 1].nameAndEnvs.length -1
+                        this.selectRepo--
+                        this.selectedItem = this.searchableRepos[this.selectRepo].nameAndEnvs[this.selectEnv].id
+                        this.selectedRepo = this.searchableRepos[this.selectRepo]
+                        this.$refs[this.selectedItem][0].scrollIntoView(false)
+                        return
+                    }
+                }
+            },
+
+            isSelected(nameAndEnvId) {
+                if(this.selectedItem) {
+                    return this.selectedItem === nameAndEnvId
+                }
+
+            },
+
+            resetSelected() {
+                this.selectedItem = null
+                this.selectEnv = -1
+                this.selectRepo = -1
             }
         }
     }
