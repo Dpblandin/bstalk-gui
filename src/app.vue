@@ -25,6 +25,12 @@
     </div>
 </template>
 
+<style>
+    [v-cloak] {
+        display: none;
+    }
+</style>
+
 <script type="text/ecmascript-6">
     import {version} from '../app/package.json'
     import RepoCard from './components/repoCard.vue'

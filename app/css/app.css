@@ -1,24 +1,83 @@
+
 [v-cloak] {
     display: none;
 }
 
-.flex-container {
-    align-items: center;
-    display: flex;
-    justify-content: flex-start;
-    margin: 0;
-    position: fixed;
-    height: 100vh;
-    width: 100vw;
-    z-index: 5;
-    flex-direction: column;
-    top: 0;
-    padding: 50px;
-
+.modal .content .description p {
+    color: rgba(0,0,0,.87)
 }
 
+.ui.progress {
+    position: absolute;
+    top: 60%;
+    width: 100%;
+    z-index:9999;
+}
+
+.toaster {
+    top: 10px;
+    right: 10px;
+    position: fixed;
+    z-index:999;
+}
+.toaster .toast {
+    padding: 2.5em 1.5em;
+    width: 100%;
+}
+/* always present */
+.expand-enter-active, .expand-leave-active {
+    transition: all .5s ease;
+    overflow: hidden;
+}
+.expand-enter, .expand-leave {
+    height: 0;
+    padding: 0 10px;
+    opacity: 0;
+}
+
+.change-set {
+    margin-top: 30px;
+    width: 500px;
+    overflow: scroll;
+    max-height: 500px;
+}
+
+.file-row {
+    cursor: pointer;
+}
+
+.file-diff {
+  background: #393e3f;
+  color: #FFF;
+  margin-top: 5px;
+  padding: 2px 10px;
+}
+.file-diff p.positive {
+    background: #48643c;
+    margin: 0;
+    padding: 3px 0;
+}
+.file-diff p.negative {
+    background: #663637;
+    margin: 0;
+    padding: 3px 0;
+}
+
+.flex-container {
+  align-items: center;
+  display: flex;
+  justify-content: flex-start;
+  margin: 0;
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  z-index: 5;
+  flex-direction: column;
+  top: 0;
+  padding: 50px;
+}
 .flex-container:before {
-    background: rgba(0,0,0,0.5);
+    background: rgba(0, 0, 0, 0.5);
     content: '';
     height: 100%;
     position: absolute;
@@ -28,40 +87,38 @@
     z-index: 0;
 }
 .shortcut-command {
-    border: 4px solid #3d9adc;
-    height: 42px;
-    padding: 0 10px;
-    position: relative;
-    width: 85%;
-    z-index: 5;
+  border: 4px solid #3d9adc;
+  height: 42px;
+  padding: 0 10px;
+  position: relative;
+  width: 85%;
+  z-index: 5;
 }
-
 .shortcut-command:focus {
     outline: none;
 }
-
 .search-results {
-    max-height: 320px;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    position: absolute;
-    width: 80.5%;
-    padding: 10px;
-    top: 92px;
-    z-index: 6;
-    background: #efefef;
+  max-height: 320px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  position: absolute;
+  width: 80.5%;
+  padding: 10px;
+  top: 71px;
+  z-index: 6;
+  background: #efefef;
 }
-
-.search-results.ui.items {
+.search-results .ui.items {
     margin: 0;
 }
-
 .search-results .result {
     cursor: pointer;
     padding: 15px 10px;
 }
-
 .search-results .result:hover {
-    cursor: pointer;
+      cursor: pointer;
+      background-color: #c1c1c1;
+}
+.search-results .item.is-selected {
     background-color: #c1c1c1;
 }

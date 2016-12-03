@@ -1,6 +1,7 @@
 var path = require('path')
 var webpack = require('webpack')
 var utils = require('./tasks/utils')
+var ExtractTextPlugin = require("extract-text-webpack-plugin")
 
 var env = utils.getEnvName()
 var plugins = []
@@ -18,6 +19,10 @@ plugins.push(
   new webpack.ExternalsPlugin('commonjs', [
     'electron'
   ])
+)
+
+plugins.push(
+  new ExtractTextPlugin('css/app.css')
 )
 
 
@@ -43,6 +48,12 @@ module.exports = {
                 loader: 'json'
             }
         ]
+    },
+    vue: {
+        loaders: {
+            css: ExtractTextPlugin.extract("css"),
+            scss: ExtractTextPlugin.extract("css!sass")
+        }
     },
     resolve: {
         alias: {

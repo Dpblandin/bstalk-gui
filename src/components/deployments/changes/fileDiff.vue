@@ -5,21 +5,24 @@
         </p>
     </div>
 </template>
-<style scoped>
+<style lang="scss">
     .file-diff {
         background: #393e3f;
         color: #FFF;
-    }
-    p.positive {
-        background: #48643c;
-        margin: 0;
-        padding: 3px 0;
-    }
+        margin-top: 5px;
+        padding: 2px 10px;
 
-    p.negative {
-        background: #663637;
-        margin: 0;
-        padding: 3px 0;
+        p.positive {
+            background: #48643c;
+            margin: 0;
+            padding: 3px 0;
+        }
+
+        p.negative {
+            background: #663637;
+            margin: 0;
+            padding: 3px 0;
+        }
     }
 </style>
 <script type="text/ecmascript-6">
