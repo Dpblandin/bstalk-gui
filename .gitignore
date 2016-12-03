@@ -9,6 +9,7 @@ npm_debug.log
 app/env.json
 /app/**/*.map
 app/app.js
+app/css/app.css
 app/background.js
 app/js/semantic/dist/components
 app/js/semantic/src
