@@ -5,7 +5,7 @@
     </td>
 </template>
 
-<style scoped>
+<style>
     .file-row {
         cursor: pointer;
     }

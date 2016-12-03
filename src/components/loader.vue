@@ -1,7 +1,3 @@
-<style>
-
-</style>
-
 <template>
     <div>
         <div class="ui active inverted dimmer">

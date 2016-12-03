@@ -28,10 +28,74 @@
     </div>
 </template>
 
-<style>
-    .result.item.is-selected {
-        background-color: #c1c1c1
+<style lang="scss">
+    .flex-container {
+        align-items: center;
+        display: flex;
+        justify-content: flex-start;
+        margin: 0;
+        position: fixed;
+        height: 100vh;
+        width: 100vw;
+        z-index: 5;
+        flex-direction: column;
+        top: 0;
+        padding: 50px;
+
+        &:before {
+             background: rgba(0,0,0,0.5);
+             content: '';
+             height: 100%;
+             position: absolute;
+             width: 100vw;
+             top: 0;
+             left: 0;
+             z-index: 0;
+         }
+
     }
+
+    .shortcut-command {
+        border: 4px solid #3d9adc;
+        height: 42px;
+        padding: 0 10px;
+        position: relative;
+        width: 85%;
+        z-index: 5;
+
+        &:focus {
+             outline: none;
+         }
+    }
+
+    .search-results {
+        max-height: 320px;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        position: absolute;
+        width: 80.5%;
+        padding: 10px;
+        top: 71px;
+        z-index: 6;
+        background: #efefef;
+
+        .ui.items {
+            margin: 0;
+        }
+        .result {
+            cursor: pointer;
+            padding: 15px 10px;
+
+            &:hover {
+                cursor: pointer;
+                background-color: #c1c1c1;
+            }
+        }
+        .item.is-selected {
+            background-color: #c1c1c1
+        }
+    }
+
 </style>
 
 <script type="text/ecmascript-6">
