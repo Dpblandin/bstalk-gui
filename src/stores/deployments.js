@@ -37,8 +37,8 @@ const actions = {
 }
 
 export default new Vuex.Store({
-  state: state,
-  getters: getters,
-  mutations: mutations,
-  actions: actions
+  state,
+  getters,
+  mutations,
+  actions
 })

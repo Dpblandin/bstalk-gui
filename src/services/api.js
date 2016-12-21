@@ -1,5 +1,4 @@
 import request from 'superagent';
-import _ from 'underscore';
 
 const beanstalk = {
 
@@ -44,12 +43,7 @@ const beanstalk = {
       }
 
       cb(err,
-        _.indexBy(
-          _.map(res.body, function (item) {
-            return item.server_environment;
-          }),
-          'name'
-        )
+          res.body.map(({server_environment}) => server_environment),
       );
     });
   },
