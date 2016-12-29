@@ -11,8 +11,8 @@
 
         </confirm-modal>
         <button @click="displayModal"
-                v-bind:disabled="release.state !== '' && !releaseDone"
-                v-bind:class="'ui labeled icon ' + environment.color_label + ' button'">
+                :disabled="release.state !== '' && !releaseDone"
+                :class="'ui labeled icon ' + environment.color_label + ' button'">
             <i class="upload icon"></i>
             {{ environment.name }}
         </button>

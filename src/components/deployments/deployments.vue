@@ -3,10 +3,10 @@
         <div class="toast ui floating message"
              v-for="deployment in deployments"
              transition="expand"
-             v-bind:class="classes(deployment)"
+             :class="classes(deployment)"
         >
             <i class="close icon" @click="close(deployment)"></i>
-            <i class="icon" v-if="deployment.icon" v-bind:class="deployment.icon"></i>
+            <i class="icon" v-if="deployment.icon" :class="deployment.icon"></i>
             <div class="content">
                 <loading-deployment v-if="isLoading(deployment)" :deployment="deployment"></loading-deployment>
                 <skipped-deployment v-if="deployment.release.state === deploymentTypes.SKIPPED" :deployment="deployment"></skipped-deployment>

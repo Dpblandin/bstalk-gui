@@ -26,13 +26,13 @@
                         </option>
                     </select>
                 </div>
-                <button v-bind:disabled="!isValid"
+                <button :disabled="!isValid"
                         @click="saveConfig"
                         class="ui primary button"
                         type="submit">
                     Save and close
                 </button>
-                <button v-bind:disabled="!clearReposEntity.enabled"
+                <button :disabled="!clearReposEntity.enabled"
                         @click.prevent="clearReposCache"
                         class="ui grey button"
                         type="submit">

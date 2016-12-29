@@ -10,9 +10,9 @@
                @keydown.enter="sendDeployEvent(selectedRepo, selectedItem)"
         >
         <div v-show="search.length" class="ui divided items search-results">
-            <div v-for="repo in searchableRepos" v-bind:key="repo.id">
+            <div v-for="repo in searchableRepos" :key="repo.id">
                 <div v-for="nameAndEnv in repo.nameAndEnvs"
-                     v-bind:key="nameAndEnv.id"
+                     :key="nameAndEnv.id"
                      class="result item"
                      :class="{ 'is-selected' : isSelected(nameAndEnv.id) }"
                      @click="sendDeployEvent(repo, nameAndEnv.id)"
@@ -20,7 +20,7 @@
                 >
                     <div class="middle aligned content">
                         <span> {{ nameAndEnv.repoName }}</span>
-                        <a v-bind:class="'ui small ' + nameAndEnv.colorLabel + ' label'">{{ nameAndEnv.envName }}</a>
+                        <a :class="'ui small ' + nameAndEnv.colorLabel + ' label'">{{ nameAndEnv.envName }}</a>
                     </div>
                 </div>
             </div>

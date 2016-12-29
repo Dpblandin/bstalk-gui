@@ -7,7 +7,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr v-bind:class="rowClass(file)" v-for="file in paginatedFiles">
+            <tr :class="rowClass(file)" v-for="file in paginatedFiles">
                <file :file="file"></file>
             </tr>
             </tbody>
@@ -22,7 +22,7 @@
                             </a>
                             <a v-for="n in totalPages"
                                @click="goTo(n)"
-                               v-bind:class="itemClass(n)">
+                               :class="itemClass(n)">
                                 {{ n }}
                             </a>
                             <a v-show="currentPage < totalPages"

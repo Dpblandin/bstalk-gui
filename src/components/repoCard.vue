@@ -9,7 +9,7 @@
                 <p>Last updated: {{ formatedUpdatedDate }}</p>
             </div>
             <div class="extra">
-                    <span v-for="env in repository.environments" v-bind:key="env.id">
+                    <span v-for="env in repository.environments" :key="env.id">
                        <environment :repository="repository" :environment="env"></environment>
                     </span>
             </div>

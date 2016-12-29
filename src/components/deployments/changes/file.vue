@@ -1,6 +1,6 @@
 <template>
     <td @click="toggleDiff" class="file-row">
-        <i v-bind:class="fileIcon + ' icon'"></i>{{ fileName }}
+        <i :class="fileIcon + ' icon'"></i>{{ fileName }}
         <file-diff v-show="showDiff" :file="file"></file-diff>
     </td>
 </template>

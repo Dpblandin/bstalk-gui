@@ -1,6 +1,6 @@
 <template>
     <div class="file-diff">
-        <p v-for="line in lines" v-bind:class="parseLine(line)">
+        <p v-for="line in lines" :class="parseLine(line)">
             {{ line }}
         </p>
     </div>

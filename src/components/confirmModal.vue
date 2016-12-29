@@ -10,12 +10,12 @@
         </div>
         <div class="content">
             <div class="description">
-                <p>Deploy on: <a v-bind:class="'ui ' + environment.color_label + ' label'">{{ environment.name }} ?</a></p>
+                <p>Deploy on: <a :class="'ui ' + environment.color_label + ' label'">{{ environment.name }} ?</a></p>
             </div>
         </div>
         <div class="actions">
             <button @click="cancelAction" class="ui red button">Cancel</button>
-            <button @click="confirmAction" v-bind:disabled="releaseState !== '' && !releaseDone" class="ui primary button">Deploy</button>
+            <button @click="confirmAction" :disabled="releaseState !== '' && !releaseDone" class="ui primary button">Deploy</button>
         </div>
     </div>
 </template>
