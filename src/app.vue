@@ -1,25 +1,28 @@
 <template>
     <div>
-        <command v-show="commandOpened && !isLoading" :repositories="repositories" :ready="allLoaded"></command>
-        <loader v-show="isLoading"></loader>
-        <repository-loader v-show="isLoading && repositoriesCount > 0"
-                           :current="currentLoadingRepoIndex"
-                           :total="repositoriesCount">
-        </repository-loader>
-        <config v-if="(incompleteConfigFile && !isLoading && ready) || (toggledView === 'settings')"
-                :account="config.account"
-                :username="config.username"
-                :token="config.token"
-                :theme="ui.theme">
-        </config>
-        <deployments-toaster v-show="deployments.length" :deployments="deployments"></deployments-toaster>
-        <div v-if="!isLoading && !incompleteConfigFile && toggledView === 'repos'" class="ui top segment">
-            <div id="repositories" class="ui divided items">
-                <repo-card v-for="repository in repositories"
-                           v-bind:key="repository.id"
-                           :repository.sync="repository">
+        <sidebar></sidebar>
+        <div class="pusher">
+            <command v-show="commandOpened && !isLoading" :repositories="repositories" :ready="allLoaded"></command>
+            <loader v-show="isLoading"></loader>
+            <repository-loader v-show="isLoading && repositoriesCount > 0"
+                               :current="currentLoadingRepoIndex"
+                               :total="repositoriesCount">
+            </repository-loader>
+            <config v-if="(incompleteConfigFile && !isLoading && ready) || (toggledView === 'settings')"
+                    :account="config.account"
+                    :username="config.username"
+                    :token="config.token"
+                    :theme="ui.theme">
+            </config>
+            <deployments-toaster v-show="deployments.length" :deployments="deployments"></deployments-toaster>
+            <div v-if="!isLoading && !incompleteConfigFile && toggledView === 'repos'" class="ui top segment">
+                <div id="repositories" class="ui divided items">
+                    <repo-card v-for="repository in repositories"
+                               v-bind:key="repository.id"
+                               :repository.sync="repository">
 
-                </repo-card>
+                    </repo-card>
+                </div>
             </div>
         </div>
     </div>
@@ -45,10 +48,11 @@
     import {mapGetters} from 'vuex'
     import deployments from './stores/deployments'
     import eventHub from './events/hub'
+    import Sidebar from './components/sidebar.vue'
 
     export default {
         store: deployments,
-        components: {RepoCard, Loader, Command, Config, DeploymentsToaster, RepositoryLoader},
+        components: {RepoCard, Loader, Command, Config, DeploymentsToaster, RepositoryLoader, Sidebar},
         mixins: [ErrorReporter],
         data() {
             return {
