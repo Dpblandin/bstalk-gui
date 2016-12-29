@@ -119,26 +119,24 @@
                 if(this.ready) {
                     const repositories = this.repositories.map((repo) => {
                         repo.nameAndEnvs = []
-                        for (let env of repo.environments) {
+                        repo.environments.forEach(({id, color_label, name}) =>  {
                             repo.nameAndEnvs.push(
                                     {
-                                        name: repo.name + ' ' + env.name,
+                                        name: repo.name + ' ' + name,
                                         repoName: repo.name,
-                                        envName: env.name,
-                                        colorLabel: env.color_label,
-                                        id: env.id
+                                        envName: name,
+                                        colorLabel: color_label,
+                                        id
                                     }
                             )
-                        }
+                        })
+
                         return repo
 
                     })
                     const searchRegex = new RegExp(this.search, 'i')
-                    return repositories.filter((repo) => {
-                        for(let nameAndEnv of repo.nameAndEnvs) {
-                            return searchRegex.test(nameAndEnv.name)
-                        }
-                    })
+
+                    return repositories.filter(({nameAndEnvs}) => nameAndEnvs.find(({name}) => searchRegex.test(name)))
                 }
             }
         },
