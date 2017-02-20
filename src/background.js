@@ -64,6 +64,10 @@ const template = [
             {
                 label: 'Fullscreen',
                 role: 'togglefullscreen'
+            },
+            {
+                label: 'Hide',
+                role: 'hide'
             }
 
         ]
